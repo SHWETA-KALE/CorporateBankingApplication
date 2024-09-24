@@ -242,11 +242,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Data\NHibernateHelper.cs" />
     <Compile Include="Enum\BeneficiaryType.cs" />
     <Compile Include="Enum\Status.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Mappings\AdminMap.cs" />
+    <Compile Include="Mappings\BeneficiaryMap.cs" />
+    <Compile Include="Mappings\ClientMap.cs" />
+    <Compile Include="Mappings\DocumentMap.cs" />
+    <Compile Include="Mappings\EmployeeMap.cs" />
+    <Compile Include="Mappings\PaymentMap.cs" />
+    <Compile Include="Mappings\ReportMap.cs" />
+    <Compile Include="Mappings\RoleMap.cs" />
+    <Compile Include="Mappings\SalaryDisbursementMap.cs" />
+    <Compile Include="Mappings\UserMap.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Beneficiary.cs" />
     <Compile Include="Models\Client.cs" />
