@@ -16,7 +16,7 @@ namespace CorporateBankingApplication.Models
 
         public virtual string Email { get; set; }
 
-        public virtual Role Role { get; set; }
+        public virtual Role Role { get; set; } = new Role();
 
         //public virtual DateTime LoginDate { get; set; } => analytics
 

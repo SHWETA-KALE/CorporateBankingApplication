@@ -16,10 +16,10 @@ namespace CorporateBankingApplication.Models
 
         public virtual string BankIFSC {  get; set; }
 
-        public virtual IList<Payment> Payments { get; set; }
+        public virtual IList<Payment> Payments { get; set; } = new List<Payment>();
         public virtual BeneficiaryType BeneficiaryType { get; set; } //Inbound Outbound
 
-        public virtual Client Client { get; set; }
+        public virtual Client Client { get; set; } 
 
 
     }
