@@ -43,7 +43,7 @@ namespace CorporateBankingApplication.Controllers
                 Session["UserId"] = user.Id;
                 if (result == "Admin")
                 {
-                    return Content("admin here");
+                    return RedirectToAction("Index", "Admin");
                 }
                 else
                 {
@@ -97,6 +97,7 @@ namespace CorporateBankingApplication.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Client")]
+        //[AllowAnonymous]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();

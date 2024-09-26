@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" id="clientList">
+    <h2>List of Clients</h2>
+
+    <table id="grid"></table>
+    <div id="pager"></div> <!--jqgrid pager-->
+</div>
+@*formatting and displaying JqGrid*@
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/redmond/jquery-ui.css">
+<script src="~/Scripts/myClientJqGrid.js"></script>

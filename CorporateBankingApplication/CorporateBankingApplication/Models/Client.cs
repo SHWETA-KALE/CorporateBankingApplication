@@ -9,8 +9,8 @@ namespace CorporateBankingApplication.Models
         public virtual string CompanyName {  get; set; }
         public virtual string ContactInformation { get; set; }
         public virtual string Location { get; set; }
-
         public virtual double Balance { get; set; }
+        public virtual bool IsActive { get; set; }
         public virtual IList<Beneficiary> Beneficiaries { get; set; } = new List<Beneficiary>();
         public virtual IList<Document> Documents { get; set; } = new List<Document>();
 

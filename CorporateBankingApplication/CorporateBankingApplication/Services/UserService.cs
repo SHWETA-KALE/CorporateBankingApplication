@@ -58,6 +58,7 @@ namespace CorporateBankingApplication.Services
                 ContactInformation = clientDto.ContactInformation,
                 Location = clientDto.Location,
                 OnBoardingStatus = Status.PENDING,
+                IsActive = true
                
             };
 
