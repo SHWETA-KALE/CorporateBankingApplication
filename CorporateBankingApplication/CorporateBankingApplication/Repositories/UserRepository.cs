@@ -27,6 +27,21 @@ namespace CorporateBankingApplication.Repositories
 
         //&& PasswordHelper.VerifyPassword(user.Password, u.Password));
 
+        public void AddingNewClient(Client client)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                var role = new Role()
+                {
+                    RoleName = "Client",
+                    User = client
+                };
+                _session.Save(client);
+                _session.Save(role);
+                transaction.Commit();
+            }
+        }
+
 
     }
 }

@@ -9,5 +9,7 @@ namespace CorporateBankingApplication.Repositories
     public interface IUserRepository
     {
         User LoggingUser(User user);
+        void AddingNewClient(Client client);
+
     }
 }

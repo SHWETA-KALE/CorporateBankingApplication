@@ -14,6 +14,7 @@ namespace CorporateBankingApplication.Mappings
         {
             Table("Admins");
             KeyColumn("UserId");
+            //Id(x => x.Id);
             Map(x => x.BankName).Not.Nullable();
         }
     }

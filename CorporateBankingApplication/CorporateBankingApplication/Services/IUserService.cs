@@ -12,6 +12,7 @@ namespace CorporateBankingApplication.Services
     {
         string IsLogging(UserDTO userDto);
 
+        void CreateNewClient(ClientDTO clientDto);
         
     }
 }

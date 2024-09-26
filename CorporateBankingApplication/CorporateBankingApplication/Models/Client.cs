@@ -6,6 +6,7 @@ namespace CorporateBankingApplication.Models
 {
     public class Client:User
     {
+        //public virtual Guid Id {  get; set; }
         public virtual string CompanyName {  get; set; }
         public virtual string ContactInformation { get; set; }
         public virtual string Location { get; set; }

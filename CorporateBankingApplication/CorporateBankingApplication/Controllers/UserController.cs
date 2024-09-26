@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using CorporateBankingApplication.Data;
 using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Services;
 
 
@@ -13,6 +14,15 @@ namespace CorporateBankingApplication.Controllers
 {
     public class UserController : Controller
     {
+        public ActionResult Index()
+        {
+            using (var session = NHibernateHelper.CreateSession())
+            {
+                return Content("Index");
+            }
+
+
+        }
         private readonly IUserService _userService;
 
         public UserController(IUserService userService)
@@ -48,18 +58,20 @@ namespace CorporateBankingApplication.Controllers
 
         }
 
-        //[HttpGet]
-        //[AllowAnonymous]
-        //public ActionResult Register()
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult Register()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //public ActionResult Register()
-        //{
-        //    return View();
-        //}
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult Register(ClientDTO clientDTO)
+        {
+            _userService.CreateNewClient(clientDTO);
+            return RedirectToAction("Login");
+        }
 
 
 
