@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -33,13 +34,13 @@ namespace CorporateBankingApplication.Controllers
         public ActionResult Login(UserDTO userDto)
         {
             var result = _userService.IsLogging(userDto);
-           
+
             if (result != null)
             {
                 var user = _userService.GetUserByUsername(userDto.UserName);
                 FormsAuthentication.SetAuthCookie(user.UserName, true);
                 //storing the logged in users id in the session
-                Session["UserId"] = user.Id;    
+                Session["UserId"] = user.Id;
                 if (result == "Admin")
                 {
                     return Content("admin here");
@@ -64,7 +65,33 @@ namespace CorporateBankingApplication.Controllers
         [AllowAnonymous]
         public ActionResult Register(ClientDTO clientDTO)
         {
-            _userService.CreateNewClient(clientDTO);
+            var uploadedFiles = new List<HttpPostedFileBase>();
+
+            var companyIdProof = Request.Files["uploadedFiles1"];
+            var addressProof = Request.Files["uploadedFiles2"];
+
+            //var file1 = Request.Files["uploadedFiles1"]; //this comes from view file name input field names
+            //if (file1 != null && file1.ContentLength > 0)
+            //{
+            //    uploadedFiles.Add(file1);
+            //}
+
+            //var file2 = Request.Files["uploadedFiles2"];
+            //if (file2 != null && file2.ContentLength > 0)
+            //{
+            //    uploadedFiles.Add(file2);
+            //}
+
+            if (companyIdProof != null && companyIdProof.ContentLength > 0)
+            {
+                uploadedFiles.Add(companyIdProof);
+            }
+
+            if(addressProof != null && addressProof.ContentLength > 0)
+            {
+                uploadedFiles.Add(addressProof);
+            }
+            _userService.CreateNewClient(clientDTO, uploadedFiles);
             return RedirectToAction("Login");
         }
 
