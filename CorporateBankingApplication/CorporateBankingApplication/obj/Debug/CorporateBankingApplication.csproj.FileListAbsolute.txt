@@ -160,3 +160,9 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Co
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Mvc5.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Abstractions.pdb
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Container.pdb
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.AspNetCore.Http.Features.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Extensions.Primitives.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IO.Pipelines.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.AspNetCore.Http.Features.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Extensions.Primitives.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IO.Pipelines.xml

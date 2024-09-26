@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using CorporateBankingApplication.DTOs;
@@ -46,7 +47,7 @@ namespace CorporateBankingApplication.Services
 
 
         ///REGISTER
-        public void CreateNewClient(ClientDTO clientDto)
+        public void CreateNewClient(ClientDTO clientDto, IList<HttpPostedFileBase> uploadedFiles)
         {
             var client = new Client()
             {
@@ -56,10 +57,51 @@ namespace CorporateBankingApplication.Services
                 CompanyName = clientDto.CompanyName,
                 ContactInformation = clientDto.ContactInformation,
                 Location = clientDto.Location,
-                OnBoardingStatus = Status.PENDING
+                OnBoardingStatus = Status.PENDING,
+               
             };
+
+            string[] documentTypes = { "Company Id Proof", "Address Proof" };
+
+            for (int i = 0; i < uploadedFiles.Count; i++) { 
+            
+                var file = uploadedFiles[i];
+                if (file != null && file.ContentLength > 0)
+                {
+                    string folderPath = HttpContext.Current.Server.MapPath("~/Documents/ClientRegistration/") + client.UserName;
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+                    string filePath = Path.Combine(folderPath, file.FileName);
+                    file.SaveAs(filePath);
+
+                    var document = new Document
+                    {
+                        DocumentType = documentTypes[i], // Get document type based on index
+                        FilePath = filePath,
+                        UploadDate = DateTime.Now,
+                        Client = client
+                    };
+
+                    client.Documents.Add(document);
+                }
+            }
+
             _userRepository.AddingNewClient(client);
         }
 
+        //public string DetermineDocumentType(string fileName)
+        //{
+           
+        //    if (fileName.Contains("company ID proof"))
+        //        return "company ID proof";
+        //    else if (fileName.Contains("payment"))
+        //        return "Payment";
+        //    else
+        //        return "Transaction";
+        //}
+
+       
     }
 }
