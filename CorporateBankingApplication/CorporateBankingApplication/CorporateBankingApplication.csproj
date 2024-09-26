@@ -263,6 +263,7 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Data\NHibernateHelper.cs" />
     <Compile Include="Data\PasswordHelper.cs" />
+    <Compile Include="DTOs\ClientDTO.cs" />
     <Compile Include="DTOs\EmployeeDTO.cs" />
     <Compile Include="DTOs\UserDTO.cs" />
     <Compile Include="Enum\BeneficiaryType.cs" />
@@ -334,6 +335,7 @@
     <Content Include="Views\Client\Index.cshtml" />
     <Content Include="Views\Client\_AddRecordPartial.cshtml" />
     <Content Include="Views\Client\_EditRecordPartial.cshtml" />
+    <Content Include="Views\User\Register.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

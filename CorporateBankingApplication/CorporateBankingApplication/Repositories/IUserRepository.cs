@@ -10,5 +10,7 @@ namespace CorporateBankingApplication.Repositories
     {
         User LoggingUser(User user);
         User GetUserByUsername(string username);
+
+        void AddingNewClient(Client client);
     }
 }

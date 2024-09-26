@@ -53,21 +53,20 @@ namespace CorporateBankingApplication.Controllers
 
         }
 
-        //[HttpGet]
-        //[AllowAnonymous]
-        //public ActionResult Register()
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult Register()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //public ActionResult Register()
-        //{
-        //    return View();
-        //}
-
-
-
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult Register(ClientDTO clientDTO)
+        {
+            _userService.CreateNewClient(clientDTO);
+            return RedirectToAction("Login");
+        }
 
         [HttpGet]
         [Authorize(Roles = "Admin,Client")]

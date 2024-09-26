@@ -13,6 +13,8 @@ namespace CorporateBankingApplication.Services
         string IsLogging(UserDTO userDto);
         User GetUserByUsername(string username);
 
+        void CreateNewClient(ClientDTO clientDto);
+
 
 
     }
