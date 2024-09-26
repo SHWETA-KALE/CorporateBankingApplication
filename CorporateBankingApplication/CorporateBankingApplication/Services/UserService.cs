@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Repositories;
 
@@ -42,5 +43,23 @@ namespace CorporateBankingApplication.Services
         {
             return _userRepository.GetUserByUsername(username); //fetch the user from repository
         }
+
+
+        ///REGISTER
+        public void CreateNewClient(ClientDTO clientDto)
+        {
+            var client = new Client()
+            {
+                UserName = clientDto.UserName,
+                Password = clientDto.Password,
+                Email = clientDto.Email,
+                CompanyName = clientDto.CompanyName,
+                ContactInformation = clientDto.ContactInformation,
+                Location = clientDto.Location,
+                OnBoardingStatus = Status.PENDING
+            };
+            _userRepository.AddingNewClient(client);
+        }
+
     }
 }
