@@ -1,0 +1,68 @@
+﻿@model IEnumerable<CorporateBankingApplication.Models.Employee>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<div class="container pt-5" id="employeeList">
+    <p>
+        <div>
+            <button type="button" class="btn btn-outline-success" id="btnAdd">
+                Add New
+            </button>
+        </div>
+    </p>
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Position)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsActive)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+
+
+        <tbody id="employeesTable">
+            @*data from ajax*@
+        </tbody>
+
+    </table>
+
+</div>
+
+@*this shows the add and edit form*@
+<div id="newRecord" style="display:none" class="container">
+    @Html.Partial("_AddRecordPartial")
+</div>
+
+<div id="editRecord" style="display:none" class="container">
+    @Html.Partial("_EditRecordPartial")
+</div>
+
+<script src="~/Scripts/EmployeeCRUD.js"></script>
+<script>
+    $(document).ready(() => {
+        LoadEmployees();
+    })
+</script>

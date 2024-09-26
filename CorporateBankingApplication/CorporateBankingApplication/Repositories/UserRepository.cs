@@ -25,6 +25,12 @@ namespace CorporateBankingApplication.Repositories
 
         }
 
+        //fetching the user by their username 
+        public User GetUserByUsername(string username)
+        {
+            return _session.Query<User>().FirstOrDefault(u => u.UserName == username);
+        }
+
         //&& PasswordHelper.VerifyPassword(user.Password, u.Password));
 
 

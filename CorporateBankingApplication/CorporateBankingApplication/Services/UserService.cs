@@ -17,23 +17,30 @@ namespace CorporateBankingApplication.Services
             _userRepository = userRepository;
         }
 
-        public string IsLogging(UserDTO userDto) //converted dto to model
+        public string IsLogging(UserDTO userDto) 
         {
+            //converted dto to model
             var user = new User { UserName = userDto.UserName, Password = userDto.Password };
             var existingUser = _userRepository.LoggingUser(user);
-            string role;
+
             if (existingUser != null)
             {
                 if(existingUser.Role.RoleName == "Admin")
                 {
-                    return role = "Admin";
+                    return  "Admin";
                 }
                 else if(existingUser.Role.RoleName == "Client")
                 {
-                    return role = "Client";
+                    return "Client";
                 }
             }
-            return role = null;           
+            return  null;           
+        }
+
+        // Method to get user by their username (needed to retrieve UserId)
+        public User GetUserByUsername(string username)
+        {
+            return _userRepository.GetUserByUsername(username); //fetch the user from repository
         }
     }
 }

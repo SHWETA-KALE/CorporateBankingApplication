@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Web.UI.WebControls;
 using CorporateBankingApplication.Data;
 using CorporateBankingApplication.DTOs;
 using CorporateBankingApplication.Services;
@@ -31,17 +32,21 @@ namespace CorporateBankingApplication.Controllers
         [AllowAnonymous]
         public ActionResult Login(UserDTO userDto)
         {
-
             var result = _userService.IsLogging(userDto);
+           
             if (result != null)
             {
+                var user = _userService.GetUserByUsername(userDto.UserName);
+                FormsAuthentication.SetAuthCookie(user.UserName, true);
+                //storing the logged in users id in the session
+                Session["UserId"] = user.Id;    
                 if (result == "Admin")
                 {
                     return Content("admin here");
                 }
                 else
                 {
-                    return Content("client here");
+                    return RedirectToAction("Index", "Client");
                 }
             }
             return View(userDto);
@@ -69,6 +74,7 @@ namespace CorporateBankingApplication.Controllers
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
+            Session.Clear();
             return RedirectToAction("Login");
         }
     }

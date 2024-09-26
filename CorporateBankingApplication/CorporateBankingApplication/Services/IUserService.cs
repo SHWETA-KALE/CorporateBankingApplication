@@ -11,7 +11,9 @@ namespace CorporateBankingApplication.Services
     public interface IUserService
     {
         string IsLogging(UserDTO userDto);
+        User GetUserByUsername(string username);
 
-        
+
+
     }
 }
