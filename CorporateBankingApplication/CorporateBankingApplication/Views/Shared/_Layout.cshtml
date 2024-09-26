@@ -6,20 +6,20 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
+    @*<script src="~/Scripts/modernizr-2.6.2.js"></script>*@
     @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/i18n/grid.locale-en.js"></script>
+    <script src="~/Scripts/jquery.jqGrid.min.js"></script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-dark bg-dark navbar-fixed-top">
+
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+
                 @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
 
 
@@ -28,7 +28,6 @@
                     if (User.IsInRole("Admin"))
                     {
                         <span class="navbar-brand" style="color:white;">Welcome Admin </span>
-
                     }
                     else if (User.IsInRole("Client"))
                     {
@@ -52,6 +51,6 @@
         </footer>
     </div>
 
-   
+
 </body>
 </html>
