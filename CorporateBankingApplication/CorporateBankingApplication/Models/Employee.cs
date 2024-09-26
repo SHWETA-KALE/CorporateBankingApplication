@@ -18,6 +18,8 @@ namespace CorporateBankingApplication.Models
         public virtual string Position { get; set; }
         public virtual long Phone { get; set; }
 
+        public virtual bool IsActive { get; set; } 
+
         public virtual IList<SalaryDisbursement> SalaryDisbursements { get; set; } = new List<SalaryDisbursement>();
 
         public virtual Client Client { get; set; }

@@ -9,5 +9,6 @@ namespace CorporateBankingApplication.Repositories
     public interface IUserRepository
     {
         User LoggingUser(User user);
+        User GetUserByUsername(string username);
     }
 }
