@@ -20,8 +20,16 @@ namespace CorporateBankingApplication.Repositories
 
         public User LoggingUser(User user)
         {
-            var existingUser = _session.Query<User>().FirstOrDefault(u => u.UserName == user.UserName && u.Password == user.Password);
-            return existingUser;
+            //var existingUser = _session.Query<User>().FirstOrDefault(u => u.UserName == user.UserName && PasswordHelper.VerifyPassword(user.Password, u.Password));
+            //return existingUser;
+
+            var existingUser = _session.Query<User>().FirstOrDefault(u => u.UserName == user.UserName);
+
+            if (existingUser != null && PasswordHelper.VerifyPassword(user.Password, existingUser.Password))
+            {
+                return existingUser; 
+            }
+            return null;
 
         }
 
@@ -39,6 +47,7 @@ namespace CorporateBankingApplication.Repositories
         {
             using (var transaction = _session.BeginTransaction())
             {
+                client.Password = PasswordHelper.HashPassword(client.Password);
                 var role = new Role()
                 {
                     RoleName = "Client",

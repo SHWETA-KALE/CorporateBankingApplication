@@ -19,7 +19,9 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.Location).Nullable();
             Map(x => x.Balance).Not.Nullable();
             Map(x => x.IsActive).Not.Nullable();
-            Map(x => x.OnBoardingStatus).CustomType<Status>().Not.Nullable();
+            Map(x=>x.AccountNumber).Not.Nullable();
+            Map(x=>x.IFSC).Not.Nullable();
+            Map(x => x.OnBoardingStatus).CustomType<CorporateStatus>().Not.Nullable(); //enum
             HasMany(x => x.Beneficiaries).Cascade.All().Inverse();
             HasMany(x => x.Documents).Cascade.All().Inverse();
             HasMany(x => x.Reports).Cascade.All().Inverse();

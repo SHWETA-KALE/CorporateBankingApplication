@@ -1,5 +1,7 @@
-﻿using CorporateBankingApplication.Models;
+﻿using CorporateBankingApplication.Enum;
+using CorporateBankingApplication.Models;
 using NHibernate;
+using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +50,28 @@ namespace CorporateBankingApplication.Repositories
                     existingClient.IsActive = false;
                 }
                 _session.Update(existingClient);
+                transaction.Commit();
+            }
+        }
+
+        ////////////
+       
+        public List<Client> GetPendingClients()
+        {
+            var clients = _session.Query<Client>().FetchMany(c => c.Documents).Where(c => c.OnBoardingStatus == CorporateStatus.PENDING).ToList();
+            return clients;
+        }
+
+        public Client GetClientById(Guid id)
+        {
+            return _session.Get<Client>(id);
+        }
+
+        public void UpdateClient(Client client)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Update(client);
                 transaction.Commit();
             }
         }

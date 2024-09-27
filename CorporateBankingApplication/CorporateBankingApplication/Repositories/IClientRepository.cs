@@ -16,5 +16,8 @@ namespace CorporateBankingApplication.Repositories
         void UpdateEmployee(Employee employee);
 
         void UpdateEmployeeStatus(Guid id, bool isActive);
+
+        //****************SALARY DISBURSEMENTS **********************
+        void Save(Client client);
     }
 }

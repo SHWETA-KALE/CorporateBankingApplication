@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,6 +8,7 @@ namespace CorporateBankingApplication.DTOs
 {
     public class ClientDTO
     {
+        public Guid Id { get; set; }
         [Required]
         public string UserName { get; set; }
         [Required]
@@ -21,9 +21,19 @@ namespace CorporateBankingApplication.DTOs
         public string ContactInformation { get; set; }
         [Required]
         public string Location { get; set; }
+
+        [Required]
+        public string AccountNumber { get; set; }
+        [Required]
+        public string IFSC { get; set; }
+        [Required]
+        public double Balance { get; set; }
         [Required]
         public HttpPostedFileBase Document1 { get; set; }
         [Required]
-        public HttpPostedFileBase  Document2 { get; set; }
+        public HttpPostedFileBase Document2 { get; set; }
+
+        [Required]//added for showing document
+        public List<string> DocumentPaths { get; set; } = new List<string>();
     }
 }

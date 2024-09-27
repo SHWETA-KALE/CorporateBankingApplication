@@ -5,10 +5,11 @@ using System.Web;
 
 namespace CorporateBankingApplication.Enum
 {
-    public enum Status
+    public enum CorporateStatus
     {
         APPROVED,
         PENDING,
+        INPROCESS,
         REJECTED
     }
 }

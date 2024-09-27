@@ -46,7 +46,18 @@ namespace CorporateBankingApplication.Services
         }
 
 
-        ///REGISTER
+       
+        //public string DetermineDocumentType(string fileName)
+        //{
+
+        //    if (fileName.Contains("company ID proof"))
+        //        return "company ID proof";
+        //    else if (fileName.Contains("payment"))
+        //        return "Payment";
+        //    else
+        //        return "Transaction";
+        //}
+
         public void CreateNewClient(ClientDTO clientDto, IList<HttpPostedFileBase> uploadedFiles)
         {
             var client = new Client()
@@ -57,30 +68,34 @@ namespace CorporateBankingApplication.Services
                 CompanyName = clientDto.CompanyName,
                 ContactInformation = clientDto.ContactInformation,
                 Location = clientDto.Location,
-                OnBoardingStatus = Status.PENDING,
+                AccountNumber = clientDto.AccountNumber,
+                IFSC = clientDto.IFSC,
+                Balance = clientDto.Balance,
+                OnBoardingStatus = CorporateStatus.PENDING,
                 IsActive = true
-               
             };
 
             string[] documentTypes = { "Company Id Proof", "Address Proof" };
+            string folderPath = HttpContext.Current.Server.MapPath("~/Content/Documents/ClientRegistration/") + client.UserName;
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            for (int i = 0; i < uploadedFiles.Count; i++)
+            {
 
-            for (int i = 0; i < uploadedFiles.Count; i++) { 
-            
                 var file = uploadedFiles[i];
                 if (file != null && file.ContentLength > 0)
                 {
-                    string folderPath = HttpContext.Current.Server.MapPath("~/Documents/ClientRegistration/") + client.UserName;
-                    if (!Directory.Exists(folderPath))
-                    {
-                        Directory.CreateDirectory(folderPath);
-                    }
-                    string filePath = Path.Combine(folderPath, file.FileName);
+                    string fileName = Path.GetFileName(file.FileName);
+                    string filePath = Path.Combine(folderPath, fileName);
                     file.SaveAs(filePath);
-
+                    // Save relative file path (relative to the Content folder)
+                    string relativeFilePath = $"~/Content/Documents/ClientRegistration/{client.UserName}/{fileName}";
                     var document = new Document
                     {
                         DocumentType = documentTypes[i], // Get document type based on index
-                        FilePath = filePath,
+                        FilePath = relativeFilePath,
                         UploadDate = DateTime.Now,
                         Client = client
                     };
@@ -92,17 +107,6 @@ namespace CorporateBankingApplication.Services
             _userRepository.AddingNewClient(client);
         }
 
-        //public string DetermineDocumentType(string fileName)
-        //{
-           
-        //    if (fileName.Contains("company ID proof"))
-        //        return "company ID proof";
-        //    else if (fileName.Contains("payment"))
-        //        return "Payment";
-        //    else
-        //        return "Transaction";
-        //}
 
-       
     }
 }

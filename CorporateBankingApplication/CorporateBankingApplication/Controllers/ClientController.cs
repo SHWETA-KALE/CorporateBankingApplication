@@ -1,210 +1,13 @@
-﻿//using CorporateBankingApplication.Data;
-//using CorporateBankingApplication.DTOs;
-//using CorporateBankingApplication.Models;
-//using NHibernate.Linq;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Web;
-//using System.Web.Mvc;
-
-//namespace CorporateBankingApplication.Controllers
-//{
-//    public class ClientController : Controller
-//    {
-//        // GET: Client
-
-//        // [Authorize(Roles ="Client")]
-
-//        [AllowAnonymous]
-//        public ActionResult Index()
-//        {
-//            return View();
-//        }
-
-//        [AllowAnonymous]
-//        public ActionResult GetAllEmployees()
-//        {
-//            if (Session["UserId"] == null)
-//            {
-//                return RedirectToAction("Login", "User");
-//            }
-//            //storing the userid that is coming from the session
-//            Guid userId = (Guid)Session["UserId"]; //clientId
-
-//            //do this in client repo
-//            using (var session = NHibernateHelper.CreateSession())
-//            {
-//                //fetching us particular clients ka employees
-//                // var clientWithEmployees = session.Query<Client>().Where(c => c.Id == userId).FetchMany(c => c.Employees).ThenFetch(e => e.Client).ToFuture().FirstOrDefault();
-//                var clientWithEmployees = session.Query<Client>().FetchMany(c => c.Employees).SingleOrDefault(u => u.Id == userId);
-
-//                if (clientWithEmployees != null)
-//                {
-//                    //mapping models to DTOs
-//                    var employeeDto = clientWithEmployees.Employees.Select(employee => new EmployeeDTO
-//                    {
-//                        Id = employee.Id,
-//                        FirstName = employee.FirstName,
-//                        LastName = employee.LastName,
-//                        Email = employee.Email,
-//                        Position = employee.Position,
-//                        Phone = employee.Phone
-//                    }).ToList();
-
-//                    return Json(employeeDto, JsonRequestBehavior.AllowGet);
-//                }
-//                return new HttpStatusCodeResult(500);
-//            }
-
-//        }
-
-//        public ActionResult Add(Employee employee)
-//        {
-//            if (Session["UserId"] == null)
-//            {
-//                return new HttpStatusCodeResult(401, "Unauthorized");
-//            }
-//            Guid userId = (Guid)Session["UserId"]; //clientId
-
-//            using (var session = NHibernateHelper.CreateSession())
-//            {
-//                using (var transaction = session.BeginTransaction())
-//                {
-//                    try
-//                    {
-//                        //fetch the client 
-//                        var client = session.Query<Client>().SingleOrDefault(c => c.Id == userId);
-//                        if (client == null)
-//                        {
-//                            return HttpNotFound("User not found");
-//                        }
-
-//                        employee.Client = client;
-//                        session.Save(employee);
-//                        transaction.Commit();
-
-//                        return Json(new
-//                        {
-//                            Id = employee.Id,
-//                            FirstName = employee.FirstName,
-//                            LastName = employee.LastName,
-//                            Email = employee.Email,
-//                            Position = employee.Position,
-//                            Phone = employee.Phone
-//                        });
-//                    }
-//                    catch (Exception ex)
-//                    {
-//                        transaction.Rollback();
-//                        return new HttpStatusCodeResult(500, "Error adding contact: " + ex.Message);
-//                    }
-//                }
-
-//            }
-//        }
-
-//        [HttpGet]
-//        public ActionResult GetEmployeeById(Guid id)
-//        {
-//            if (Session["UserId"] == null)
-//            {
-//                return new HttpStatusCodeResult(401, "Unauthorized");
-//            }
-//            using (var session = NHibernateHelper.CreateSession())
-//            {
-//                var employee = session.Get<Employee>(id);
-//                if (employee == null)
-//                {
-//                    return Json(new { success = false, message = "Employee not found" }, JsonRequestBehavior.AllowGet);
-//                }
-//                return Json(new
-//                {
-//                    success = true,
-//                    employee = new
-//                    {
-//                        employee.Id,
-//                        employee.FirstName,
-//                        employee.LastName,
-//                        employee.Email,
-//                        employee.Position,
-//                        employee.Phone
-//                    }
-//                }, JsonRequestBehavior.AllowGet);
-//            }
-//        }
-
-//        [HttpPost]
-//        public ActionResult Edit(Employee employee)
-//        {
-//            if (Session["UserId"] == null)
-//            {
-//                return new HttpStatusCodeResult(401, "Unauthorized");
-//            }
-
-//            using (var session = NHibernateHelper.CreateSession())
-//            {
-//                using (var transaction = session.BeginTransaction())
-//                {
-//                    try
-//                    {
-//                        var existingEmployee = session.Get<Employee>(employee.Id);
-//                        if (existingEmployee == null)
-//                        {
-//                            return Json(new { success = false, message = "Employee not found" });
-//                        }
-
-//                        existingEmployee.FirstName = employee.FirstName;
-//                        existingEmployee.LastName = employee.LastName;
-//                        existingEmployee.Email = employee.Email;
-//                        existingEmployee.Position = employee.Position;
-//                        existingEmployee.Phone = employee.Phone;
-
-//                        session.Update(existingEmployee);
-//                        transaction.Commit();
-
-//                        return Json(new { success = true, message = "Employee edited successfully" });
-//                    }
-//                    catch (Exception ex)
-//                    {
-//                        transaction.Rollback();
-//                        return new HttpStatusCodeResult(500, "Error editing employee: " + ex.Message);
-//                    }
-//                }
-//            }
-//        }
-
-//        [HttpPost]
-//        //soft delete
-//        public ActionResult UpdateEmployeeStatus(Guid id, bool isActive)
-//        {
-//            using (var session = NHibernateHelper.CreateSession())
-//            {
-//                using (var transaction = session.BeginTransaction())
-//                {
-//                    //fetch the employee
-//                    var employee = session.Get<Employee>(id);
-//                    if (employee != null)
-//                    {
-//                        employee.IsActive = isActive;
-//                        session.Update(employee);
-//                        transaction.Commit();
-//                        return Json(new { success = true });
-//                    }
-//                    return Json(new { success = false, message = "Employee not found." });
-//                }
-//            }
-//        }
-//    }
-//}
-
-
-using CorporateBankingApplication.Models;
+﻿using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Services;
 using CorporateBankingApplication.DTOs;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using NHibernate.Mapping;
+using System.Collections.Generic;
+using CorporateBankingApplication.Enum;
+using NHibernate.Transform;
 
 namespace CorporateBankingApplication.Controllers
 {
@@ -322,10 +125,18 @@ namespace CorporateBankingApplication.Controllers
             {
                 return new HttpStatusCodeResult(400, "Client not found");
             }
-           // employeeDto.Client = client;
-            _clientService.UpdateEmployee(employeeDto, client);
+            var existingEmployee = _clientService.GetEmployeeById(employeeDto.Id);
 
-            return Json(new { success = true, message = "Employee updated successfully" });
+            try
+            {
+                _clientService.UpdateEmployee(employeeDto, client);
+                return Json(new { success = true, message = "Employee updated successfully" });
+            }
+            catch(InvalidOperationException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+         
         }
 
         [HttpPost]
@@ -335,6 +146,19 @@ namespace CorporateBankingApplication.Controllers
             var client = _clientService.GetClientById(clientId);
             _clientService.UpdateEmployeeStatus(id, isActive);
             return Json(new { success = true });
+        }
+
+
+        //***************************SALARY DISBURSEMENT***************************
+        [HttpPost]
+        public ActionResult DisburseSalaryBatch(List<Guid> employeeIds, double totalAmount, Guid clientId)
+        {
+            var result = _clientService.DisburseSalaryBatch(employeeIds, totalAmount, clientId);
+            if (!result.success)
+            {
+                return Json(new { success = false, message = result.message });
+            }
+            return Json(new { success = true, message = result.message });
         }
     }
 }

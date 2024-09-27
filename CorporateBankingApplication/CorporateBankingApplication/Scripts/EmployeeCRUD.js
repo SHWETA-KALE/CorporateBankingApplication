@@ -20,9 +20,19 @@
                                 data-employeeid="${employee.Id}"
                                 ${employee.IsActive ? "checked" : ""} />
                      </td>
+
+                   
+                      <td class="edit-btn-cell">
+                            <button onClick="editEmployee('${employee.Id}')" class="btn btn-success edit-btn"
+                            style="${employee.IsActive ? '' : 'display:none;'}">Edit</button>
+                      </td>
+
                     <td>
-                        <button onClick="editEmployee('${employee.Id}')" class="btn btn-success">Edit</button>
+                    <input type="checkbox" class="is-SalaryDisbursed-checkbox"
+                                data-employeeid="${employee.Id}"
+                                ${employee.SalaryDisburseSelect ? "checked" : ""} />
                     </td>
+
 
                     </tr>`;
                     $("#employeesTable").append(row);
@@ -122,10 +132,25 @@ function updateEmployeeStatus(employeeId, isActive) {
     $.ajax({
         url: "/Client/UpdateEmployeeStatus",
         type: "POST",
-        data:  { Id: employeeId, isActive: isActive },
+        data: { Id: employeeId, isActive: isActive },
         success: function (response) {
             if (response.success) {
                 alert("Employee status updated successfully");
+
+                // Find the row containing the employee
+                var employeeRow = $(`#employeesTable tr`).filter(function () {
+                    return $(this).find(".is-active-checkbox").data("employeeid") == employeeId;
+                });
+
+                // Find the edit button within the employee's row
+                var editButton = employeeRow.find(".edit-btn-cell button");
+
+                // Show or hide the button based on isActive status
+                if (isActive) {
+                    editButton.show();  // Show button if employee is active
+                } else {
+                    editButton.hide();  // Hide button if employee is inactive
+                }
             } else {
                 alert("Error updating employee status: " + response.message);
             }
@@ -160,4 +185,50 @@ $("#btnEdit").click(() => {
 
     };
     modifyRecord(data);
+});
+
+
+/****************SALARY DISBURSEMENT**********************/
+
+$("#disburseSalaryBtn").click(function () {
+    var selectedEmployeeIds = [];
+    var totalAmount = $("#salaryAmountInput").val();
+    var clientId = $("#clientId").val();
+
+    $(".is-SalaryDisbursed-checkbox:checked").each(function () {
+        selectedEmployeeIds.push($(this).data("employeeid"));
+    });
+
+    if (selectedEmployeeIds.length == 0) {
+        alert("Please select at least one employee for salary disbursement.");
+        return;
+    }
+
+    if (!totalAmount || isNaN(totalAmount) || totalAmount <= 0) {
+        alert("Please enter a valid salary amount.");
+        return;
+    }
+
+    $.ajax({
+        url: "/Client/DisburseSalaryBatch",
+        type: "POST",
+        traditional: true,
+        data: {
+            employeeIds: selectedEmployeeIds,
+            totalAmount: totalAmount,
+            clientId: clientId
+        },
+
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                LoadEmployees(); // Reload the employee list
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function (err) {
+            alert("Error occurred while processing salary disbursement.");
+        }
+    });
 });

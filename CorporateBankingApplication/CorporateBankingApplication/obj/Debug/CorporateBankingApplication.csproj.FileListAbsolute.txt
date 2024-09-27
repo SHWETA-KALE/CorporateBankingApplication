@@ -1,3 +1,5 @@
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\CorporateBankingApplication.csproj.AssemblyReference.cache
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\CorporateBankingApplication.csproj.CoreCompileInputs.cache
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\CorporateBankingApplication.dll.config
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\CorporateBankingApplication.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\CorporateBankingApplication.pdb
@@ -56,9 +58,11 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Azure.Id
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\BCrypt.Net-Next.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\FluentNHibernate.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Iesi.Collections.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.AspNetCore.Http.Features.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Bcl.AsyncInterfaces.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Data.SqlClient.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Extensions.Primitives.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Identity.Client.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Identity.Client.Extensions.Msal.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.IdentityModel.Abstractions.dll
@@ -77,6 +81,7 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.C
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Diagnostics.DiagnosticSource.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IdentityModel.Tokens.Jwt.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IO.FileSystem.AccessControl.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IO.Pipelines.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Memory.Data.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Memory.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Numerics.Vectors.dll
@@ -95,6 +100,9 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.W
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Web.Webpages.Deployment.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Web.Webpages.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Web.Webpages.Razor.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Abstractions.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Container.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Mvc5.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Antlr3.Runtime.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Azure.Core.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Azure.Identity.xml
@@ -102,8 +110,10 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\BCrypt.N
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\FluentNHibernate.pdb
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\FluentNHibernate.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Iesi.Collections.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.AspNetCore.Http.Features.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Bcl.AsyncInterfaces.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Data.SqlClient.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Extensions.Primitives.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Identity.Client.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Identity.Client.Extensions.Msal.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.IdentityModel.Abstractions.xml
@@ -121,6 +131,7 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.C
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Diagnostics.DiagnosticSource.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IdentityModel.Tokens.Jwt.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IO.FileSystem.AccessControl.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IO.Pipelines.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Memory.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Memory.Data.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Numerics.Vectors.xml
@@ -133,6 +144,8 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.T
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Text.Json.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Threading.Tasks.Extensions.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.ValueTuple.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Abstractions.pdb
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Container.pdb
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Web.Razor.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Web.Webpages.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Web.Webpages.Deployment.xml
@@ -150,19 +163,6 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\pt-BR\Mi
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\ru\Microsoft.Data.SqlClient.resources.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\zh-Hans\Microsoft.Data.SqlClient.resources.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\zh-Hant\Microsoft.Data.SqlClient.resources.dll
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\CorporateBankingApplication.csproj.AssemblyReference.cache
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\CorporateBankingApplication.csproj.CoreCompileInputs.cache
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\Corporat.C1E1EC21.Up2Date
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\CorporateBankingApplication.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\CorporateBankingApplication.pdb
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Abstractions.dll
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Container.dll
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Mvc5.dll
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Abstractions.pdb
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Unity.Container.pdb
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.AspNetCore.Http.Features.dll
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Extensions.Primitives.dll
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IO.Pipelines.dll
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.AspNetCore.Http.Features.xml
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Extensions.Primitives.xml
-D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.IO.Pipelines.xml

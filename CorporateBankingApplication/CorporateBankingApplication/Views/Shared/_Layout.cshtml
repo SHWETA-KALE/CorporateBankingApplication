@@ -28,6 +28,7 @@
                     if (User.IsInRole("Admin"))
                     {
                         <span class="navbar-brand" style="color:white;">Welcome Admin </span>
+                        @Html.ActionLink("Verify New Clients", "VerifyClientsData", "Admin", new { area = "" }, new { @class = "navbar-brand" })
                     }
                     else if (User.IsInRole("Client"))
                     {
@@ -35,6 +36,7 @@
                     }
                     @Html.ActionLink("Logout", "Logout", "User", new { area = "" }, new { @class = "navbar-brand" })
                 }
+
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
