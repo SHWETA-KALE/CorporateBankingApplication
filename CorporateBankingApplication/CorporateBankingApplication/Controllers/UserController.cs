@@ -8,6 +8,7 @@ using System.Web.Security;
 using System.Web.UI.WebControls;
 using CorporateBankingApplication.Data;
 using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Services;
 
 
@@ -70,24 +71,12 @@ namespace CorporateBankingApplication.Controllers
             var companyIdProof = Request.Files["uploadedFiles1"];
             var addressProof = Request.Files["uploadedFiles2"];
 
-            //var file1 = Request.Files["uploadedFiles1"]; //this comes from view file name input field names
-            //if (file1 != null && file1.ContentLength > 0)
-            //{
-            //    uploadedFiles.Add(file1);
-            //}
-
-            //var file2 = Request.Files["uploadedFiles2"];
-            //if (file2 != null && file2.ContentLength > 0)
-            //{
-            //    uploadedFiles.Add(file2);
-            //}
-
             if (companyIdProof != null && companyIdProof.ContentLength > 0)
             {
                 uploadedFiles.Add(companyIdProof);
             }
 
-            if(addressProof != null && addressProof.ContentLength > 0)
+            if (addressProof != null && addressProof.ContentLength > 0)
             {
                 uploadedFiles.Add(addressProof);
             }
@@ -103,6 +92,37 @@ namespace CorporateBankingApplication.Controllers
             FormsAuthentication.SignOut();
             Session.Clear();
             return RedirectToAction("Login");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult RegisterAdmin()
+        {
+            return View();
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult RegisterAdmin(Admin admin)
+        {
+            using (var session = NHibernateHelper.CreateSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    admin.Password = PasswordHelper.HashPassword(admin.Password);
+                    var role = new Role
+                    {
+                        RoleName = "Admin",
+                        User = admin
+                    };
+                    session.Save(admin);
+                    session.Save(role);
+                    transaction.Commit();
+                    return RedirectToAction("Login");
+                }
+
+            }
         }
     }
 }

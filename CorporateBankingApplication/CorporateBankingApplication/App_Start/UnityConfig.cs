@@ -26,6 +26,8 @@ namespace CorporateBankingApplication
             container.RegisterType<IAdminService, AdminService>();
             container.RegisterType<IAdminRepository, AdminRepository>();
 
+            container.RegisterType<IEmailService, EmailService>();
+
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

@@ -17,7 +17,7 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.Salary).Not.Nullable();
             Map(x => x.DisbursementDate).Not.Nullable();
             Map(x => x.IsBatch).Not.Nullable();
-            Map(x => x.SalaryStatus).CustomType<Status>().Not.Nullable();
+            Map(x => x.SalaryStatus).CustomType<CorporateStatus>().Not.Nullable();
             References(x => x.Employee).Column("EmployeeId").Cascade.None().Not.Nullable();
         }
     }

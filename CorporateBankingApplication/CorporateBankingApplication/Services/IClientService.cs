@@ -19,6 +19,11 @@ namespace CorporateBankingApplication.Services
 
         Client GetClientById(Guid clientId);
 
+        //******Salary disbursement ***********
+
+        (bool success, string message) DisburseSalaryBatch(List<Guid> employeeIds, double totalAmount, Guid clientId);
+        void AddSalaryDisbursement(Client client, SalaryDisbursement salaryDisbursement);
+
 
 
     }

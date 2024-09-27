@@ -67,5 +67,16 @@ namespace CorporateBankingApplication.Repositories
             }
             
         }
+
+
+        //******************SALARY DISBURSEMENTS *********************
+        public void Save(Client client)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Update(client); // Save changes to the client including balance and disbursements
+                transaction.Commit();
+            }
+        }
     }
 }

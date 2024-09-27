@@ -15,7 +15,7 @@ namespace CorporateBankingApplication.Mappings
             Table("Payments");
             Id(x => x.Id).GeneratedBy.GuidComb();
             Map(x => x.Amount).Not.Nullable();
-            Map(x => x.PaymentStatus).CustomType<Status>().Not.Nullable();
+            Map(x => x.PaymentStatus).CustomType<CorporateStatus>().Not.Nullable();
             Map(x => x.PaymentRequestDate).Not.Nullable();
             Map(x => x.PaymentApprovalDate).Not.Nullable();
             References(x => x.Beneficiary).Column("BeneficiaryId").Cascade.None().Not.Nullable();

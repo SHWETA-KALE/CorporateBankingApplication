@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CorporateBankingApplication.Enum;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Protocols.WSTrust;
 using System.Linq;
@@ -19,8 +20,6 @@ namespace CorporateBankingApplication.Models
         public virtual DateTime DisbursementDate { get; set; }
 
         public virtual bool IsBatch {  get; set; }
-
-        public virtual Status SalaryStatus {  get; set; }
-
+        public virtual CorporateStatus SalaryStatus { get; set; } 
     }
 }

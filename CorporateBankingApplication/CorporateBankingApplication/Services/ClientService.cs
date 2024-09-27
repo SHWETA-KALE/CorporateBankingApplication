@@ -1,10 +1,11 @@
 ﻿using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+
 
 namespace CorporateBankingApplication.Services
 {
@@ -71,6 +72,53 @@ namespace CorporateBankingApplication.Services
             _clientRepository.UpdateEmployeeStatus(id, isActive);
         }
 
-        
+       // **************SALARY DISBURSEMNETS*****************
+       
+        public(bool success, string message)DisburseSalaryBatch(List<Guid> employeeIds, double totalAmount, Guid clientId)
+        {
+            var client = GetClientById(clientId);
+            if(client == null)
+            {
+                return (false, "Client not found");
+            }
+
+            if(client.Balance < totalAmount)
+            {
+                return (false, "Insufficient balance for salary disbursement.");
+            }
+
+            bool isBatch = employeeIds.Count > 1;
+            double salaryPerEmployee = isBatch ? totalAmount / employeeIds.Count : totalAmount;
+
+            foreach(var employeeId in employeeIds)
+            {
+                var employee = client.Employees.FirstOrDefault(e=>e.Id == employeeId);
+                if(employee != null)
+                {
+                    var salaryDisbursement = new SalaryDisbursement
+                    {
+                        Id = Guid.NewGuid(),
+                        Employee = employee,
+                        Salary = salaryPerEmployee,
+                        DisbursementDate = DateTime.Now,
+                        IsBatch = isBatch,
+                        SalaryStatus = CorporateStatus.PENDING
+                    };
+
+                    AddSalaryDisbursement(client, salaryDisbursement);
+                }
+            }
+
+            client.Balance -= totalAmount;
+            _clientRepository.Save(client);
+
+            return (true, "Salary disbursement request sent to admin.");
+        }
+
+        public void AddSalaryDisbursement(Client client, SalaryDisbursement salaryDisbursement)
+        {
+            client.Employees.FirstOrDefault(e => e.Id == salaryDisbursement.Employee.Id)?.SalaryDisbursements.Add(salaryDisbursement);
+            _clientRepository.Save(client); // Save the changes after adding salary disbursement
+        }
     }
 }

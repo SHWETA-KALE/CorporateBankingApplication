@@ -105,6 +105,37 @@ namespace CorporateBankingApplication.Controllers
             _adminService.RemoveClient(id);
             return Json(new { success = true, message = "Client Deleted successfully." });
         }
+
+        //**********************Verification***********************************************
+
+        public ActionResult VerifyClientsData()
+        {
+            return View();
+        }
+        public ActionResult GetClientsForVerification()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            var urlHelper = new UrlHelper(Request.RequestContext); // Create UrlHelper here
+            var clientDtos = _adminService.GetClientsForVerification(urlHelper);
+            return Json(clientDtos, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateClientOnboardingStatus(Guid id, string status)
+        {
+            var result = _adminService.UpdateClientOnboardingStatus(id, status);
+            if (result)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Failed to update status" });
+            }
+        }
     }
 
 }

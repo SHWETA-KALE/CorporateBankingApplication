@@ -20,6 +20,8 @@
 
         <thead>
             <tr>
+
+
                 <th>
                     @Html.DisplayNameFor(model => model.FirstName)
                 </th>
@@ -38,6 +40,14 @@
                 <th>
                     @Html.DisplayNameFor(model => model.IsActive)
                 </th>
+
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SalaryDisbursements)
+                </th>
+
+
+
                 <th></th>
             </tr>
         </thead>
@@ -48,6 +58,17 @@
         </tbody>
 
     </table>
+    
+    <div>
+        <label for="salaryAmountInput">Total Salary Amount:</label>
+        <input type="number" id="salaryAmountInput" name="salaryAmountInput" required>
+        <input type="hidden" id="clientId" value="@ViewBag.ClientId" />
+
+    </div>
+
+    <button type="button" class="btn btn-primary" id="disburseSalaryBtn">
+        Disburse Salary
+    </button>
 
 </div>
 
@@ -60,9 +81,11 @@
     @Html.Partial("_EditRecordPartial")
 </div>
 
+
+
 <script src="~/Scripts/EmployeeCRUD.js"></script>
 <script>
     $(document).ready(() => {
         LoadEmployees();
-    })
+    });
 </script>
