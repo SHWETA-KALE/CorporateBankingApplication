@@ -23,6 +23,16 @@ namespace CorporateBankingApplication.Controllers
             _userService = userService;
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult AboutUs()
+        {
+            return View();
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public ActionResult Login()
@@ -44,11 +54,11 @@ namespace CorporateBankingApplication.Controllers
                 Session["UserId"] = user.Id;
                 if (result == "Admin")
                 {
-                    return RedirectToAction("Index", "Admin");
+                    return RedirectToAction("AdminDashboard", "Admin");
                 }
                 else
                 {
-                    return RedirectToAction("Index", "Client");
+                    return RedirectToAction("ClientDashboard", "Client");
                 }
             }
             return View(userDto);
@@ -124,5 +134,9 @@ namespace CorporateBankingApplication.Controllers
 
             }
         }
+
+
     }
+
+    
 }

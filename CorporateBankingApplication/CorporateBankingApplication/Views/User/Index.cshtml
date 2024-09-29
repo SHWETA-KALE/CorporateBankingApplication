@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Section -->
+<div class="bg-light">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold text-primary">Welcome to BizBanker</h1>
+                <p class="lead text-muted mb-4">Simplify your corporate payments, salary disbursements, and client management with a secure, user-friendly platform.</p>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    @Html.ActionLink("Login", "Login", "User", null, new { @class = "btn btn-primary btn-lg me-3 shadow-lg" })
+                    @Html.ActionLink("Register", "Register", "User", null, new { @class = "btn btn-outline-secondary btn-lg shadow-lg" })
+                }
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="~/Content/images/homepage.jpg" class="img-fluid rounded-3" alt="Corporate Banking" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Section -->
+<div class="container mt-5">
+    <h2 class="text-center mb-5 text-dark fw-bold">Our Key Features</h2>
+    <div class="row text-center g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="icon mb-3">
+                        <i class="bi bi-people-fill text-primary display-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Client Management</h5>
+                    <p class="card-text text-muted">Manage corporate clients efficiently with secure onboarding and verification processes.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="icon mb-3">
+                        <i class="bi bi-credit-card-fill text-primary display-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Payment Processing</h5>
+                    <p class="card-text text-muted">Streamline payments with approval workflows, batch processing, and real-time tracking.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="icon mb-3">
+                        <i class="bi bi-bar-chart-line-fill text-primary display-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Reports & Analytics</h5>
+                    <p class="card-text text-muted">Generate detailed reports, monitor transactions, and visualize data insights effortlessly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,6 +8,14 @@
 <h2>Index</h2>
 
 <div class="container pt-5" id="employeeList">
+
+    <div>
+        <button type="button" class="btn btn-outline-primary" id="btnBulkUpload">Bulk Upload CSV</button>
+        <input type="file" id="csvFileInput" style="display:none;" />
+    </div>
+    <input type="hidden" id="isBatch" value="false" />
+
+
     <p>
         <div>
             <button type="button" class="btn btn-outline-success" id="btnAdd">
@@ -20,8 +28,6 @@
 
         <thead>
             <tr>
-
-
                 <th>
                     @Html.DisplayNameFor(model => model.FirstName)
                 </th>
@@ -38,15 +44,15 @@
                     @Html.DisplayNameFor(model => model.Phone)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.Salary)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.IsActive)
                 </th>
-
-                <th></th>
                 <th>
+                    <input type="checkbox" id="selectAllSalaryDisbursement" />
                     @Html.DisplayNameFor(model => model.SalaryDisbursements)
                 </th>
-
-
 
                 <th></th>
             </tr>
@@ -58,17 +64,19 @@
         </tbody>
 
     </table>
-    
+
     <div>
         <label for="salaryAmountInput">Total Salary Amount:</label>
-        <input type="number" id="salaryAmountInput" name="salaryAmountInput" required>
+        <input type="number" id="salaryAmountInput" name="salaryAmountInput" readonly required>
         <input type="hidden" id="clientId" value="@ViewBag.ClientId" />
 
     </div>
 
-    <button type="button" class="btn btn-primary" id="disburseSalaryBtn">
-        Disburse Salary
-    </button>
+    @*<button type="button" class="btn btn-primary" id="disburseSalaryBtn">
+            Disburse Salary
+        </button>*@
+
+    <button id="disburseSalary" class="btn btn-primary">Disburse Salary</button>
 
 </div>
 
@@ -87,5 +95,23 @@
 <script>
     $(document).ready(() => {
         LoadEmployees();
-    });
+
+        //event listener for disburse salary btn
+        //$("#disburseSalaryBtn").click(function () {
+        //    var selectedEmployees = [];
+        //    $(".is-SalaryDisbursed-checkbox:checked").each(function () {
+        //        selectedEmployees.push($(this).data("employeeid"));
+        //    });
+
+        //    if (selectedEmployees.length > 0) {
+        //        // Proceed with the salary disbursement logic using the selected employee IDs
+        //        alert("Disburse salary to employees: ", selectedEmployees);
+        //    } else {
+        //        alert("No employees selected for salary disbursement.");
+        //    }
+        //})
+
+        
+
+       });
 </script>

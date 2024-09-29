@@ -17,5 +17,13 @@ namespace CorporateBankingApplication.Services
         List<ClientDTO> GetClientsForVerification(UrlHelper urlHelper);
 
         bool UpdateClientOnboardingStatus(Guid id, string status);
+
+
+        //SALARY DISBURSEMENTS
+        IEnumerable<EmployeeSalaryDisbursementDTO> GetPendingSalaryDisbursements();
+
+
+        bool ApproveSalaryDisbursement(Guid salaryDisbursementId);
+        bool RejectSalaryDisbursement(Guid salaryDisbursementId);
     }
 }

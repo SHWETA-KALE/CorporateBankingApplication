@@ -16,7 +16,9 @@ namespace CorporateBankingApplication.Models
         public virtual string Email { get; set; }
 
         public virtual string Position { get; set; }
-        public virtual long Phone { get; set; }
+        public virtual string Phone { get; set; }
+
+        public virtual double Salary { get; set; }
 
         public virtual bool IsActive { get; set; } 
 
@@ -24,6 +26,7 @@ namespace CorporateBankingApplication.Models
 
         public virtual Client Client { get; set; }
 
+        public virtual bool IsSelectedForDisbursement { get; set; }
 
 
 

@@ -1,0 +1,45 @@
+﻿.icon-container {
+    background-color: #007bff; /* Primary color background for icons */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+.card-title {
+    font-weight: bold;
+}
+
+.btn-outline-primary {
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+@@media (max-width: 768px) {
+    .icon-container {
+        width: 60px;
+        height: 60px;
+    }
+
+    .fa-3x {
+        font-size: 1.75em;
+    }
+}

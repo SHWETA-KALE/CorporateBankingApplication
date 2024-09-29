@@ -166,3 +166,7 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\zh-Hant\
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\Corporat.C1E1EC21.Up2Date
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\CorporateBankingApplication.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\obj\Debug\CorporateBankingApplication.pdb
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\CsvHelper.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Bcl.HashCode.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\CsvHelper.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Bcl.HashCode.xml

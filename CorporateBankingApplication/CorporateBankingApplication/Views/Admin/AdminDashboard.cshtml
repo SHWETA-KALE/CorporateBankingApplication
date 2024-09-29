@@ -1,0 +1,95 @@
+﻿@{
+    ViewBag.Title = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <!-- Welcome Section -->
+    <div class="jumbotron bg-light p-5 rounded-lg shadow-sm mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 text-primary">Welcome to Admin Dashboard!</h1>
+                <p class="lead">Manage clients, payments, salary disbursements, and more efficiently with the tools provided below.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="~/Content/images/welcome.jpg" alt="Admin Welcome" class="img-fluid" style="max-height: 300px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Section -->
+    <h3 class="text-center text-primary mb-4">Services</h3>
+
+    <div class="row">
+        <!-- Client Verification Section -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100 rounded-5">
+                <div class="card-body text-center py-5">
+                    <div class="icon-container mb-3">
+                        <i class="fas fa-user-check fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Client Verification</h5>
+                    <p class="card-text">Manage client verifications for new registrations and updates.</p>
+                    @Html.ActionLink("Go to Client Verification", "VerifyClientsData", "Admin", null, new { @class = "btn btn-outline-primary" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Management Section -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100 rounded-5">
+                <div class="card-body text-center py-5">
+                    <div class="icon-container mb-3">
+                        <i class="fas fa-users-cog fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Client Management</h5>
+                    <p class="card-text">Manage clients and their information efficiently.</p>
+                    @Html.ActionLink("Go to Client Management", "Index", "Admin", null, new { @class = "btn btn-outline-primary" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Management Section -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100 rounded-5">
+                <div class="card-body text-center py-5">
+                    <div class="icon-container mb-3">
+                        <i class="fas fa-credit-card fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Payment Management</h5>
+                    <p class="card-text">Oversee client payments and manage payment transactions.</p>
+                    @Html.ActionLink("Go to Payment Management", "PaymentManagement", "Admin", null, new { @class = "btn btn-outline-primary" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Salary Disbursement Section -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100 rounded-5">
+                <div class="card-body text-center py-5">
+                    <div class="icon-container mb-3">
+                        <i class="fas fa-money-bill-wave fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Salary Disbursement</h5>
+                    <p class="card-text">Manage the disbursement of salaries for all employees.</p>
+                    @Html.ActionLink("Go to Salary Disbursement", "VerifySalaryDisbursement", "Admin", null, new { @class = "btn btn-outline-primary" })
+                </div>
+            </div>
+        </div>
+        <!-- Report Generation Section -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100 rounded-5">
+                <div class="card-body text-center py-5">
+                    <div class="icon-container mb-3">
+                        <i class="fas fa-chart-line fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Report Generation</h5>
+                    <p class="card-text">Generate and view reports on clients, payments, and salary disbursements.</p>
+                    @Html.ActionLink("Go to Report Generation", "GenerateReports", "Admin", null, new { @class = "btn btn-outline-primary" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

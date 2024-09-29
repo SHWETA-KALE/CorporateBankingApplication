@@ -19,7 +19,7 @@ namespace CorporateBankingApplication.Services
             _userRepository = userRepository;
         }
 
-        public string IsLogging(UserDTO userDto) 
+        public string IsLogging(UserDTO userDto)
         {
             //converted dto to model
             var user = new User { UserName = userDto.UserName, Password = userDto.Password };
@@ -27,16 +27,16 @@ namespace CorporateBankingApplication.Services
 
             if (existingUser != null)
             {
-                if(existingUser.Role.RoleName == "Admin")
+                if (existingUser.Role.RoleName == "Admin")
                 {
-                    return  "Admin";
+                    return "Admin";
                 }
-                else if(existingUser.Role.RoleName == "Client")
+                else if (existingUser.Role.RoleName == "Client")
                 {
                     return "Client";
                 }
             }
-            return  null;           
+            return null;
         }
 
         // Method to get user by their username (needed to retrieve UserId)
@@ -46,7 +46,7 @@ namespace CorporateBankingApplication.Services
         }
 
 
-       
+
         //public string DetermineDocumentType(string fileName)
         //{
 

@@ -15,7 +15,7 @@ namespace CorporateBankingApplication.Models
 
         public virtual Employee Employee { get; set; }  
 
-        public virtual double Salary {  get; set; }
+        //public virtual double Salary {  get; set; }
 
         public virtual DateTime DisbursementDate { get; set; }
 

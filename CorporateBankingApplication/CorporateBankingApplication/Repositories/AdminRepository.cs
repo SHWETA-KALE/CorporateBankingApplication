@@ -1,4 +1,5 @@
-﻿using CorporateBankingApplication.Enum;
+﻿using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Models;
 using NHibernate;
 using NHibernate.Linq;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Windows.Forms;
 
 namespace CorporateBankingApplication.Repositories
 {
@@ -55,7 +57,7 @@ namespace CorporateBankingApplication.Repositories
         }
 
         ////////////
-       
+
         public List<Client> GetPendingClients()
         {
             var clients = _session.Query<Client>().FetchMany(c => c.Documents).Where(c => c.OnBoardingStatus == CorporateStatus.PENDING).ToList();
@@ -75,6 +77,89 @@ namespace CorporateBankingApplication.Repositories
                 transaction.Commit();
             }
         }
+
+        //***********Salary Disbursement***********
+
+        public IEnumerable<EmployeeSalaryDisbursementDTO> GetSalaryDisbursementsByStatus(CorporateStatus status)
+        {
+            return _session.Query<SalaryDisbursement>()
+                           .Where(x => x.SalaryStatus == status)
+                           .Select(x => new EmployeeSalaryDisbursementDTO
+                           {
+                               SalaryDisbursementId = x.Id,
+                               CompanyName = x.Employee.Client.CompanyName,
+                               EmployeeFirstName = x.Employee.FirstName,
+                               EmployeeLastName = x.Employee.LastName,
+                               Salary = x.Employee.Salary,
+                               DisbursementDate = x.DisbursementDate,
+                               SalaryStatus = x.SalaryStatus
+                           })
+                           .ToList();
+        }
+
+        public bool ApproveSalaryDisbursement(Guid salaryDisbursementId)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                try
+                {
+                    var salaryDisbursement = _session.Get<SalaryDisbursement>(salaryDisbursementId);
+                    if (salaryDisbursement == null || salaryDisbursement.SalaryStatus != CorporateStatus.PENDING)
+                        return false;
+
+                    var employee = salaryDisbursement.Employee;
+                    var client = employee.Client;
+
+                    double totalSalary = employee.Salary;
+
+                    if (client.Balance < totalSalary)
+                    {
+                        return false;
+                    }
+
+                    client.Balance -= totalSalary;
+                    salaryDisbursement.SalaryStatus = CorporateStatus.APPROVED;
+
+                    _session.Update(client);
+                    _session.Update(salaryDisbursement);
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+
+        }
+
+        public bool RejectSalaryDisbursement(Guid salaryDisbursementId)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                try
+                {
+                    var salaryDisbursement = _session.Get<SalaryDisbursement>(salaryDisbursementId);
+                    if (salaryDisbursement == null || salaryDisbursement.SalaryStatus != CorporateStatus.PENDING)
+                        return false;
+
+                    // Set the status to REJECTED
+                    salaryDisbursement.SalaryStatus = CorporateStatus.REJECTED;
+
+                    _session.Update(salaryDisbursement);
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
 
     }
 }
