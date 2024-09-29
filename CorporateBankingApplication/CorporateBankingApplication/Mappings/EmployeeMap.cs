@@ -18,6 +18,7 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.Email).Not.Nullable();
             Map(x => x.Position).Not.Nullable();
             Map(x => x.Phone).Not.Nullable();
+            Map(x=> x.Salary).Not.Nullable();
             Map(x => x.IsActive).Not.Nullable();
             HasMany(x => x.SalaryDisbursements).Cascade.All().Inverse();
             References(x => x.Client).Column("ClientId").Cascade.None().Not.Nullable();

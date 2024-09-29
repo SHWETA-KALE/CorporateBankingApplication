@@ -1,4 +1,5 @@
-﻿using CorporateBankingApplication.DTOs;
+﻿using Azure.Core;
+using CorporateBankingApplication.DTOs;
 using CorporateBankingApplication.Services;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 
 namespace CorporateBankingApplication.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
@@ -17,6 +19,11 @@ namespace CorporateBankingApplication.Controllers
             _adminService = adminService;
         }
         // GET: Admin
+        public ActionResult AdminDashboard()
+        {
+            return View();
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -136,6 +143,63 @@ namespace CorporateBankingApplication.Controllers
                 return Json(new { success = false, message = "Failed to update status" });
             }
         }
-    }
 
+        //*************************Salary Disbursement Verification*******************************
+
+        public ActionResult VerifySalaryDisbursement()
+        {
+            var pendingDisbursements = _adminService.GetPendingSalaryDisbursements();
+            return View(pendingDisbursements);
+        }
+
+        [HttpPost]
+        public ActionResult ApproveDisbursement(Guid salaryDisbursementId)
+        {
+            bool success = _adminService.ApproveSalaryDisbursement(salaryDisbursementId); 
+
+            if (success)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "Salary disbursement approved successfully."
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Failed to approve salary disbursement. Insufficient balance or invalid request."
+                });
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult RejectDisbursement(Guid salaryDisbursementId)
+        {
+            
+            bool success = _adminService.RejectSalaryDisbursement(salaryDisbursementId);
+
+            if (success)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "Salary disbursement rejected successfully."
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Failed to reject salary disbursement."
+                });
+            }
+        }
+
+
+    }
 }

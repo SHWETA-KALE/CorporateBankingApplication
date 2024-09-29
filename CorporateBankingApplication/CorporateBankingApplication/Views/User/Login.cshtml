@@ -3,40 +3,47 @@
 @{
     ViewBag.Title = "Login";
 }
+<div class="container-fluid h-custom">
+    @*<h2 class="mb-0 pt-5 text-center">Login</h2>*@
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <!-- Left Column for Image -->
+        <div class="col-md-6 col-lg-6 col-xl-5">
+            <img src="~/Content/images/login.jpg" class="img-fluid" alt="login img">
+        </div>
 
-<h2>Login</h2>
+        <!-- Right Column for Form -->
+        <div class="col-md-6 col-lg-6 col-xl-4 offset-xl-1">
+            <div class="card-body" style="background-color: transparent; border: none;">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>UserDTO</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                    <h2 class="text-center mb-4">Login</h2>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="mx-5">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UserName, new { @class = "control-label my-2" })
+                            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control mx-auto mb-4", style = "max-width: 300px;" } })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        </div>
+
+                        @*<div class="form-group text-center">*@
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Password, new { @class = "control-label my-2" })
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control mx-auto mb-4", style = "max-width: 300px;" } })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group text-center">
+                        <input type="submit" value="Login" class="btn btn-lg btn-primary btn-block my-3" />
+                    </div>
+
+                    <div class="text-center">
+                        <p class="mb-0 pb-5 pt-3">Don't have an account? @Html.ActionLink("Register", "Register", null, new { @class = "text-primary" })</p>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Login" class="btn btn-default" />
-        </div>
-    </div>
-
-    @Html.ActionLink("register", "Register")
 </div>
-}
-

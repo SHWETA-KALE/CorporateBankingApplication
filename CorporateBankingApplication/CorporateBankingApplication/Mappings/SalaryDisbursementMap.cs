@@ -14,7 +14,7 @@ namespace CorporateBankingApplication.Mappings
         {
             Table("SalaryDisbursements");
             Id(x => x.Id).GeneratedBy.GuidComb();
-            Map(x => x.Salary).Not.Nullable();
+            //Map(x => x.Salary).Not.Nullable();
             Map(x => x.DisbursementDate).Not.Nullable();
             Map(x => x.IsBatch).Not.Nullable();
             Map(x => x.SalaryStatus).CustomType<CorporateStatus>().Not.Nullable();

@@ -10,19 +10,24 @@ namespace CorporateBankingApplication.DTOs
     {
         public Guid Id { get; set; }
         [Required]
+        [Display(Name = "Username")]
         public string UserName { get; set; }
         [Required]
         public string Password { get; set; }
         [Required]
+        [Display(Name = "Email Id")]
         public string Email { get; set; }
         [Required]
+        [Display(Name = "Company Name")]
         public string CompanyName { get; set; }
         [Required]
+        [Display(Name = "Contact Information")]
         public string ContactInformation { get; set; }
         [Required]
         public string Location { get; set; }
 
         [Required]
+        [Display(Name = "Account Number")]
         public string AccountNumber { get; set; }
         [Required]
         public string IFSC { get; set; }
@@ -35,5 +40,7 @@ namespace CorporateBankingApplication.DTOs
 
         [Required]//added for showing document
         public List<string> DocumentPaths { get; set; } = new List<string>();
+
+        public List<DocumentDTO> Documents { get; set; }
     }
 }

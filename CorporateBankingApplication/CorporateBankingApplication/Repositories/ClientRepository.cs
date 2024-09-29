@@ -69,14 +69,46 @@ namespace CorporateBankingApplication.Repositories
         }
 
 
-        //******************SALARY DISBURSEMENTS *********************
-        public void Save(Client client)
+        /************************************Re-editing of details on rejection***************************************/
+        public void UpdateClientRegistrationDetails(Client client)
         {
             using (var transaction = _session.BeginTransaction())
             {
-                _session.Update(client); // Save changes to the client including balance and disbursements
+                //if (!string.IsNullOrEmpty(client.Password))
+                //{
+                //    client.Password = PasswordHelper.HashPassword(client.Password);
+                //}
+
+                _session.Update(client);
                 transaction.Commit();
             }
+        }
+
+        //******************SALARY DISBURSEMENTS *********************
+
+        public List<Employee> GetEmployeesByIds(List<Guid> employeeIds)
+        {
+            return _session.Query<Employee>().Where(e=>employeeIds.Contains(e.Id)).ToList();
+        }
+
+        public void AddSalaryDisbursement(SalaryDisbursement salaryDisbursement)
+        {
+            using(var transaction = _session.BeginTransaction())
+            {
+                _session.Save(salaryDisbursement);
+                transaction.Commit();
+            }
+        }
+
+        public SalaryDisbursement GetSalaryDisbursementForEmployee(Guid employeeId, DateTime currentDate)
+        {
+            // Get the first day of the month of the current date
+            var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+
+            // Get the first day of the next month
+            var endOfMonth = startOfMonth.AddMonths(1);
+
+            return _session.Query<SalaryDisbursement>().FirstOrDefault(sd=>sd.Employee.Id == employeeId && sd.DisbursementDate >= startOfMonth && sd.DisbursementDate < endOfMonth);
         }
     }
 }

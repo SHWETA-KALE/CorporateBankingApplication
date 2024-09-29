@@ -19,10 +19,13 @@ namespace CorporateBankingApplication.Services
 
         Client GetClientById(Guid clientId);
 
-        //******Salary disbursement ***********
+        //re-editing client after rejection
+        void EditClientRegistrationDetail(Client client, IList<HttpPostedFileBase> uploadedFiles);
 
-        (bool success, string message) DisburseSalaryBatch(List<Guid> employeeIds, double totalAmount, Guid clientId);
-        void AddSalaryDisbursement(Client client, SalaryDisbursement salaryDisbursement);
+        //******Salary disbursement ***********
+        bool DisburseSalary(List<Guid> employeeIds, bool isBatch, out List<Guid> skippedEmployees);
+
+
 
 
 

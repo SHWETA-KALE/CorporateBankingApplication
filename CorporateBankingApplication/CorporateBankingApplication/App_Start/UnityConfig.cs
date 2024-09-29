@@ -19,7 +19,7 @@ namespace CorporateBankingApplication
             container.RegisterType<IUserService, UserService>();
             container.RegisterType<IUserRepository, UserRepository>();
 
-           
+
             container.RegisterType<IClientService, ClientService>();
             container.RegisterType<IClientRepository, ClientRepository>();
 

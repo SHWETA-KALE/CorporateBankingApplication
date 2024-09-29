@@ -82,5 +82,24 @@ namespace CorporateBankingApplication.Services
             _adminRepository.UpdateClient(client);
             return true;
         }
+
+        //*******************Salary disbursement***************
+
+        public IEnumerable<EmployeeSalaryDisbursementDTO> GetPendingSalaryDisbursements()
+        {
+            return _adminRepository.GetSalaryDisbursementsByStatus(CorporateStatus.PENDING);
+        }
+
+        public bool ApproveSalaryDisbursement(Guid salaryDisbursementId)
+        {
+            return _adminRepository.ApproveSalaryDisbursement(salaryDisbursementId);
+        }
+
+        public bool RejectSalaryDisbursement(Guid salaryDisbursementId)
+        {
+            return _adminRepository.RejectSalaryDisbursement(salaryDisbursementId); // Implement this in your repository
+        }
+
     }
 }
+       

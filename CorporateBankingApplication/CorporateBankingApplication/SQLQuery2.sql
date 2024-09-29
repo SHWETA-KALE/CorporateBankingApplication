@@ -1,0 +1,1 @@
+﻿ALTER TABLE Employees ALTER COLUMN Phone NVARCHAR(15); 

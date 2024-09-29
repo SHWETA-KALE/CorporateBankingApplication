@@ -4,6 +4,12 @@
         type: "GET",
         success: function (data) {
             $("#clientToBeVerifiedTblBody").empty()
+            //added for checking if there are any clients or not
+            if (data.length === 0) {
+                alert("No Clients Waiting To Be Verified");
+                window.location.href = '/Admin/AdminDashboard';
+                return;
+            }
 
             $.each(data, function (index, item) {
 

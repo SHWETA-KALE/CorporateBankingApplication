@@ -16,7 +16,9 @@ namespace CorporateBankingApplication.DTOs
         public string Email { get; set; }
 
         public string Position { get; set; }
-        public long Phone { get; set; }
+        public string Phone { get; set; }
+
+        public double Salary { get; set; }
 
         public bool IsActive { get; set; }
     }

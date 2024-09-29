@@ -27,7 +27,7 @@ namespace CorporateBankingApplication.Repositories
 
             if (existingUser != null && PasswordHelper.VerifyPassword(user.Password, existingUser.Password))
             {
-                return existingUser; 
+                return existingUser;
             }
             return null;
 

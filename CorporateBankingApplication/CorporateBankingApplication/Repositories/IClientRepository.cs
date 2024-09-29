@@ -17,7 +17,15 @@ namespace CorporateBankingApplication.Repositories
 
         void UpdateEmployeeStatus(Guid id, bool isActive);
 
+        //re-editing client after rejection
+        void UpdateClientRegistrationDetails(Client client);
+
         //****************SALARY DISBURSEMENTS **********************
-        void Save(Client client);
+
+        List<Employee> GetEmployeesByIds(List<Guid> employeeIds);
+        void AddSalaryDisbursement(SalaryDisbursement salaryDisbursement);
+
+        SalaryDisbursement GetSalaryDisbursementForEmployee(Guid employeeId, DateTime currentDate);
+
     }
 }

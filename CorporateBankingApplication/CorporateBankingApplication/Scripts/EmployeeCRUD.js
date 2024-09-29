@@ -14,7 +14,9 @@
                     <td>${employee.Email}</td>
                     <td>${employee.Position}</td>
                     <td>${employee.Phone}</td>
-                    
+                    <td>${employee.Salary}</td>
+                   
+
                      <td>
                          <input type="checkbox" class="is-active-checkbox"
                                 data-employeeid="${employee.Id}"
@@ -22,17 +24,17 @@
                      </td>
 
                    
-                      <td class="edit-btn-cell">
-                            <button onClick="editEmployee('${employee.Id}')" class="btn btn-success edit-btn"
-                            style="${employee.IsActive ? '' : 'display:none;'}">Edit</button>
-                      </td>
-
                     <td>
                     <input type="checkbox" class="is-SalaryDisbursed-checkbox"
                                 data-employeeid="${employee.Id}"
+                                data-salary="${employee.Salary}"
                                 ${employee.SalaryDisburseSelect ? "checked" : ""} />
                     </td>
 
+                     <td class="edit-btn-cell">
+                            <button onClick="editEmployee('${employee.Id}')" class="btn btn-success edit-btn"
+                            style="${employee.IsActive ? '' : 'display:none;'}">Edit</button>
+                      </td>
 
                     </tr>`;
                     $("#employeesTable").append(row);
@@ -46,6 +48,18 @@
                     // Call the server to update the contact status
                     updateEmployeeStatus(employeeId, isActive);
                 });
+
+                $(".is-SalaryDisbursed-checkbox").change(function () {
+                    updateTotalSalary();
+                });
+                //Select all functionality 
+                $("#selectAllSalaryDisbursement").change(function () {
+                    var isChecked = $(this).is(":checked");
+                    $(".is-SalaryDisbursed-checkbox").prop("checked", isChecked);
+                    updateTotalSalary();
+                });
+                // Initialize total salary on page load
+                updateTotalSalary();
             }
             else {
                 $("#employeesTable").append("<tr><td colspan='5'>No employees found.</td></tr>");
@@ -63,7 +77,8 @@ function addNewEmployee() {
         LastName: $("#newLName").val(),
         Email: $("#newEmail").val(),
         Position: $("#newPosition").val(),
-        Phone: $("#newPhone").val()
+        Phone: $("#newPhone").val(),
+        Salary: $("#newSalary").val()
     };
 
     $.ajax({
@@ -96,6 +111,7 @@ function getEmployee(employeeId) {
                 $("#editEmail").val(response.employee.Email);
                 $("#editPosition").val(response.employee.Position);
                 $("#editPhone").val(response.employee.Phone);
+                $("#editSalary").val(response.employee.Salary);
             } else {
                 alert(response.message);
             }
@@ -142,14 +158,12 @@ function updateEmployeeStatus(employeeId, isActive) {
                     return $(this).find(".is-active-checkbox").data("employeeid") == employeeId;
                 });
 
-                // Find the edit button within the employee's row
                 var editButton = employeeRow.find(".edit-btn-cell button");
 
-                // Show or hide the button based on isActive status
                 if (isActive) {
-                    editButton.show();  // Show button if employee is active
+                    editButton.show();  
                 } else {
-                    editButton.hide();  // Hide button if employee is inactive
+                    editButton.hide();  
                 }
             } else {
                 alert("Error updating employee status: " + response.message);
@@ -181,54 +195,87 @@ $("#btnEdit").click(() => {
         LastName: $("#editLName").val(),
         Email: $("#editEmail").val(),
         Position: $("#editPosition").val(),
-        Phone: $("#editPhone").val()
-
+        Phone: $("#editPhone").val(),
+        Salary: $("#editSalary").val()
     };
     modifyRecord(data);
 });
 
 
-/****************SALARY DISBURSEMENT**********************/
+//************** UPLOAD CSV *****************
+$("#btnBulkUpload").click(function () {
+    $("#csvFileInput").click();
+});
 
-$("#disburseSalaryBtn").click(function () {
-    var selectedEmployeeIds = [];
-    var totalAmount = $("#salaryAmountInput").val();
-    var clientId = $("#clientId").val();
-
-    $(".is-SalaryDisbursed-checkbox:checked").each(function () {
-        selectedEmployeeIds.push($(this).data("employeeid"));
-    });
-
-    if (selectedEmployeeIds.length == 0) {
-        alert("Please select at least one employee for salary disbursement.");
-        return;
-    }
-
-    if (!totalAmount || isNaN(totalAmount) || totalAmount <= 0) {
-        alert("Please enter a valid salary amount.");
-        return;
-    }
+$("#csvFileInput").change(function (event) {
+    var formData = new FormData();
+    var fileInput = event.target.files[0];
+    formData.append("file", fileInput);
 
     $.ajax({
-        url: "/Client/DisburseSalaryBatch",
+        url: "/Client/UploadCSV",
         type: "POST",
-        traditional: true,
-        data: {
-            employeeIds: selectedEmployeeIds,
-            totalAmount: totalAmount,
-            clientId: clientId
-        },
-
+        contentType: false,
+        processData: false,
+        data: formData,
         success: function (response) {
             if (response.success) {
-                alert(response.message);
-                LoadEmployees(); // Reload the employee list
+                alert("Employees uploaded successfully.");
+                LoadEmployees(); 
             } else {
                 alert("Error: " + response.message);
             }
         },
         error: function (err) {
-            alert("Error occurred while processing salary disbursement.");
+            alert("Error uploading employees.");
+            console.log(err);
         }
     });
 });
+
+
+
+
+/****************SALARY DISBURSEMENT**********************/
+
+$('#disburseSalary').click(function () {
+
+    var employeeIds = [];
+   
+    // Loop through all the checkboxes that are checked
+    $('.is-SalaryDisbursed-checkbox:checked').each(function () {
+        employeeIds.push($(this).data('employeeid')); 
+    });
+    var isBatch = employeeIds.length > 1;
+
+    if (employeeIds.length > 0) {
+        $.ajax({
+            type: 'POST',
+            url: '/Client/DisburseSalary',
+           
+            data: { employeeIds: employeeIds, isBatch: isBatch },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                   
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (xhr) {
+                alert("Error: " + xhr.responseText);
+            }
+        });
+    } else {
+        alert("No employees selected for salary disbursement.");
+    }
+});
+
+function updateTotalSalary() {
+    let totalSalary = 0;
+    $(".is-SalaryDisbursed-checkbox:checked").each(function () {
+        let salary = parseFloat($(this).data("salary")); // Get the salary from the data attribute
+        totalSalary += salary;
+    });
+    $("#salaryAmountInput").val(totalSalary.toFixed(2)); // Update the total salary
+}
