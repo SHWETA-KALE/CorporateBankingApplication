@@ -3,6 +3,7 @@ using CorporateBankingApplication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web;
 
 namespace CorporateBankingApplication.Services
@@ -24,7 +25,8 @@ namespace CorporateBankingApplication.Services
         (bool success, string message) DisburseSalaryBatch(List<Guid> employeeIds, double totalAmount, Guid clientId);
         void AddSalaryDisbursement(Client client, SalaryDisbursement salaryDisbursement);
 
+        /**************************************Re-editing of details on rejection*****************************************/
 
-
+        void EditClientRegistrationDetail(Client client, IList<HttpPostedFileBase> uploadedFiles);
     }
 }

@@ -19,7 +19,7 @@ namespace CorporateBankingApplication.Repositories
         }
         public List<Client> GetAllClients()
         {
-            var clientList = _session.Query<Client>().Where(cd => cd.IsActive == true).ToList();
+            var clientList = _session.Query<Client>().ToList();
             return clientList;
         }
 

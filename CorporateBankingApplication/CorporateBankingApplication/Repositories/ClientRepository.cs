@@ -1,4 +1,5 @@
-﻿using CorporateBankingApplication.Models;
+﻿using CorporateBankingApplication.Data;
+using CorporateBankingApplication.Models;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -78,5 +79,21 @@ namespace CorporateBankingApplication.Repositories
                 transaction.Commit();
             }
         }
+
+        /**************************************Re-editing of details on rejection*****************************************/
+        public void UpdateClientRegistrationDetails(Client client)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                //if (!string.IsNullOrEmpty(client.Password))
+                //{
+                //    client.Password = PasswordHelper.HashPassword(client.Password);
+                //}
+
+                _session.Update(client);
+                transaction.Commit();
+            }
+        }
+
     }
 }

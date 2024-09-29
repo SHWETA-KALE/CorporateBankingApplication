@@ -22,6 +22,16 @@ namespace CorporateBankingApplication.Controllers
         {
             _userService = userService;
         }
+        [AllowAnonymous]
+        public ActionResult Index()
+        {
+            return View();
+        }
+        [AllowAnonymous]
+        public ActionResult AboutUs()
+        {
+            return View();
+        }
 
         [HttpGet]
         [AllowAnonymous]
@@ -44,11 +54,11 @@ namespace CorporateBankingApplication.Controllers
                 Session["UserId"] = user.Id;
                 if (result == "Admin")
                 {
-                    return RedirectToAction("Index", "Admin");
+                    return RedirectToAction("AdminDashboard", "Admin");
                 }
                 else
                 {
-                    return RedirectToAction("Index", "Client");
+                    return RedirectToAction("ClientDashboard", "Client");
                 }
             }
             return View(userDto);
@@ -86,43 +96,42 @@ namespace CorporateBankingApplication.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Client")]
-        //[AllowAnonymous]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
             Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index");
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult RegisterAdmin()
-        {
-            return View();
-        }
+        //[AllowAnonymous]
+        //[HttpGet]
+        //public ActionResult RegisterAdmin()
+        //{
+        //    return View(); ->view
+        //}
 
 
-        [AllowAnonymous]
-        [HttpPost]
-        public ActionResult RegisterAdmin(Admin admin)
-        {
-            using (var session = NHibernateHelper.CreateSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    admin.Password = PasswordHelper.HashPassword(admin.Password);
-                    var role = new Role
-                    {
-                        RoleName = "Admin",
-                        User = admin
-                    };
-                    session.Save(admin);
-                    session.Save(role);
-                    transaction.Commit();
-                    return RedirectToAction("Login");
-                }
+        //[AllowAnonymous]
+        //[HttpPost]
+        //public ActionResult RegisterAdmin(Admin admin)
+        //{
+        //    using (var session = NHibernateHelper.CreateSession())
+        //    {
+        //        using (var transaction = session.BeginTransaction())
+        //        {
+        //            admin.Password = PasswordHelper.HashPassword(admin.Password);
+        //            var role = new Role
+        //            {
+        //                RoleName = "Admin",
+        //                User = admin
+        //            };
+        //            session.Save(admin);
+        //            session.Save(role);
+        //            transaction.Commit();
+        //            return RedirectToAction("Login");
+        //        }
 
-            }
-        }
+        //    }
+        //}
     }
 }

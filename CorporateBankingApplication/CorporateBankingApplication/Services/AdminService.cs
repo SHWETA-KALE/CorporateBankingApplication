@@ -77,7 +77,7 @@ namespace CorporateBankingApplication.Services
             else if (status == "REJECTED")
             {
                 client.OnBoardingStatus = CorporateStatus.REJECTED;
-                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!", $"Dear {client.UserName}, Your client account has been rejected due to discrepancies in the submitted details and documents, which do not meet our onboarding requirements.");
+                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!", $"Dear {client.UserName}, Your client account has been rejected due to discrepancies in the submitted details and documents, which do not meet our onboarding requirements. To re-edit your details please login and visit the Onboarding Section.");
             }
             _adminRepository.UpdateClient(client);
             return true;

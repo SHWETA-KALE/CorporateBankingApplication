@@ -19,5 +19,7 @@ namespace CorporateBankingApplication.Repositories
 
         //****************SALARY DISBURSEMENTS **********************
         void Save(Client client);
+        /**************************************Re-editing of details on rejection*****************************************/
+        void UpdateClientRegistrationDetails(Client client);
     }
 }

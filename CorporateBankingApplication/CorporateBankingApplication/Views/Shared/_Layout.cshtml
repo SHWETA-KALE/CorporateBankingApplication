@@ -1,58 +1,131 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Custom.css" rel="stylesheet" />
+    <link href="~/Content/dashboard.css" rel="stylesheet" />
     <link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
-    @*<script src="~/Scripts/modernizr-2.6.2.js"></script>*@
-    @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/i18n/grid.locale-en.js"></script>
     <script src="~/Scripts/jquery.jqGrid.min.js"></script>
+    @* added for icons *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 </head>
 <body>
-    <div class="navbar navbar-dark bg-dark navbar-fixed-top">
-
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary fixed-top shadow">
         <div class="container">
-            <div class="navbar-header">
+            <a class="navbar-brand text-white" href="@Url.Action("Index", "User")" style="font-size: 1.5rem;">
+                <img src="~/Content/images/logo.png" alt="Logo" style="height: 40px; width: 40px; margin-right: 10px;" />
 
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                BizBanker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border:none;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-
-                @if (User.Identity.IsAuthenticated)
-                {
-                    if (User.IsInRole("Admin"))
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        @Html.ActionLink("About Us", "AboutUs", "User", new { area = "" }, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
+                    </li>
+                    <!-- Conditional rendering based on user authentication -->
+                    @if (User.Identity.IsAuthenticated)
                     {
-                        <span class="navbar-brand" style="color:white;">Welcome Admin </span>
-                        @Html.ActionLink("Verify New Clients", "VerifyClientsData", "Admin", new { area = "" }, new { @class = "navbar-brand" })
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                @Html.ActionLink("DashBoard", "AdminDashboard", "Admin", new { area = "" }, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
+                            </li>
+                        }
+                        else if (User.IsInRole("Client"))
+                        {
+                            <li class="nav-item">
+                                @Html.ActionLink("DashBoard", "ClientDashboard", "Client", new { area = "" }, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
+                            </li>
+                        }
+                        <li class="nav-item">
+                            @Html.ActionLink("Logout", "Logout", "User", new { area = "" }, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
+                        </li>
                     }
-                    else if (User.IsInRole("Client"))
+                    else
                     {
-                        <span class="navbar-brand" style="color:white;">Welcome Client </span>
+                        <li class="nav-item">
+                            @Html.ActionLink("Login", "Login", "User", null, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Register", "Register", "User", null, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
+                        </li>
                     }
-                    @Html.ActionLink("Logout", "Logout", "User", new { area = "" }, new { @class = "navbar-brand" })
-                }
-
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
                 </ul>
             </div>
         </div>
-    </div>
-
-    <div class="container body-content">
+    </nav>
+    <div class="container body-content" style="margin-top: 80px;">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
     </div>
+    <br />
+    <footer class="text-light py-4 mt-5" style="background: linear-gradient(90deg, #007bff,#0056b3);">
+        <div class="container">
+            <div class="row">
+                <!-- About Us Section -->
+                <div class="col-md-4">
+                    <h5>About BizBank</h5>
+                    <p class="small">
+                        BizBank provides secure financial solutions for corporate clients, ensuring smooth onboarding and efficient payment processing tailored to your business needs.
+                    </p>
+                </div>
+                <!-- Quick Links -->
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="@Url.Action("Index", "User")" class="text-light">Home</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AboutUs", "User")" class="text-light">About Us</a>
+                        </li>
+                        @*<li>
+                                <a href="@Url.Action("Contact", "Home")" class="text-light">Contact</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Privacy", "Home")" class="text-light">Privacy Policy</a>
+                            </li>*@
+                    </ul>
+                </div>
+                <!-- Social Media Icons -->
+                <div class="col-md-4">
+                    <h5>Connect With Us</h5>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a href="#" class="text-light">
+                                <i class="fab fa-facebook fa-2x"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="text-light">
+                                <i class="fab fa-twitter fa-2x"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#" class="text-light">
+                                <i class="fab fa-linkedin fa-2x"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-
+            <!-- Copyright Section -->
+            <div class="text-center mt-3">
+                <p>&copy; @DateTime.Now.Year BizBanker. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

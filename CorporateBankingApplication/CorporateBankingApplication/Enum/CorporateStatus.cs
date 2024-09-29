@@ -9,7 +9,6 @@ namespace CorporateBankingApplication.Enum
     {
         APPROVED,
         PENDING,
-        INPROCESS,
         REJECTED
     }
 }

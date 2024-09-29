@@ -8,9 +8,11 @@ using NHibernate.Mapping;
 using System.Collections.Generic;
 using CorporateBankingApplication.Enum;
 using NHibernate.Transform;
+using System.Web;
 
 namespace CorporateBankingApplication.Controllers
 {
+    [Authorize(Roles = "Client")]
     public class ClientController : Controller
     {
         private readonly IClientService _clientService;
@@ -19,13 +21,20 @@ namespace CorporateBankingApplication.Controllers
         {
             _clientService = clientService;
         }
-
-        [AllowAnonymous]
+        public ActionResult ClientDashboard()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            return View(client);
+        }
         public ActionResult Index()
         {
             return View();
         }
-
         public ActionResult GetAllEmployees()
         {
             if (Session["UserId"] == null)
@@ -50,8 +59,7 @@ namespace CorporateBankingApplication.Controllers
             return Json(employeeDtos, JsonRequestBehavior.AllowGet);
         }
 
-
-        public ActionResult Add(EmployeeDTO employeedto) //employeedto
+        public ActionResult Add(EmployeeDTO employeedto) 
         {
             if (Session["UserId"] == null)
             {
@@ -66,8 +74,6 @@ namespace CorporateBankingApplication.Controllers
                 return new HttpStatusCodeResult(400, "Client not found");
             }
             employeedto.IsActive = true;
-            //employeedto.Client = client;
-
             _clientService.AddEmployee(employeedto, client);
 
             return Json(new
@@ -159,6 +165,70 @@ namespace CorporateBankingApplication.Controllers
                 return Json(new { success = false, message = result.message });
             }
             return Json(new { success = true, message = result.message });
+        }
+        /**************************************Re-editing of details on rejection*****************************************/
+        public ActionResult EditClientRegistrationDetails()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            var clientDTO = new ClientDTO
+            {
+                //UserName = client.UserName,
+                Email = client.Email,
+                CompanyName = client.CompanyName,
+                ContactInformation = client.ContactInformation,
+                Location = client.Location,
+                AccountNumber = client.AccountNumber,
+                IFSC = client.IFSC,
+                Balance = client.Balance,
+                Documents = client.Documents.Select(d => new DocumentDTO
+                {
+                    DocumentType = d.DocumentType,
+                    FilePath = d.FilePath,
+                    UploadDate = d.UploadDate
+                }).ToList()
+            };
+            return View(clientDTO);
+        }
+        [HttpPost]
+        public ActionResult EditClientRegistrationDetails(ClientDTO clientDTO)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            client.Email = clientDTO.Email;
+            client.CompanyName = clientDTO.CompanyName;
+            client.ContactInformation = clientDTO.ContactInformation;
+            client.Location = clientDTO.Location;
+            client.AccountNumber = clientDTO.AccountNumber;
+            client.IFSC = clientDTO.IFSC;
+            client.Balance = clientDTO.Balance;
+            client.OnBoardingStatus = CorporateStatus.PENDING;
+            var uploadedFiles = new List<HttpPostedFileBase>();
+
+            var companyIdProof = Request.Files["uploadedFiles1"];
+            var addressProof = Request.Files["uploadedFiles2"];
+
+            if (companyIdProof != null && companyIdProof.ContentLength > 0)
+            {
+                uploadedFiles.Add(companyIdProof);
+            }
+
+            if (addressProof != null && addressProof.ContentLength > 0)
+            {
+                uploadedFiles.Add(addressProof);
+            }
+
+            _clientService.EditClientRegistrationDetail(client, uploadedFiles);
+
+            return RedirectToAction("ClientDashboard");
         }
     }
 }

@@ -4,14 +4,20 @@
         type: "GET",
         success: function (data) {
             $("#clientToBeVerifiedTblBody").empty()
-
+            //added for checking if there are any clients or not
+            if (data.length === 0) {
+                alert("No Clients Waiting To Be Verified");
+                window.location.href = '/Admin/AdminDashboard';
+                return;
+            }
+            
             $.each(data, function (index, item) {
-
+                
                 // Create a list of document links
                 var documents = item.DocumentPaths.map(function (docPath) {
                     var fileName = docPath.split('/').pop(); // Extract file name from path
                    // return `<a href="${docPath}" target="_blank">${fileName}</a><br>`; // Use URL for document path
-                    return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;                }).join('');
+                    return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;}).join('');
 
                 var row = `<tr>
                 <td>${item.UserName}</td>

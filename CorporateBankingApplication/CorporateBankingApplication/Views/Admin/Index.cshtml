@@ -3,12 +3,34 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container" id="clientList">
-    <h2>List of Clients</h2>
-
-    <table id="grid"></table>
-    <div id="pager"></div> <!--jqgrid pager-->
+<div class="container my-5" id="clientList">
+    <h2 class="mb-4 text-center pt-3">List of Clients</h2>
+    <div class="d-flex justify-content-center">
+        <div class="table-responsive">
+            <table id="grid"></table>
+            <div id="pager" class="mt-3"></div> <!--jqgrid pager-->
+        </div>
+    </div>
+    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary mt-5" })
 </div>
+
 @*formatting and displaying JqGrid*@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/redmond/jquery-ui.css">
 <script src="~/Scripts/myClientJqGrid.js"></script>
+<style>
+    .ui-jqgrid-titlebar {
+        font-size: 1.2rem;
+        padding: 10px;
+    }
+    .ui-jqgrid-htable th {
+        font-size: 1rem;
+        padding: 8px;
+    }
+    #grid td {
+        padding: 10px;
+        font-size: 14px;
+    }
+    #grid td {
+        border-width: 1px;
+    }
+</style>

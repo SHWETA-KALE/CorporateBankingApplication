@@ -1,4 +1,6 @@
-﻿using CorporateBankingApplication.DTOs;
+﻿using CorporateBankingApplication.Data;
+using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Services;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Web.Mvc;
 
 namespace CorporateBankingApplication.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
@@ -16,7 +19,14 @@ namespace CorporateBankingApplication.Controllers
         {
             _adminService = adminService;
         }
-        // GET: Admin
+        public ActionResult AdminDashboard()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            return View();
+        }
         public ActionResult Index()
         {
             return View();
@@ -70,8 +80,6 @@ namespace CorporateBankingApplication.Controllers
                         : clientDetailList.OrderByDescending(cd => cd.OnBoardingStatus).ToList();
                     break;
             }
-
-
             var jsonData = new
             {
                 total = totalPages,
@@ -81,14 +89,15 @@ namespace CorporateBankingApplication.Controllers
                 {
                     cell = new string[]
                     {
-                 cd.Id.ToString(), //change column names
+                 cd.Id.ToString(),
                  cd.UserName,
                  cd.Email,
                  cd.CompanyName,
                  cd.ContactInformation,
                  cd.Location,
                  cd.Balance.ToString(),
-                 cd.OnBoardingStatus.ToString()
+                 cd.OnBoardingStatus.ToString(),
+                 cd.IsActive ? "true" : "false"
                     }
                 }).Skip(page - 1 * rows).Take(rows).ToArray()
             };
@@ -136,6 +145,34 @@ namespace CorporateBankingApplication.Controllers
                 return Json(new { success = false, message = "Failed to update status" });
             }
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        [HttpPost]
+        public JsonResult UpdateClientIsActive(int id, bool isActive)
+        {
+
+            using (var session = NHibernateHelper.CreateSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+
+                    var client = session.Get<Client>(id);
+                    if (client != null)
+                    {
+                        // Update the IsActive status
+                        client.IsActive = isActive;
+
+                        session.Update(client);
+                        transaction.Commit();
+
+                        return Json(new { success = true, message = "IsActive status updated successfully." });
+                    }
+                    return Json(new { success = false, message = "Client not found." });
+                }
+            }
+
+        }
+
     }
 
 }

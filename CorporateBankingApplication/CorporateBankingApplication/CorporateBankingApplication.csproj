@@ -249,6 +249,13 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\Custom.css" />
+    <Content Include="Content\dashboard.css" />
+    <Content Include="Content\images\homepage.jpg" />
+    <Content Include="Content\images\login.png" />
+    <Content Include="Content\images\logo.png" />
+    <Content Include="Content\images\register.png" />
+    <Content Include="Content\images\welcome.png" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
     <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
     <Content Include="Content\Site.css" />
@@ -387,6 +394,7 @@
     <Compile Include="Data\NHibernateHelper.cs" />
     <Compile Include="Data\PasswordHelper.cs" />
     <Compile Include="DTOs\ClientDTO.cs" />
+    <Compile Include="DTOs\DocumentDTO.cs" />
     <Compile Include="DTOs\EmployeeDTO.cs" />
     <Compile Include="DTOs\UserDTO.cs" />
     <Compile Include="Enum\BeneficiaryType.cs" />
@@ -468,6 +476,11 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\User\RegisterAdmin.cshtml" />
     <Content Include="Views\Admin\VerifyClientsData.cshtml" />
+    <Content Include="Views\Client\EditClientRegistrationDetails.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\AboutUs.cshtml" />
+    <Content Include="Views\Admin\AdminDashboard.cshtml" />
+    <Content Include="Views\Client\ClientDashboard.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
