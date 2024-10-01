@@ -1,0 +1,150 @@
+﻿@model CorporateBankingApplication.DTOs.ClientDTO
+
+@{
+    ViewBag.Title = "ViewClientProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="clientProfile">
+    <h2 class="text-center mt-4 pt-5">Client Profile</h2>
+
+    <div class="container">
+        <div class="row">
+            <!-- Profile Image Column -->
+            <div class="col-md-4 text-center pt-5 mt-3">
+                <img src="~/Content/images/profile.png" class="rounded-circle img-fluid" alt="Admin Profile" style="max-width: 200px;">
+            </div>
+
+            <!-- Admin Details Column -->
+            <div class="col-md-8">
+                <dl class="row pt-5">
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.UserName)
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.CompanyName)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.CompanyName)
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.ContactInformation)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.ContactInformation)
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.Location)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.Location)
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.Balance)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.Balance)
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.AccountNumber)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.AccountNumber)
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.IFSC)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.IFSC)
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.OnboardingStatus)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.OnboardingStatus)
+                    </dd>
+
+                    <dt class="col-sm-4">Documents</dt>
+                    <dd class="col-sm-4">
+                        @if (Model.Documents != null && Model.Documents.Any())
+                        {
+                            <ul>
+                                @foreach (var document in Model.Documents)
+                                {
+                                    <li>
+                                        <a href="@Url.Content(document.FilePath)" target="_blank" class="open-document" data-filepath="@Url.Content(document.FilePath)">@document.DocumentType</a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>No documents uploaded.</p>
+                        }
+                    </dd>
+                </dl>
+                <button type="button" class="btn btn-outline-dark" id="addBalanceBtn">Update Balance</button>
+                <div id="addNewBalance" style="display:none" class="container">
+                    @Html.Partial("_AddBalancePartial")
+                </div>
+            </div>
+
+        </div>
+        <br />
+        @Html.ActionLink("Go Back To Dashboard", "ClientDashboard", null, new { @class = "btn btn-lg btn-primary" })
+
+    </div>
+</div>
+
+<!-- Modal HTML structure -->
+<div class="modal fade" id="documentModal" tabindex="-1" role="dialog" aria-labelledby="documentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-bg-primary" style="display: flex; justify-content: space-between; align-items: center;">
+                <h5 class="modal-title px-3" id="documentModalLabel" style="margin: 0;">Client Document</h5>
+                <button type="button" class="close border-0 text-bg-primary btn-lg" data-dismiss="modal" aria-label="Close" style="font-size: 2rem; line-height: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="documentFrame" width="100%" height="500px" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#addBalanceBtn").click(function () {
+        $("#addNewBalance").toggle();
+    });
+    // Add click event to open modal and display document
+    $(".open-document").click(function (e) {
+        e.preventDefault();
+        var filePath = $(this).data('filepath');
+
+        // Load the document in the iframe
+        $('#documentFrame').attr('src', filePath);
+
+        // Show the modal
+        $('#documentModal').modal('show');
+    });
+    $('.close').on('click', function () {
+        $('#documentModal').modal('hide');
+    });
+</script>

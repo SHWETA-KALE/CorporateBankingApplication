@@ -16,6 +16,7 @@ namespace CorporateBankingApplication.Models
         public virtual DateTime UploadDate { get; set; }
 
         public virtual Client Client { get; set; }
+        public virtual Beneficiary Beneficiary { get; set; }
 
     }
 }

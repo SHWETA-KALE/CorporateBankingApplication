@@ -27,5 +27,16 @@ namespace CorporateBankingApplication.Repositories
 
         SalaryDisbursement GetSalaryDisbursementForEmployee(Guid employeeId, DateTime currentDate);
 
+        /*benenficiaries*/
+        List<Beneficiary> GetAllOutboundBeneficiaries(Guid clientId);
+        void UpdateBeneficiaryStatus(Guid id, bool isActive);
+        void AddNewBeneficiary(Beneficiary beneficiary);
+        Beneficiary GetBeneficiaryById(Guid id);
+        void UpdateBeneficiary(Beneficiary beneficiary);
+
+        //payments
+        List<Beneficiary> GetBeneficiaryList(Guid clientId);
+
+        void AddBalance(Guid id, double amount);
     }
 }

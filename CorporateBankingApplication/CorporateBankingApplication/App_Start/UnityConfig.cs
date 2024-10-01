@@ -28,6 +28,9 @@ namespace CorporateBankingApplication
 
             container.RegisterType<IEmailService, EmailService>();
 
+            container.RegisterType<IPaymentService, PaymentService>();
+            container.RegisterType<IPaymentRepository, PaymentRepository>();
+
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

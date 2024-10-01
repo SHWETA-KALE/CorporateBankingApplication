@@ -4,11 +4,46 @@ using System.Linq;
 using System.Net.Mail;
 using System.Net;
 using System.Web;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using System.Xml.Linq;
+using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Models;
 
 namespace CorporateBankingApplication.Services
 {
     public class EmailService : IEmailService
     {
+        public void SendSalaryDisbursementApprovalEmail(string clientEmail, EmployeeDTO employee, double salaryAmount, string month)
+        {
+            var subject = "Salary Disbursement Request Approved";
+            var body = $@"
+                Dear Client,<br/><br/>
+                We are pleased to inform you that the salary disbursement request for your employee <strong>{employee.FirstName} {employee.LastName}</strong> 
+                for the month of <strong>{month}</strong> amounting to <strong>{salaryAmount:C}</strong> has been approved successfully.<br/><br/>
+                Thank you,<br/>
+                Corporate Banking Application Team";
+
+            SendClientOnboardingStatusEmail(clientEmail, subject, body);
+        }
+
+        //batch
+        public void SendBatchSalaryDisbursementApprovalEmail(string clientEmail, List<EmployeeDTO> employeeSalaries, string month)
+        {
+            var subject = "Batch Salary Disbursement Request Approved";
+
+            var body = "Dear Client,<br/><br/>";
+            body += $"We are pleased to inform you that the salary disbursement requests for the following employees for the month of <strong>{month}</strong> have been approved successfully:<br/><br/>";
+            body += "<ul>";
+
+            foreach (var employee in employeeSalaries)
+            {
+                body += $"<li>Employee: <strong>{employee.FirstName} {employee.LastName}</strong> - Salary Amount: <strong>{employee.Salary:C}</strong></li>";
+            }
+            body += "</ul><br/>";
+            body += "Thank you,<br/>Corporate Banking Application Team";
+
+            SendClientOnboardingStatusEmail(clientEmail, subject, body);
+        }
         public void SendClientOnboardingStatusEmail(string toEmail, string subject, string body)
         {
             var mailMessage = new MailMessage
@@ -27,5 +62,8 @@ namespace CorporateBankingApplication.Services
             };
             smtpClient.Send(mailMessage);
         }
+
+       
     }
+
 }
