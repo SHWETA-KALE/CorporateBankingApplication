@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace CorporateBankingApplication.Services
 {
@@ -25,8 +26,19 @@ namespace CorporateBankingApplication.Services
         //******Salary disbursement ***********
         bool DisburseSalary(List<Guid> employeeIds, bool isBatch, out List<Guid> skippedEmployees);
 
+        /*benenficiaries*/
+        List<BeneficiaryDTO> GetAllOutboundBeneficiaries(Guid clientId, UrlHelper urlHelper);
 
+        void UpdateBeneficiaryStatus(Guid id, bool isActive);
+        void AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles);
+        Beneficiary GetBeneficiaryById(Guid id);
+        void UpdateBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles);
 
+        //payments
+        List<BeneficiaryDTO> GetBeneficiaryList(Guid id);
+
+        //balance update
+        void AddBalance(Guid id, double amount);
 
 
     }

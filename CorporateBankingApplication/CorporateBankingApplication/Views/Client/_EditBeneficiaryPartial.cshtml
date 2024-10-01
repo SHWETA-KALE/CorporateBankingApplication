@@ -1,0 +1,118 @@
+﻿@model CorporateBankingApplication.DTOs.BeneficiaryDTO
+
+@*@using (Html.BeginForm())
+{*@
+    @Html.AntiForgeryToken()
+    
+<div class="container">
+    <div class="row">
+        <!-- Left column: Form -->
+        <div class="col-md-6">
+            <div class="form-horizontal">
+                <h2 class="text-center my-4 pt-3">Edit Beneficiary</h2>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BeneficiaryName, htmlAttributes: new { @class = "control-label col-md-4 mb-2" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.BeneficiaryName, new { htmlAttributes = new { @class = "form-control mb-4", id = "editBeneficiaryName" } })
+                        @Html.ValidationMessageFor(model => model.BeneficiaryName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "control-label col-md-4 mb-2" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.AccountNumber, new { htmlAttributes = new { @class = "form-control mb-4", id = "editAccountNumber" } })
+                        @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BankIFSC, htmlAttributes: new { @class = "control-label col-md-4 mb-2" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.BankIFSC, new { htmlAttributes = new { @class = "form-control mb-4", id = "editBankIFSC" } })
+                        @Html.ValidationMessageFor(model => model.BankIFSC, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BeneficiaryIdProof, htmlAttributes: new { @class = "control-label col-md-4 mb-2" })
+                    <div class="col-md-8">
+                        <input type="file" name="uploadedDocs1" class="form-control mb-4" id="editBeneficiaryIdProof" />
+                        @Html.ValidationMessageFor(model => model.BeneficiaryIdProof, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BeneficiaryAddressProof, htmlAttributes: new { @class = "control-label col-md-4 mb-2" })
+                    <div class="col-md-8">
+                        <input type="file" name="uploadedDocs1" class="form-control mb-4" id="editBeneficiaryAddressProof" />
+                        @Html.ValidationMessageFor(model => model.BeneficiaryAddressProof, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-8">
+                        <input type="button" value="Save Changes" class="btn btn-outline-dark" onclick="saveBeneficiaryChanges()" />
+                    </div>
+                </div>
+                @Html.ActionLink("Go Back To Beneficiary List", "ViewAllOutboundBeneficiaries", null, new { @class = "btn btn-lg btn-primary my-3" })
+            </div>
+        </div>
+
+        <!-- Right column: Image -->
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+            <img src="~/Content/images/beneficiary.png" class="img-fluid" alt="Beneficiary Image" style="max-width: 100%; height: auto;">
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#btnEditBeneficiary").click(() => {
+        //var data = {
+        //    Id: $("#editBeneficiaryId").val(),
+        //    BeneficiaryName: $("#editedBeneficiaryName").val(),
+        //    AccountNumber: $("#editedAccountNumber").val(),
+        //    BankIFSC: $("#editedBankIFSC").val(),
+
+        //};
+        //modifyBeneficiary(data);
+        // Create a FormData object to handle file and form data
+        var formData = new FormData();
+
+        // Add form fields to FormData
+        formData.append("Id", $("#editBeneficiaryId").val());
+        formData.append("BeneficiaryName", $("#editedBeneficiaryName").val());
+        formData.append("AccountNumber", $("#editedAccountNumber").val());
+        formData.append("BankIFSC", $("#editedBankIFSC").val());
+
+        // Add the files to FormData if present
+        //var idProofFile = $("#newIdProof")[0].files[0];
+        //var addressProofFile = $("#newAddressProof")[0].files[0];
+
+        var idProofInput = $("#newIdProof");
+        if (idProofInput.length > 0 && idProofInput[0].files.length > 0) {
+            var idProofFile = idProofInput[0].files[0]; // Access the first file
+        } else {
+            console.error("No file selected for ID proof.");
+        }
+        var addressProofInput = $("#newAddressProof");
+        if (addressProofInput.length > 0 && addressProofInput[0].files.length > 0) {
+            var addressProofFile = addressProofInput[0].files[0]; // Access the first file
+        } else {
+            console.error("No file selected for ID proof.");
+        }
+
+
+        if (idProofFile) {
+            formData.append("newIdProof", idProofFile);
+        }
+        if (addressProofFile) {
+            formData.append("newAddressProof", addressProofFile);
+        }
+
+        // Send the form data with AJAX
+        modifyBeneficiary(formData);
+    });
+</script>

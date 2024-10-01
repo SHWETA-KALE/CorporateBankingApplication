@@ -17,9 +17,12 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.BeneficiaryName).Not.Nullable();
             Map(x => x.AccountNumber).Not.Nullable();
             Map(x => x.BankIFSC).Not.Nullable();
+            Map(x => x.BeneficiaryStatus).CustomType<CorporateStatus>().Not.Nullable();
             Map(x => x.BeneficiaryType).CustomType<BeneficiaryType>().Not.Nullable();
+            Map(x => x.IsActive).Not.Nullable();
             References(x => x.Client).Column("ClientId").Cascade.None().Nullable();
-            HasMany(x => x.Payments).Cascade.All().Inverse();  
+            HasMany(x => x.Payments).Cascade.All().Inverse();
+            HasMany(x => x.Documents).Cascade.All().Inverse();
         }
     }
 }

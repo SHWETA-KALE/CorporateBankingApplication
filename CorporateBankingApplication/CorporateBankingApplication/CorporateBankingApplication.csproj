@@ -55,6 +55,9 @@
     <Reference Include="BCrypt.Net-Next, Version=4.0.3.0, Culture=neutral, PublicKeyToken=1e11be04b6288443, processorArchitecture=MSIL">
       <HintPath>..\packages\BCrypt.Net-Next.4.0.3\lib\net48\BCrypt.Net-Next.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="CsvHelper, Version=33.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.33.0.1\lib\net48\CsvHelper.dll</HintPath>
     </Reference>
@@ -104,8 +107,14 @@
     <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.35.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.35.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=5.4.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.5.4.9\lib\net48\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Razorpay, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Razorpay.3.1.3\lib\net48\Razorpay.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
@@ -257,11 +266,14 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\Custom.css" />
     <Content Include="Content\dashboard.css" />
-    <Content Include="Content\images\homepage.jpg" />
-    <Content Include="Content\images\login.jpg" />
+    <Content Include="Content\images\beneficiary.png" />
+    <Content Include="Content\images\employee.png" />
+    <Content Include="Content\images\homepage.png" />
+    <Content Include="Content\images\login.png" />
     <Content Include="Content\images\logo.jpg" />
-    <Content Include="Content\images\register.jpg" />
-    <Content Include="Content\images\welcome.jpg" />
+    <Content Include="Content\images\profile.png" />
+    <Content Include="Content\images\register.png" />
+    <Content Include="Content\images\welcome.png" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
     <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
     <Content Include="Content\Site.css" />
@@ -328,6 +340,8 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\BeneficiariesOutboundCrud.js" />
+    <Content Include="Scripts\BeneficiaryVerification.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -396,13 +410,18 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
+    <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Data\NHibernateHelper.cs" />
     <Compile Include="Data\PasswordHelper.cs" />
+    <Compile Include="DTOs\AdminDTO.cs" />
+    <Compile Include="DTOs\BeneficiaryDTO.cs" />
     <Compile Include="DTOs\ClientDTO.cs" />
     <Compile Include="DTOs\DocumentDTO.cs" />
     <Compile Include="DTOs\EmployeeDTO.cs" />
     <Compile Include="DTOs\EmployeeSalaryDisbursementDTO.cs" />
+    <Compile Include="DTOs\PaymentBeneficiaryDTO.cs" />
+    <Compile Include="DTOs\PaymentDTO.cs" />
     <Compile Include="DTOs\UserDTO.cs" />
     <Compile Include="Enum\BeneficiaryType.cs" />
     <Compile Include="Enum\CorporateStatus.cs" />
@@ -434,7 +453,9 @@
     <Compile Include="Repositories\ClientRepository.cs" />
     <Compile Include="Repositories\IAdminRepository.cs" />
     <Compile Include="Repositories\IClientRepository.cs" />
+    <Compile Include="Repositories\IPaymentRepository.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />
+    <Compile Include="Repositories\PaymentRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\AdminService.cs" />
     <Compile Include="Services\ClientService.cs" />
@@ -442,7 +463,9 @@
     <Compile Include="Services\IAdminService.cs" />
     <Compile Include="Services\IClientService.cs" />
     <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\IPaymentService.cs" />
     <Compile Include="Services\IUserService.cs" />
+    <Compile Include="Services\PaymentService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="WebRoleProvider.cs" />
   </ItemGroup>
@@ -472,7 +495,6 @@
     <Content Include="Scripts\bootstrap.bundle.min.js.map" />
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
@@ -486,9 +508,18 @@
     <Content Include="Views\Admin\VerifySalaryDisbursement.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\AboutUs.cshtml" />
+    <Content Include="Views\Client\EditClientRegistrationDetails.cshtml" />
     <Content Include="Views\Admin\AdminDashboard.cshtml" />
     <Content Include="Views\Client\ClientDashboard.cshtml" />
-    <Content Include="Views\Client\EditClientRegistrationDetails.cshtml" />
+    <Content Include="Views\Client\_AddBeneficiaryPartial.cshtml" />
+    <Content Include="Views\Client\_EditBeneficiaryPartial.cshtml" />
+    <Content Include="Views\Client\ViewAllOutboundBeneficiaries.cshtml" />
+    <Content Include="Views\Admin\VerifyOutboundBeneficiaryData.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Admin\ViewAdminProfile.cshtml" />
+    <Content Include="Views\Client\ViewBeneficiaryListForPayment.cshtml" />
+    <Content Include="Views\Client\ViewClientProfile.cshtml" />
+    <Content Include="Views\Client\_AddBalancePartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -498,6 +529,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Payment\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

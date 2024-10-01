@@ -20,16 +20,27 @@ namespace CorporateBankingApplication.Repositories
 
         void UpdateClient(Client client);
 
+        void UpdateClientBeneficiaryStatus(Client client);
+
         //SALARY DISBURSEMENT
         IEnumerable<EmployeeSalaryDisbursementDTO> GetSalaryDisbursementsByStatus(CorporateStatus status);
 
         bool ApproveSalaryDisbursement(Guid salaryDisbursementId);
         bool RejectSalaryDisbursement(Guid salaryDisbursementId);
 
+        SalaryDisbursement GetSalaryDisbursementById(Guid id);
 
+        //beneficiary verification
+        List<Beneficiary> GetPendingBeneficiaries();
+        Beneficiary GetBeneficiaryById(Guid id);
 
+        void UpdateBeneficiary(Beneficiary beneficiary);
 
+        //admin profile 
+        Admin GetAdminById(Guid id);
 
+        //payment verification
+        IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status);
 
     }
 }

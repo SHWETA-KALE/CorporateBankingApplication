@@ -22,12 +22,12 @@ namespace CorporateBankingApplication.Controllers
         {
             _userService = userService;
         }
-
+        [AllowAnonymous]
         public ActionResult Index()
         {
             return View();
         }
-
+        [AllowAnonymous]
         public ActionResult AboutUs()
         {
             return View();
@@ -44,6 +44,10 @@ namespace CorporateBankingApplication.Controllers
         [AllowAnonymous]
         public ActionResult Login(UserDTO userDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(userDto);
+            }
             var result = _userService.IsLogging(userDto);
 
             if (result != null)
@@ -76,6 +80,11 @@ namespace CorporateBankingApplication.Controllers
         [AllowAnonymous]
         public ActionResult Register(ClientDTO clientDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(clientDTO);
+            }
+
             var uploadedFiles = new List<HttpPostedFileBase>();
 
             var companyIdProof = Request.Files["uploadedFiles1"];
@@ -101,7 +110,7 @@ namespace CorporateBankingApplication.Controllers
         {
             FormsAuthentication.SignOut();
             Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index");
         }
 
         [AllowAnonymous]

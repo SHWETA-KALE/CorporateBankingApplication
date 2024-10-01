@@ -1,4 +1,5 @@
-﻿using CorporateBankingApplication.Models;
+﻿using CorporateBankingApplication.Enum;
+using CorporateBankingApplication.Models;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -109,6 +110,75 @@ namespace CorporateBankingApplication.Repositories
             var endOfMonth = startOfMonth.AddMonths(1);
 
             return _session.Query<SalaryDisbursement>().FirstOrDefault(sd=>sd.Employee.Id == employeeId && sd.DisbursementDate >= startOfMonth && sd.DisbursementDate < endOfMonth);
+        }
+
+
+        /*beneficiaries*/
+        public List<Beneficiary> GetAllOutboundBeneficiaries(Guid clientId)
+        {
+            var beneficiaries = _session.Query<Beneficiary>().Where(b => b.Client.Id == clientId && b.BeneficiaryType == BeneficiaryType.OUTBOUND).ToList();
+            return beneficiaries;
+        }
+
+        public void UpdateBeneficiaryStatus(Guid id, bool isActive)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                var beneficiary = _session.Get<Beneficiary>(id);
+                if (beneficiary != null)
+                {
+                    beneficiary.IsActive = isActive;
+                    _session.Update(beneficiary);
+                    transaction.Commit();
+                }
+            }
+
+        }
+
+        public void AddNewBeneficiary(Beneficiary beneficiary)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Save(beneficiary);
+
+                //_session.Update(beneficiary.Client);
+                transaction.Commit();
+            }
+
+        }
+        public Beneficiary GetBeneficiaryById(Guid id)
+        {
+            return _session.Get<Beneficiary>(id);
+        }
+        public void UpdateBeneficiary(Beneficiary beneficiary)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Update(beneficiary);
+                transaction.Commit();
+            }
+
+        }
+
+        /****************************AddBalance**************************************/
+        public void AddBalance(Guid id, double amount)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                var client = GetClientById(id);
+                client.Balance += amount;
+                _session.Update(client);
+                transaction.Commit();
+            }
+        }
+
+        /*******************************PAYMENTS*********************************/
+        public List<Beneficiary> GetBeneficiaryList(Guid clientId)
+        {
+            var beneficiaries = _session.Query<Beneficiary>().Where(b =>
+            (b.Client.Id == clientId && b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.OUTBOUND && b.IsActive == true)
+            || (b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.INBOUND && b.IsActive == true)).ToList();
+            return beneficiaries;
         }
     }
 }

@@ -34,8 +34,8 @@
                         <td>@disbursement.DisbursementDate.ToShortDateString()</td>
                         <td>@disbursement.SalaryStatus.ToString()</td>
                         <td>
-                            <button class="btn btn-success approve-btn" data-id="@disbursement.SalaryDisbursementId">Approve</button>
-                            <button class="btn btn-danger reject-btn" data-id="@disbursement.SalaryDisbursementId">Reject</button>
+                            <button class="btn btn-success approve-btn" onclick="approveDisbursement('@disbursement.SalaryDisbursementId')">Approve</button>
+                            <button class="btn btn-danger reject-btn" onclick="rejectDisbursement('@disbursement.SalaryDisbursementId')">Reject</button>
                         </td>
                     </tr>
                 }
@@ -55,107 +55,167 @@
 
         <script src="~/Scripts/jquery-3.7.1.min.js"></script>
         <script>
-           function approveDisbursement(salaryDisbursementId) {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("ApproveDisbursement", "Admin")',
-                data: { salaryDisbursementId: salaryDisbursementId },
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        // Optionally refresh the disbursement list or reload the page
-                        location.reload();
-                    } else {
-                        alert(response.message);
+            function approveDisbursement(salaryDisbursementId) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ApproveDisbursement", "Admin")',
+                    data: { salaryDisbursementId: salaryDisbursementId },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            // Optionally refresh the disbursement list or reload the page
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("An error occurred while approving the disbursement: " + error);
                     }
-                },
-                error: function(xhr, status, error) {
-                    alert("An error occurred while approving the disbursement: " + error);
-                }
-            });
-        }
+                });
+            }
 
-        function rejectDisbursement(salaryDisbursementId) {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("RejectDisbursement", "Admin")', // Assuming you have this action
-                data: { salaryDisbursementId: salaryDisbursementId },
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        // Optionally refresh the disbursement list or reload the page
-                        location.reload();
-                    } else {
-                        alert(response.message);
+            function rejectDisbursement(salaryDisbursementId) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RejectDisbursement", "Admin")',
+                    data: { salaryDisbursementId: salaryDisbursementId },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            // Optionally refresh the disbursement list or reload the page
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("An error occurred while rejecting the disbursement: " + error);
                     }
-                },
-                error: function(xhr, status, error) {
-                    alert("An error occurred while rejecting the disbursement: " + error);
-                }
-            });
-        }
+                });
+            }
         </script>
     }*@
-
-
 @model IEnumerable<CorporateBankingApplication.DTOs.EmployeeSalaryDisbursementDTO>
 
 @{
     ViewBag.Title = "Verify Salary Disbursement";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div>
+    <h2 class="text-center my-4 pt-3">Salary Disbursements Requests</h2>
+    <table id="salaryDisbursementsTable" class="table text-center">
+        <thead class="thead-dark my-3">
+            <tr>
+                <th>Select</th>
+                <th>Company Name</th>
+                <th>Employee First Name</th>
+                <th>Employee Last Name</th>
+                <th>Salary</th>
+                <th>Disbursement Date</th>
 
-<h2>Salary Disbursements Request</h2>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var disbursement in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="salary-checkbox"
+                                   value="@disbursement.SalaryDisbursementId" />
+                        </td>
+                        <td>@disbursement.CompanyName</td>
+                        <td>@disbursement.EmployeeFirstName</td>
+                        <td>@disbursement.EmployeeLastName</td>
+                        <td>@disbursement.Salary.ToString("F2")</td>
+                        <td>@disbursement.DisbursementDate.ToShortDateString()</td>
 
-<table id="salaryDisbursementsTable" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Disbursement ID</th>
-            <th>Company Name</th>
-            <th>Employee First Name</th>
-            <th>Employee Last Name</th>
-            <th>Salary</th>
-            <th>Disbursement Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            foreach (var disbursement in Model)
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td>@disbursement.SalaryDisbursementId</td>
-                    <td>@disbursement.CompanyName</td>
-                    <td>@disbursement.EmployeeFirstName</td>
-                    <td>@disbursement.EmployeeLastName</td>
-                    <td>@disbursement.Salary.ToString("F2")</td>
-                    <td>@disbursement.DisbursementDate.ToShortDateString()</td>
-                    <td>@disbursement.SalaryStatus.ToString()</td>
-                    <td>
-                        <button class="btn btn-success approve-btn" onclick="approveDisbursement('@disbursement.SalaryDisbursementId')">Approve</button>
-                        <button class="btn btn-danger reject-btn" onclick="rejectDisbursement('@disbursement.SalaryDisbursementId')">Reject</button>
-                    </td>
+                    <td colspan="8" class="text-center">No pending salary disbursements available.</td>
                 </tr>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="8" class="text-center">No pending salary disbursements available.</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<button id="refreshButton" class="btn btn-primary">Refresh Data</button>
-
+        </tbody>
+    </table>
+    <button id="approveSelected" class="btn btn-lg btn-success">Approve Selected</button>
+    <button id="rejectSelected" class="btn btn-lg btn-danger">Reject Selected</button>
+    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary" })
+</div>
 @section Scripts {
 
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script>
-        function approveDisbursement(salaryDisbursementId) {
+
+        // Get selected checkboxes
+        function getSelectedDisbursements() {
+            var selectedIds = [];
+            $(".salary-checkbox:checked").each(function () {
+                selectedIds.push($(this).val());
+            });
+            return selectedIds;
+        }
+
+        // Approve selected disbursements
+        $('#approveSelected').click(function () {
+            var selectedIds = getSelectedDisbursements();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one salary disbursement.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ApproveDisbursements", "Admin")',
+                data: { disbursementIds: selectedIds },
+                traditional: true, // This ensures the array is sent correctly
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while approving the disbursements: " + error);
+                }
+            });
+        });
+
+        //Reject salary Disbursement
+        $('#rejectSelected').click(function () {
+            var selectedIds = getSelectedDisbursements();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one salary disbursement.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                 url: '@Url.Action("RejectDisbursements", "Admin")',
+                data: { disbursementIds: selectedIds },
+                traditional: true,
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while rejecting the disbursements: " + error);
+                }
+            });
+        })
+
+        @*function approveDisbursement(salaryDisbursementId) {
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("ApproveDisbursement", "Admin")',
@@ -173,7 +233,7 @@
                     alert("An error occurred while approving the disbursement: " + error);
                 }
             });
-        }
+        }*@
 
         function rejectDisbursement(salaryDisbursementId) {
             $.ajax({

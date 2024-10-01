@@ -1,4 +1,5 @@
-﻿function LoadEmployees() {
+﻿
+function LoadEmployees() {
     $.ajax({
         url: "/Client/GetAllEmployees",
         type: "GET",
@@ -32,7 +33,7 @@
                     </td>
 
                      <td class="edit-btn-cell">
-                            <button onClick="editEmployee('${employee.Id}')" class="btn btn-success edit-btn"
+                            <button onClick="editEmployee('${employee.Id}')" class="btn btn-outline-dark edit-btn"
                             style="${employee.IsActive ? '' : 'display:none;'}">Edit</button>
                       </td>
 
@@ -70,6 +71,53 @@
         }
     });
 }
+
+//function addNewEmployee() {
+//    var newEmployee = {
+//        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
+//        FirstName: $("#newFName").val(),
+//        LastName: $("#newLName").val(),
+//        Email: $("#newEmail").val(),
+//        Position: $("#newPosition").val(),
+//        Phone: $("#newPhone").val(),
+//        Salary: $("#newSalary").val()
+//    };
+
+//    $.ajax({
+//        url: "/Client/Add",
+//        type: "POST",
+//        data: newEmployee,
+//        success: function (response) {
+//            if (response.success) {
+//                alert("New Employee added successfully");
+//                LoadEmployees();
+//                $("#newRecord").hide();
+//                $("#employeeList").show();
+//            } else {
+//                //$.each(response.errors, function (key, value) {
+//                //    $("#" + key).after('<span class="text-danger">' + value + '</span>');
+//                //});
+
+//                // Clear previous validation messages
+//                $('.text-danger').remove();
+
+//                // Display validation errors in the respective fields
+//                $.each(response.errors, function (key, errors) {
+//                    var inputField = $("#" + key);
+//                    if (inputField.length) {
+//                        inputField.after("<span class='text-danger'>" + errors.join(', ') + "</span>");
+//                    }
+//                });
+
+//            }
+
+//        },
+//        error: function (err) {
+//            alert("error adding new employee");
+//            console.log(err);
+//        }
+//    })
+//}
 
 function addNewEmployee() {
     var newEmployee = {
@@ -164,6 +212,13 @@ function updateEmployeeStatus(employeeId, isActive) {
                     editButton.show();  
                 } else {
                     editButton.hide();  
+                }
+
+                var salaryDisbursementCheckbox = employeeRow.find(".is-SalaryDisbursed-checkbox");
+                if (isActive) {
+                    salaryDisbursementCheckbox.show();
+                } else {
+                    salaryDisbursementCheckbox.hide();
                 }
             } else {
                 alert("Error updating employee status: " + response.message);

@@ -17,7 +17,10 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.Amount).Not.Nullable();
             Map(x => x.PaymentStatus).CustomType<CorporateStatus>().Not.Nullable();
             Map(x => x.PaymentRequestDate).Not.Nullable();
-            Map(x => x.PaymentApprovalDate).Not.Nullable();
+            Map(x => x.PaymentApprovalDate).Nullable();
+            Map(x => x.RazorpayPaymentId);
+            Map(x => x.ClientId);
+
             References(x => x.Beneficiary).Column("BeneficiaryId").Cascade.None().Not.Nullable();
         }
     }

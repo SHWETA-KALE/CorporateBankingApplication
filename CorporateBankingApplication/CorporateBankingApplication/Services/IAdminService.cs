@@ -10,7 +10,7 @@ namespace CorporateBankingApplication.Services
 {
     public interface IAdminService
     {
-        List<Client> ViewAllClients();
+        List<ClientDTO> ViewAllClients();
         void EditClient(ClientDTO clientDTO, Guid id);
         void RemoveClient(Guid id);
 
@@ -18,12 +18,28 @@ namespace CorporateBankingApplication.Services
 
         bool UpdateClientOnboardingStatus(Guid id, string status);
 
+        bool ToggleClientActiveStatus(Guid id, bool isActive, out string message);
 
         //SALARY DISBURSEMENTS
         IEnumerable<EmployeeSalaryDisbursementDTO> GetPendingSalaryDisbursements();
 
 
-        bool ApproveSalaryDisbursement(Guid salaryDisbursementId);
-        bool RejectSalaryDisbursement(Guid salaryDisbursementId);
+        //bool ApproveSalaryDisbursement(Guid salaryDisbursementId);
+        // bool RejectSalaryDisbursement(Guid salaryDisbursementId);
+
+        bool ApproveSalaryDisbursement(Guid salaryDisbursementId, bool isBatch = false);
+        bool RejectSalaryDisbursement(Guid salaryDisbursementId, bool isBatch = false);
+
+        //beneficiary
+
+
+        List<BeneficiaryDTO> GetBeneficiariesForVerification(UrlHelper urlHelper);
+        bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status);
+
+        //admin profile 
+        AdminDTO GetAdminById(Guid id);
+
+        //payment verification 
+        IEnumerable<PaymentDTO> GetPendingPayments();
     }
 }
