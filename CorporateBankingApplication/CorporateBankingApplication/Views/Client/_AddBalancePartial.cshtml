@@ -1,0 +1,63 @@
+﻿@model CorporateBankingApplication.DTOs.ClientDTO
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        <div class="form-group">
+            @Html.HiddenFor(model => model.Id, new { id = "clientId" })
+
+            @Html.Label("Enter Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="number" class="form-control" id="newAddedAmount" />
+                @Html.ValidationMessageFor(model => model.Balance, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Add Amount" class="btn btn-outline-dark my-3" onclick="updateClientBalance()"/>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function updateClientBalance() {
+        var clientId = $("#clientId").val();
+        var amount = $("#newAddedAmount").val();
+        if (isNaN(amount) || amount <= 0) {
+            alert("Please enter a valid amount greater than zero.");
+            return; // Exit the function if the amount is invalid
+        }
+        $.ajax({
+            url: "/Client/AddBalance",
+            type: "POST",
+            data: { id: clientId, amount: amount },
+            success: function (response) {
+                alert("Balance Updated Sucessfully");
+                // Fetch the updated client profile
+                $.ajax({
+                    url: "/Client/ViewClientProfile",
+                    type: "GET",
+                    data: { id: clientId },
+                    success: function (profileHtml) {
+                        $("#clientProfile").html(profileHtml);
+                        $("#addNewBalance").hide();
+                    },
+                    error: function (err) {
+                        alert("Error fetching updated profile");
+                        console.log(err);
+                    }
+                });
+            },
+            error: function (err) {
+                alert("Error in updating balance");
+                console.log(err);
+            }
+        })
+    }
+
+</script>

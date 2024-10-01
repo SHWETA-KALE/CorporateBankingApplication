@@ -22,12 +22,14 @@ namespace CorporateBankingApplication.Controllers
         {
             _userService = userService;
         }
-
+        [HttpGet]
+        [AllowAnonymous]
         public ActionResult Index()
         {
             return View();
         }
-
+        [HttpGet]
+        [AllowAnonymous]
         public ActionResult AboutUs()
         {
             return View();
@@ -101,39 +103,39 @@ namespace CorporateBankingApplication.Controllers
         {
             FormsAuthentication.SignOut();
             Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index");
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult RegisterAdmin()
-        {
-            return View();
-        }
+        //[AllowAnonymous]
+        //[HttpGet]
+        //public ActionResult RegisterAdmin()
+        //{
+        //    return View();
+        //}
 
 
-        [AllowAnonymous]
-        [HttpPost]
-        public ActionResult RegisterAdmin(Admin admin)
-        {
-            using (var session = NHibernateHelper.CreateSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    admin.Password = PasswordHelper.HashPassword(admin.Password);
-                    var role = new Role
-                    {
-                        RoleName = "Admin",
-                        User = admin
-                    };
-                    session.Save(admin);
-                    session.Save(role);
-                    transaction.Commit();
-                    return RedirectToAction("Login");
-                }
+        //[AllowAnonymous]
+        //[HttpPost]
+        //public ActionResult RegisterAdmin(Admin admin)
+        //{
+        //    using (var session = NHibernateHelper.CreateSession())
+        //    {
+        //        using (var transaction = session.BeginTransaction())
+        //        {
+        //            admin.Password = PasswordHelper.HashPassword(admin.Password);
+        //            var role = new Role
+        //            {
+        //                RoleName = "Admin",
+        //                User = admin
+        //            };
+        //            session.Save(admin);
+        //            session.Save(role);
+        //            transaction.Commit();
+        //            return RedirectToAction("Login");
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
 
     }

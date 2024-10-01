@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CorporateBankingApplication.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -25,14 +26,18 @@ namespace CorporateBankingApplication.DTOs
         public string ContactInformation { get; set; }
         [Required]
         public string Location { get; set; }
-
+        [Required]
+        public double Balance { get; set; }
+        [Required]
+        public bool IsActive { get; set; }
         [Required]
         [Display(Name = "Account Number")]
         public string AccountNumber { get; set; }
         [Required]
         public string IFSC { get; set; }
         [Required]
-        public double Balance { get; set; }
+        public CorporateStatus OnboardingStatus { get; set; }
+        
         [Required]
         public HttpPostedFileBase Document1 { get; set; }
         [Required]

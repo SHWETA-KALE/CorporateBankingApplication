@@ -1,0 +1,43 @@
+﻿@model CorporateBankingApplication.DTOs.AdminDTO
+
+@{
+    ViewBag.Title = "ViewAdminProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center mt-4 pt-5">Admin Profile</h2>
+
+<div class="container">
+    <div class="row">
+        <!-- Profile Image Column -->
+        <div class="col-md-4 text-center">
+            <img src="~/Content/images/profile.png" class="rounded-circle img-fluid" alt="Admin Profile" style="max-width: 200px;">
+        </div>
+
+        <!-- Admin Details Column -->
+        <div class="col-md-8">
+            <dl class="row pt-5">
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.UserName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.UserName)
+                </dd>
+
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.BankName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.BankName)
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>

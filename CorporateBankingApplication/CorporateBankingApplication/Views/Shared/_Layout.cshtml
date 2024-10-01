@@ -10,11 +10,13 @@
     <link href="~/Content/dashboard.css" rel="stylesheet" />
     <link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.7/umd/popper.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/i18n/grid.locale-en.js"></script>
     <script src="~/Scripts/jquery.jqGrid.min.js"></script>
     @* added for icons *@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
 </head>
 <body>
@@ -31,6 +33,9 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        @Html.ActionLink("Home", "Index", "User", new { area = "" }, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
+                    </li>
                     <li class="nav-item">
                         @Html.ActionLink("About Us", "AboutUs", "User", new { area = "" }, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
                     </li>
@@ -49,9 +54,39 @@
                                 @Html.ActionLink("DashBoard", "ClientDashboard", "Client", new { area = "" }, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
                             </li>
                         }
-                        <li class="nav-item">
-                            @Html.ActionLink("Logout", "Logout", "User", new { area = "" }, new { @class = "nav-link text-light", style = "font-size: 1.2rem;" })
+                        <!-- Profile section -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem;">
+                                <i class="fas fa-user-circle"></i> @User.Identity.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right shadow-lg rounded" aria-labelledby="navbarDropdown" style="min-width: 200px;">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a class="dropdown-item py-2" href="@Url.Action("ViewAdminProfile", "Admin")">
+                                            <i class="fas fa-user me-2"></i> Profile
+                                        </a>
+                                    </li>
+                                }
+                                else if (User.IsInRole("Client"))
+                                {
+                                    <li>
+                                        <a class="dropdown-item py-2" href="@Url.Action("ViewClientProfile", "Client")">
+                                            <i class="fas fa-user me-2"></i> Profile
+                                        </a>
+                                    </li>
+                                }
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="@Url.Action("Logout", "User")">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
+
                     }
                     else
                     {
@@ -89,13 +124,7 @@
                         </li>
                         <li>
                             <a href="@Url.Action("AboutUs", "User")" class="text-light">About Us</a>
-                        </li>
-                        @*<li>
-                                <a href="@Url.Action("Contact", "Home")" class="text-light">Contact</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Privacy", "Home")" class="text-light">Privacy Policy</a>
-                            </li>*@
+                        </li>               
                     </ul>
                 </div>
                 <!-- Social Media Icons -->

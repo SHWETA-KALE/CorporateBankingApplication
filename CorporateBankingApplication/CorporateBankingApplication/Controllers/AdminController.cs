@@ -1,5 +1,7 @@
 ﻿using Azure.Core;
+using CorporateBankingApplication.Data;
 using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Services;
 using System;
 using System.Collections.Generic;
@@ -73,12 +75,10 @@ namespace CorporateBankingApplication.Controllers
                         : clientDetailList.OrderByDescending(cd => cd.Balance).ToList();
                     break;
                 case "OnBoardingStatus":
-                    clientDetailList = sord == "asc" ? clientDetailList.OrderBy(cd => cd.OnBoardingStatus).ToList()
-                        : clientDetailList.OrderByDescending(cd => cd.OnBoardingStatus).ToList();
+                    clientDetailList = sord == "asc" ? clientDetailList.OrderBy(cd => cd.OnboardingStatus).ToList()
+                        : clientDetailList.OrderByDescending(cd => cd.OnboardingStatus).ToList();
                     break;
             }
-
-
             var jsonData = new
             {
                 total = totalPages,
@@ -95,7 +95,10 @@ namespace CorporateBankingApplication.Controllers
                  cd.ContactInformation,
                  cd.Location,
                  cd.Balance.ToString(),
-                 cd.OnBoardingStatus.ToString()
+                 cd.AccountNumber,
+                 cd.IFSC,
+                 cd.OnboardingStatus.ToString(),
+                 cd.IsActive.ToString()
                     }
                 }).Skip(page - 1 * rows).Take(rows).ToArray()
             };
@@ -107,13 +110,16 @@ namespace CorporateBankingApplication.Controllers
             return Json(new { success = true, message = "Client Details Edited successfully." });
         }
 
-        public ActionResult DeleteClientDetails(Guid id)
+        public JsonResult UpdateClientIsActive(Guid id, bool isActive)
         {
-            _adminService.RemoveClient(id);
-            return Json(new { success = true, message = "Client Deleted successfully." });
+            string message;
+            bool success = _adminService.ToggleClientActiveStatus(id, isActive, out message);
+
+            return Json(new { success = success, message = message });
         }
 
-        //**********************Verification***********************************************
+
+        /********************************Verification***********************************************/
 
         public ActionResult VerifyClientsData()
         {
@@ -155,7 +161,7 @@ namespace CorporateBankingApplication.Controllers
         [HttpPost]
         public ActionResult ApproveDisbursement(Guid salaryDisbursementId)
         {
-            bool success = _adminService.ApproveSalaryDisbursement(salaryDisbursementId); 
+            bool success = _adminService.ApproveSalaryDisbursement(salaryDisbursementId);
 
             if (success)
             {
@@ -179,7 +185,7 @@ namespace CorporateBankingApplication.Controllers
         [HttpPost]
         public ActionResult RejectDisbursement(Guid salaryDisbursementId)
         {
-            
+
             bool success = _adminService.RejectSalaryDisbursement(salaryDisbursementId);
 
             if (success)
@@ -199,7 +205,46 @@ namespace CorporateBankingApplication.Controllers
                 });
             }
         }
+        /****************************VERIFY OUTBOUND BENEFICIARIES*******************************/
+        public ActionResult VerifyOutboundBeneficiaryData()
+        {
+            return View();
+        }
+        public ActionResult GetOutboundBeneficiaryForVerification()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            var urlHelper = new UrlHelper(Request.RequestContext); // Create UrlHelper here
+            var beneficiaryDtos = _adminService.GetBeneficiariesForVerification(urlHelper);
+            return Json(beneficiaryDtos, JsonRequestBehavior.AllowGet);
+        }
 
+        [HttpPost]
+        public ActionResult UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status)
+        {
+            var result = _adminService.UpdateOutboundBeneficiaryOnboardingStatus(id, status);
+            if (result)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Failed to update status" });
+            }
+        }
 
+        /****************************PROFILE*******************************/
+        public ActionResult ViewAdminProfile()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid adminId = (Guid)Session["UserId"];
+            var admin = _adminService.GetAdminById(adminId);
+            return View(admin);
+        }
     }
 }

@@ -19,10 +19,26 @@ namespace CorporateBankingApplication.Services
             _adminRepository = adminRepository;
             _emailService = emailService;
         }
-        public List<Client> ViewAllClients()
+
+
+        public List<ClientDTO> ViewAllClients()
         {
             var clients = _adminRepository.GetAllClients();
-            return clients;
+            var clientDtos = clients.Select(client => new ClientDTO
+            {
+                Id = client.Id,
+                UserName = client.UserName,
+                Email = client.Email,
+                CompanyName = client.CompanyName,
+                ContactInformation = client.ContactInformation,
+                Location = client.Location,
+                Balance = client.Balance,
+                OnboardingStatus = client.OnBoardingStatus,
+                IsActive = client.IsActive,
+                AccountNumber = client.AccountNumber,
+                IFSC = client.IFSC
+            }).ToList();
+            return clientDtos;
         }
         public void EditClient(ClientDTO clientDTO, Guid id)
         {
@@ -37,10 +53,25 @@ namespace CorporateBankingApplication.Services
             };
             _adminRepository.UpdateClientDetails(client);
         }
-
-        public void RemoveClient(Guid id)
+        public bool ToggleClientActiveStatus(Guid id, bool isActive, out string message)
         {
-            _adminRepository.DeleteClientDetails(id);
+            var client = _adminRepository.GetClientById(id);
+            if (client == null)
+            {
+                message = "Client not found";
+                return false;
+            }
+            if (client.IsActive != isActive)
+            {
+                client.IsActive = isActive;
+            }
+            else
+            {
+                client.IsActive = !isActive;
+            }
+            _adminRepository.UpdateClientBeneficiaryStatus(client);
+            message = "Client status updated successfully";
+            return true;
         }
 
         //*******************************VERIFY**************************
@@ -99,7 +130,55 @@ namespace CorporateBankingApplication.Services
         {
             return _adminRepository.RejectSalaryDisbursement(salaryDisbursementId); // Implement this in your repository
         }
+        /****************************VERIFY OUTBOUND BENEFICIARIES*******************************/
+        public List<BeneficiaryDTO> GetBeneficiariesForVerification(UrlHelper urlHelper)
+        {
+            var beneficiaries = _adminRepository.GetPendingBeneficiaries();
+            var beneficiariesDto = beneficiaries.Select(b => new BeneficiaryDTO
+            {
+                Id = b.Id,
+                BeneficiaryName = b.BeneficiaryName,
+                AccountNumber = b.AccountNumber,
+                BankIFSC = b.BankIFSC,
+                BeneficiaryType = b.BeneficiaryType.ToString().ToUpper(),
+                DocumentUrls = b.Documents.Select(d => urlHelper.Content(d.FilePath)).ToList()
+            }).ToList();
+            return beneficiariesDto;
+        }
+        public bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status)
+        {
+            var beneficiary = _adminRepository.GetBeneficiaryById(id);
+            if (beneficiary.Client == null)
+            {
+                // Client not found
+                return false;
+            }
+            // Update onboarding status based on the status string
+            if (status == "APPROVED")
+            {
+                beneficiary.BeneficiaryStatus = CorporateStatus.APPROVED;
+                _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Approved!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been approved after verification of the details and documents submitted by you.");
+            }
+            else if (status == "REJECTED")
+            {
+                beneficiary.BeneficiaryStatus = CorporateStatus.REJECTED;
+                _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Rejected!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been rejected due to discrepancies in the submitted details and documents.");
+            }
+            _adminRepository.UpdateBeneficiary(beneficiary);
+            return true;
+        }
+        /****************************PROFILE*******************************/
 
+        public AdminDTO GetAdminById(Guid id)
+        {
+            var admin = _adminRepository.GetAdminById(id);
+            var adminDto = new AdminDTO()
+            {
+                UserName = admin.UserName,
+                Email = admin.Email,
+                BankName = admin.BankName
+            };
+            return  adminDto;
+        }
     }
 }
-       

@@ -12,13 +12,12 @@ namespace CorporateBankingApplication.Repositories
     {
         List<Client> GetAllClients();
         void UpdateClientDetails(Client client);
-        void DeleteClientDetails(Guid id);
-
         List<Client> GetPendingClients();
 
         Client GetClientById(Guid id);
 
         void UpdateClient(Client client);
+        void UpdateClientBeneficiaryStatus(Client client);
 
         //SALARY DISBURSEMENT
         IEnumerable<EmployeeSalaryDisbursementDTO> GetSalaryDisbursementsByStatus(CorporateStatus status);
@@ -26,10 +25,17 @@ namespace CorporateBankingApplication.Repositories
         bool ApproveSalaryDisbursement(Guid salaryDisbursementId);
         bool RejectSalaryDisbursement(Guid salaryDisbursementId);
 
+        /****************************VERIFY OUTBOUND BENEFICIARIES*******************************/
 
+        List<Beneficiary> GetPendingBeneficiaries();
 
+        Beneficiary GetBeneficiaryById(Guid id);
 
+        void UpdateBeneficiary(Beneficiary beneficiary);
 
+        /****************************PROFILE*******************************/
+
+        Admin GetAdminById(Guid id);
 
     }
 }

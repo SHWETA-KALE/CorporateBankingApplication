@@ -32,7 +32,7 @@
                     </td>
 
                      <td class="edit-btn-cell">
-                            <button onClick="editEmployee('${employee.Id}')" class="btn btn-success edit-btn"
+                            <button onClick="editEmployee('${employee.Id}')" class="btn btn-outline-dark edit-btn"
                             style="${employee.IsActive ? '' : 'display:none;'}">Edit</button>
                       </td>
 

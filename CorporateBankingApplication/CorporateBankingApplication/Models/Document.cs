@@ -17,5 +17,6 @@ namespace CorporateBankingApplication.Models
 
         public virtual Client Client { get; set; }
 
+        public virtual Beneficiary Beneficiary { get; set; }
     }
 }

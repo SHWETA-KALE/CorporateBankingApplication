@@ -21,7 +21,7 @@ namespace CorporateBankingApplication.Repositories
         }
         public List<Client> GetAllClients()
         {
-            var clientList = _session.Query<Client>().Where(cd => cd.IsActive == true).ToList();
+            var clientList = _session.Query<Client>().ToList();
             return clientList;
         }
 
@@ -42,19 +42,6 @@ namespace CorporateBankingApplication.Repositories
                 transaction.Commit();
             }
         }
-        public void DeleteClientDetails(Guid id)
-        {
-            using (var transaction = _session.BeginTransaction())
-            {
-                var existingClient = _session.Get<Client>(id);
-                if (existingClient != null)
-                {
-                    existingClient.IsActive = false;
-                }
-                _session.Update(existingClient);
-                transaction.Commit();
-            }
-        }
 
         ////////////
 
@@ -68,11 +55,33 @@ namespace CorporateBankingApplication.Repositories
         {
             return _session.Get<Client>(id);
         }
-
+        //update client onboarding status & add it as a beneficiary
         public void UpdateClient(Client client)
         {
             using (var transaction = _session.BeginTransaction())
             {
+                var beneficiary = new Beneficiary()
+                {
+                    BeneficiaryName = client.UserName,
+                    AccountNumber = client.AccountNumber,
+                    BankIFSC = client.IFSC,
+                    BeneficiaryStatus = client.OnBoardingStatus,
+                    BeneficiaryType = BeneficiaryType.INBOUND,
+                    IsActive = client.IsActive
+                };
+                _session.Save(beneficiary);
+                _session.Update(client);
+                transaction.Commit();
+            }
+        }
+        //if client is active inbound beneficiary is active
+        public void UpdateClientBeneficiaryStatus(Client client)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                var existingBeneficiary = _session.Query<Beneficiary>().Where(b => b.BeneficiaryName == client.UserName).FirstOrDefault();
+                existingBeneficiary.IsActive = client.IsActive;
+                _session.Update(existingBeneficiary);
                 _session.Update(client);
                 transaction.Commit();
             }
@@ -153,13 +162,36 @@ namespace CorporateBankingApplication.Repositories
                 }
                 catch (Exception ex)
                 {
-                    
+
                     transaction.Rollback();
                     throw;
                 }
             }
         }
+        /****************************VERIFY OUTBOUND BENEFICIARIES*******************************/
 
+        public List<Beneficiary> GetPendingBeneficiaries()
+        {
+            var beneficiaries = _session.Query<Beneficiary>().FetchMany(c => c.Documents).Where(b => b.BeneficiaryStatus == CorporateStatus.PENDING && b.BeneficiaryType == BeneficiaryType.OUTBOUND).ToList();
+            return beneficiaries;
+        }
+        public Beneficiary GetBeneficiaryById(Guid id)
+        {
+            return _session.Get<Beneficiary>(id);
+        }
+        public void UpdateBeneficiary(Beneficiary beneficiary)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Update(beneficiary);
+                transaction.Commit();
+            }
+        }
+        /****************************PROFILE*******************************/
 
+        public Admin GetAdminById(Guid id)
+        {
+            return _session.Get<Admin>(id);
+        }
     }
 }

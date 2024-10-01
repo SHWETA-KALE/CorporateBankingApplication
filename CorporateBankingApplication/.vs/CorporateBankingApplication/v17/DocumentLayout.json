@@ -1,24 +1,7 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\CAPSTONE\\CorporateBankingApplication\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\views\\client\\clientdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\views\\client\\clientdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\views\\user\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\views\\user\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\roshani.poojari\\Desktop\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -26,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -39,58 +22,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ClientDashboard.cshtml",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Client\\ClientDashboard.cshtml",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Views\\Client\\ClientDashboard.cshtml",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Client\\ClientDashboard.cshtml",
-              "RelativeToolTip": "CorporateBankingApplication\\Views\\Client\\ClientDashboard.cshtml",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAsAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-09-29T12:07:48.524Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Register.cshtml",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\User\\Register.cshtml",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Views\\User\\Register.cshtml",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\User\\Register.cshtml",
-              "RelativeToolTip": "CorporateBankingApplication\\Views\\User\\Register.cshtml",
-              "ViewState": "AQIAAGMAAAAAAAAAAAAAAG0AAAAGAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-09-29T12:02:17.915Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "CorporateBankingApplication\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAABsAAAA3AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-09-29T12:00:26.695Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ClientController.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "ViewState": "AQIAABwAAAAAAAAAAAAgwCgAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-29T11:44:03.002Z",
-              "EditorCaption": ""
             }
           ]
         }

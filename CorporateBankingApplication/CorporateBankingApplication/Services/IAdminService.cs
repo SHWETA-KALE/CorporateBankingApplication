@@ -10,10 +10,9 @@ namespace CorporateBankingApplication.Services
 {
     public interface IAdminService
     {
-        List<Client> ViewAllClients();
+        List<ClientDTO> ViewAllClients();
         void EditClient(ClientDTO clientDTO, Guid id);
-        void RemoveClient(Guid id);
-
+        bool ToggleClientActiveStatus(Guid id, bool isActive, out string message);
         List<ClientDTO> GetClientsForVerification(UrlHelper urlHelper);
 
         bool UpdateClientOnboardingStatus(Guid id, string status);
@@ -25,5 +24,12 @@ namespace CorporateBankingApplication.Services
 
         bool ApproveSalaryDisbursement(Guid salaryDisbursementId);
         bool RejectSalaryDisbursement(Guid salaryDisbursementId);
+
+        /****************************VERIFY OUTBOUND BENEFICIARIES*******************************/
+        List<BeneficiaryDTO> GetBeneficiariesForVerification(UrlHelper urlHelper);
+        bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status);
+
+        /****************************PROFILE*******************************/
+        AdminDTO GetAdminById(Guid id);
     }
 }

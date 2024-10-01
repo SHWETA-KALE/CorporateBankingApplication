@@ -20,8 +20,5 @@ namespace CorporateBankingApplication.Models
         public virtual DateTime PaymentRequestDate { get; set; }
 
         public virtual DateTime PaymentApprovalDate { get; set; }
-
-
-
     }
 }

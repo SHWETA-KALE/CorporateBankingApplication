@@ -16,7 +16,9 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.DocumentType).Not.Nullable();
             Map(x => x.FilePath).Not.Nullable();
             Map(x => x.UploadDate).Not.Nullable();
-            References(x => x.Client).Column("ClientId").Cascade.None().Not.Nullable();
+            //References(x => x.Client).Column("ClientId").Cascade.None().Not.Nullable();
+            References(x => x.Client).Column("ClientId").Nullable();
+            References(x => x.Beneficiary).Column("BeneficiaryId").Nullable();
         }
     }
 }

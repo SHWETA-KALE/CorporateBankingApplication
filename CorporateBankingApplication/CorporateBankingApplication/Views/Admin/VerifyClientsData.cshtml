@@ -7,7 +7,7 @@
 
 <h2 class="text-center my-4 pt-3">Client Verification</h2>
 <div class="container py-5" id="clientToBeVerifiedList">
-    <table class="table">
+    <table class="table text-center">
         <thead class="thead-dark">
             <tr>
                 <th>@Html.DisplayNameFor(model => model.UserName)</th>
@@ -16,8 +16,7 @@
                 <th>@Html.DisplayNameFor(model => model.ContactInformation)</th>
                 <th>@Html.DisplayNameFor(model => model.Location)</th>
                 <th>@Html.DisplayName("Documents")</th><!--for document showing-->
-                <th></th>
-                <th></th>
+                <th>@Html.DisplayName("Action")</th>
             </tr>
         </thead>
         <tbody id="clientToBeVerifiedTblBody">
@@ -39,7 +38,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <iframe id="documentFrame" width="100%" height="500px" frameborder="0"></iframe>
+                <iframe id="documentFrame" width="100%" height="400px" frameborder="0"></iframe>
             </div>
         </div>
     </div>

@@ -14,6 +14,7 @@ using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CorporateBankingApplication.Data;
+using NHibernate.Linq;
 
 namespace CorporateBankingApplication.Controllers
 {
@@ -41,8 +42,6 @@ namespace CorporateBankingApplication.Controllers
         {
             return View();
         }
-
-
         public ActionResult GetAllEmployees()
         {
             if (Session["UserId"] == null)
@@ -64,7 +63,6 @@ namespace CorporateBankingApplication.Controllers
                 Salary = e.Salary,
                 IsActive = e.IsActive
             }).ToList();
-
             return Json(employeeDtos, JsonRequestBehavior.AllowGet);
         }
 
@@ -179,7 +177,6 @@ namespace CorporateBankingApplication.Controllers
             var client = _clientService.GetClientById(clientId);
             var clientDTO = new ClientDTO
             {
-                //UserName = client.UserName,
                 Email = client.Email,
                 CompanyName = client.CompanyName,
                 ContactInformation = client.ContactInformation,
@@ -346,7 +343,189 @@ namespace CorporateBankingApplication.Controllers
 
         }
 
-       
+        /***************************** MANAGE BENEFICIARIES *******************************/
+        public ActionResult ViewAllOutboundBeneficiaries()
+        {
+            return View();
+        }
 
+        public ActionResult GetAllOutboundBeneficiaries()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var urlHelper = new UrlHelper(Request.RequestContext); // Create UrlHelper here
+            var beneficiaries = _clientService.GetAllOutboundBeneficiaries(clientId, urlHelper);
+            return Json(beneficiaries, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult UpdateBeneficiaryStatus(Guid id, bool isActive)
+        {
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            _clientService.UpdateBeneficiaryStatus(id, isActive);
+            return Json(new { success = true });
+        }
+
+        public ActionResult AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO)
+        {
+            if (Session["UserId"] == null)
+            {
+                return new HttpStatusCodeResult(401, "Unauthorized");
+            }
+
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            if (client == null)
+            {
+                return new HttpStatusCodeResult(400, "Client not found");
+            }
+            var uploadedFiles = new List<HttpPostedFileBase>();
+
+            var idProof = Request.Files["uploadedDocs1"];
+            var addressProof = Request.Files["uploadedDocs2"];
+
+
+            if (idProof != null && idProof.ContentLength > 0)
+            {
+                uploadedFiles.Add(idProof);
+            }
+
+            if (addressProof != null && addressProof.ContentLength > 0)
+            {
+                uploadedFiles.Add(addressProof);
+            }
+            _clientService.AddNewBeneficiary(beneficiaryDTO, client, uploadedFiles);
+            return Json(new { success = true });
+        }
+        public ActionResult GetBeneficiaryById(Guid id)
+        {
+            if (Session["UserId"] == null)
+            {
+                return new HttpStatusCodeResult(401, "Unauthorized");
+            }
+
+            var beneficiary = _clientService.GetBeneficiaryById(id);
+            if (beneficiary == null)
+            {
+                return Json(new { success = false, message = "Beneficiary not found" }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new
+            {
+                success = true,
+                beneficiary = new
+                {
+                    beneficiary.Id,
+                    beneficiary.BeneficiaryName,
+                    beneficiary.AccountNumber,
+                    beneficiary.BankIFSC
+                }
+            }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult EditBeneficiary(BeneficiaryDTO beneficiaryDTO)
+        {
+            if (Session["UserId"] == null)
+            {
+                return new HttpStatusCodeResult(401, "Unauthorized");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+
+            if (client == null)
+            {
+                return new HttpStatusCodeResult(400, "Client not found");
+            }
+            var existingBeneficiary = _clientService.GetBeneficiaryById(beneficiaryDTO.Id);
+            var uploadedFiles = new List<HttpPostedFileBase>();
+
+            var idProof = Request.Files["newIdProof"];
+            var addressProof = Request.Files["newAddressProof"];
+
+
+            if (idProof != null && idProof.ContentLength > 0)
+            {
+                uploadedFiles.Add(idProof);
+            }
+
+            if (addressProof != null && addressProof.ContentLength > 0)
+            {
+                uploadedFiles.Add(addressProof);
+            }
+            _clientService.UpdateBeneficiary(beneficiaryDTO, client, uploadedFiles);
+            return Json(new { success = true, message = "Beneficiary updated successfully" });
+
+
+        }
+        /*****************************PROFILE*******************************/
+
+        public ActionResult ViewClientProfile()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            var clientDto = new ClientDTO
+            {
+                Id = client.Id,
+                UserName = client.UserName,
+                Email = client.Email,
+                CompanyName = client.CompanyName,
+                ContactInformation = client.ContactInformation,
+                Location = client.Location,
+                Balance = client.Balance,
+                AccountNumber = client.AccountNumber,
+                IFSC = client.IFSC,
+                OnboardingStatus = client.OnBoardingStatus,
+                Documents = client.Documents.Select(document => new DocumentDTO
+                {
+                    DocumentType = document.DocumentType,
+                    FilePath = document.FilePath
+                }).ToList()
+            };
+            return View(clientDto);
+        }
+
+        /****************************AddBalance*****************************/
+        [HttpPost]
+        public ActionResult AddBalance(Guid id,double amount)
+        {
+            _clientService.AddBalance(id, amount);
+            return Json(new { success = true });
+
+        }
+
+        /*********************************PAYMENTS***********************************/
+        public ActionResult ViewBeneficiaryListForPayment()
+        {
+            return View();
+        }
+        [HttpGet]
+        public ActionResult GetBeneficiaryListForPayment()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            Guid clientId = (Guid)Session["UserId"];
+            var beneficiaryList = _clientService.GetBeneficiaryList(clientId);
+
+            if (beneficiaryList == null || !beneficiaryList.Any())
+            {
+                return Json(new { success = false, message = "No beneficiaries found" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var paymentBeneficiaryDTO = new PaymentBeneficiaryDTO
+            {
+                Amount = 0,  // Default amount
+                Beneficiaries = beneficiaryList
+            };
+
+            return Json(new { success = true, data = paymentBeneficiaryDTO }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
