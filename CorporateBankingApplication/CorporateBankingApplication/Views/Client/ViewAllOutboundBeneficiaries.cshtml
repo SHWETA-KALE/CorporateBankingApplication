@@ -1,50 +1,69 @@
 ﻿@model CorporateBankingApplication.DTOs.BeneficiaryDTO
+@using CorporateBankingApplication.Enum
 
 @{
     ViewBag.Title = "ViewAllOutboundBeneficiaries";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var clientOnboardingStatus = ViewBag.Client?.OnBoardingStatus;
 }
+<div>
+    @if (clientOnboardingStatus == CorporateStatus.APPROVED)
+    {
+        <div class="container pt-5" id="beneficiaryList">
 
+            <h2 class="text-center my-4 pt-3">List Of Outbound Beneficiaries</h2>
+            <p>
+                <div>
+                    <button type="button" class="btn btn-outline-dark" id="btnAddBeneficiary">
+                        Add New Beneficiary
+                    </button>
+                </div>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.BeneficiaryName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AccountNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.BankIFSC)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.BeneficiaryStatus)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.BeneficiaryType)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.IsActive)
+                        </th>
+                        <th>@Html.DisplayName("Documents")</th><!--for document showing-->
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="beneficiaryTblBody">
+                    <!--data comes from ajax-->
+                </tbody>
+            </table>
+            @Html.ActionLink("Go Back To Dashboard", "ClientDashboard", null, new { @class = "btn btn-lg btn-primary mt-5" })
 
-<div class="container" id="beneficiaryList">
-    <h2 class="text-center my-4 pt-3">List Of Outbound Beneficiaries</h2>
-    <p>
-        <div>
-            <button type="button" class="btn btn-outline-dark" id="btnAddBeneficiary">
-                Add New Beneficiary
-            </button>
         </div>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.BeneficiaryName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AccountNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BankIFSC)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BeneficiaryStatus)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BeneficiaryType)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IsActive)
-                </th>
-                <th>@Html.DisplayName("Documents")</th><!--for document showing-->
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="beneficiaryTblBody">
-            <!--data comes from ajax-->
-        </tbody>
-    </table>
-    @Html.ActionLink("Go Back To Dashboard", "ClientDashboard", null, new { @class = "btn btn-lg btn-primary mt-5" })
+
+    }
+    else
+    {
+        <div class="container my-5 pt-lg-5">
+            <div class="alert alert-warning text-center my-5">
+                The client's onboarding process is not yet completed. Please wait for approval to access the our services.
+            </div>
+            @Html.ActionLink("Go Back To Dashboard", "ClientDashboard", null, new { @class = "btn btn-lg btn-primary mt-5" })
+
+        </div>
+
+    }
 
 </div>
 <div class="modal fade" id="documentModal" tabindex="-1" role="dialog" aria-labelledby="documentModalLabel" aria-hidden="true">

@@ -148,33 +148,7 @@ namespace CorporateBankingApplication.Services
             var client = _clientRepository.GetClientById(salaryDisbursement.Employee.Client.Id);
 
             var approved = _adminRepository.ApproveSalaryDisbursement(salaryDisbursementId);
-            //if (isBatch)
-            //{
-            //    // Send batch approval email
-            //    var employeeSalaries = new List<EmployeeDTO>
-            //        {
-            //            new EmployeeDTO
-            //            {
-            //                FirstName = salaryDisbursement.Employee.FirstName,
-            //                LastName = salaryDisbursement.Employee.LastName,
-            //                Salary = salaryDisbursement.Employee.Salary
-            //            }
-            //        };
-
-            //    _emailService.SendBatchSalaryDisbursementApprovalEmail(client.Email, employeeSalaries, salaryDisbursement.DisbursementDate.ToString("MMMM yyyy")); // Adjust format as necessary
-            //}
-            //else
-            //{
-            //    // Send single approval email
-            //    _emailService.SendSalaryDisbursementApprovalEmail(client.Email, new EmployeeDTO
-            //    {
-            //        FirstName = salaryDisbursement.Employee.FirstName,
-            //        LastName = salaryDisbursement.Employee.LastName,
-            //        Salary = salaryDisbursement.Employee.Salary
-            //    }, salaryDisbursement.Employee.Salary, salaryDisbursement.DisbursementDate.ToString("MMMM yyyy"));
-            //}
-            //return approved;
-
+           
             if (approved)
             {
                 if (isBatch)
@@ -289,10 +263,19 @@ namespace CorporateBankingApplication.Services
             return adminDto;
         }
 
-        /* Payment verification */ 
-        public IEnumerable<PaymentDTO> GetPendingPayments()
+        /* Payment verification */
+
+        public IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status)
         {
-            return _adminRepository.GetPendingPaymentsByStatus(CorporateStatus.PENDING);
+            return _adminRepository.GetPendingPaymentsByStatus(status);
+        }
+
+        public void UpdatePaymentStatuses(List<Guid> paymentIds, CorporateStatus status)
+        {
+            foreach (var paymentId in paymentIds)
+            {
+                _adminRepository.UpdatePaymentStatus(paymentId, status);
+            }
         }
     }
 }

@@ -51,7 +51,5 @@ namespace CorporateBankingApplication.Services
             _paymentRepository.Save(payment); // Save the payment
         }
 
-
-
     }
 }

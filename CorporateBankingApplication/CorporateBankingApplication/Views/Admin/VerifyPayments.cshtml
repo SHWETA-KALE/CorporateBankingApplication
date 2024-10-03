@@ -1,0 +1,122 @@
+﻿@model IEnumerable<CorporateBankingApplication.DTOs.PaymentDTO>
+
+@{
+    ViewBag.Title = "Verify Payment Approvals";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h2 class="text-center my-4 pt-3">Payment Approval Requests</h2>
+    <table id="paymentApprovalsTable" class="table text-center">
+        <thead class="thead-dark my-3">
+            <tr>
+                <th>Select</th>
+                <th>Payment ID</th>
+                <th>Account Number</th>
+                <th>Beneficiary Type</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var payment in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="payment-checkbox" value="@payment.PaymentId" />
+                        </td>
+                        <td>@payment.PaymentId</td>
+                        <td>@payment.AccountNumber</td>
+                        <td>@payment.BeneficiaryType</td>
+                        <td>@payment.Amount.ToString("F2")</td>
+                        <td>@payment.PaymentRequestDate.ToShortDateString()</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No pending payment approvals available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model != null && Model.Any())
+    {
+        <button id="approveSelectedPayments" class="btn btn-outline-dark">Approve Selected</button>
+        <button id="rejectSelectedPayments" class="btn btn-outline-dark">Reject Selected</button>
+    }
+    <br />
+    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary" })
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script>
+        // Get selected checkboxes
+        function getSelectedPayments() {
+            var selectedIds = [];
+            $(".payment-checkbox:checked").each(function () {
+                selectedIds.push($(this).val());
+            });
+            return selectedIds;
+        }
+
+        // Approve selected payments
+        $('#approveSelectedPayments').click(function () {
+            var selectedIds = getSelectedPayments();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one payment approval request.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ApprovePayments", "Admin")',
+                data: { disbursementIds: selectedIds },
+                traditional: true,
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while approving the payments: " + error);
+                }
+            });
+        });
+
+        // Reject selected payments
+        $('#rejectSelectedPayments').click(function () {
+            var selectedIds = getSelectedPayments();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one payment approval request.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RejectPayments", "Admin")',
+                data: { disbursementIds: selectedIds },
+                traditional: true,
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while rejecting the payments: " + error);
+                }
+            });
+        });
+    </script>
+}

@@ -1,43 +1,66 @@
 ﻿@model CorporateBankingApplication.DTOs.PaymentBeneficiaryDTO
+@using CorporateBankingApplication.Enum
 @{
     ViewBag.Title = "View Beneficiary List for Payment";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var clientOnboardingStatus = ViewBag.Client?.OnBoardingStatus;
 }
 
 <div class="container mt-5 pt-5">
-    <div class="card shadow-lg rounded w-70">
-        <div class="card-header bg-primary text-white text-center py-3">
-            <h4>Pay to Beneficiary</h4>
+    @if (clientOnboardingStatus == CorporateStatus.APPROVED)
+    {
+        <div>
+            <div class="card shadow-lg rounded w-70">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4>Pay to Beneficiary</h4>
+                </div>
+                <div class="card-body mx-5 px-5 my-5">
+                    @using (Html.BeginForm("ViewBeneficiaryListForPayment", "Client", FormMethod.Post, new { @id = "paymentForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-group mb-3">
+                            @Html.Label("Select Beneficiary:", new { @class = "form-label" })
+                            @Html.DropDownList("BeneficiaryId",
+                            new SelectList(Model.Beneficiaries, "Id", "BeneficiaryName"),
+                            "Select a Beneficiary", new { @id = "Beneficiary_Id", @class = "form-select" })
+
+
+
+                        </div>
+
+                        <div class="form-group mb-3">
+                            @Html.Label("Amount", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", type = "number", step = "0.01", min = "0" })
+                            @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div>
+                            <button type="button" class="btn btn-outline-dark mt-3" id="payNow">Pay Now</button>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
-        <div class="card-body mx-5 px-5 my-5">
-            @using (Html.BeginForm())
-            {
-                <div class="form-group mb-3">
-                    @Html.Label("Select Beneficiary:", new { @class = "form-label" })
-                    @Html.DropDownList("BeneficiaryId",
-                    new SelectList(Model.Beneficiaries, "Id", "BeneficiaryName"),
-                    "Select a Beneficiary", new { @id = "Beneficiary_Id", @class = "form-select" })
-
-                </div>
-
-                <div class="form-group mb-3">
-                    @Html.Label("Amount", new { @class = "form-label" })
-                    @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", type = "number", step = "0.01", min = "0" })
-                </div>
-
-                <div>
-                    <button type="button" class="btn btn-outline-dark mt-3" id="payNow">Pay Now</button>
-                </div>
-            }
+    }
+    else
+    {
+        <div class="container my-5">
+            <div class="alert alert-warning text-center my-5">
+                The client's onboarding process is not yet completed. Please wait for approval to access the our services.
+            </div>
         </div>
-    </div>
+    }
     @Html.ActionLink("Go Back To Dashboard", "ClientDashboard", null, new { @class = "btn btn-lg btn-primary mt-5" })
 </div>
 
+
+@*<script src="https://checkout.razorpay.com/v1/checkout.js"></script>*@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     $(document).ready(function () {
-        $('#payNow').click(function () {
+        $('#payNow').click(function (e) {
+            e.preventDefault();
+           
             var beneficiaryId = $('#Beneficiary_Id').val();
             var amount = $('input[name="Amount"]').val();
 
@@ -59,15 +82,15 @@
                             "name": "Corporate Banking",
                             "description": "Payment to Beneficiary",
                             "order_id": response.orderId, // Razorpay Order ID
-                            "handler": function (response) {
+                            "handler": function (razorpayResponse) {
                                 // Payment verification AJAX call
                                 $.ajax({
                                     url: '@Url.Action("PaymentVerification", "Payment")',
                                     type: 'POST',
                                     data: {
-                                        razorpay_payment_id: response.razorpay_payment_id,
-                                        razorpay_order_id: response.razorpay_order_id,
-                                        razorpay_signature: response.razorpay_signature
+                                        razorpay_payment_id: razorpayResponse.razorpay_payment_id,
+                                        razorpay_order_id: razorpayResponse.razorpay_order_id,
+                                        razorpay_signature: razorpayResponse.razorpay_signature
                                     },
                                     success: function (result) {
                                         if (result.success) {
@@ -90,5 +113,7 @@
         });
     });
 </script>
+
+
 
 @*payment controller pe authorization baki hai*@

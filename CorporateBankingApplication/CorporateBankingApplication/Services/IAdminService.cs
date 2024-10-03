@@ -1,4 +1,5 @@
 ﻿using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,8 @@ namespace CorporateBankingApplication.Services
         AdminDTO GetAdminById(Guid id);
 
         //payment verification 
-        IEnumerable<PaymentDTO> GetPendingPayments();
+        IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status);
+
+        void UpdatePaymentStatuses(List<Guid> paymentIds, CorporateStatus status);
     }
 }

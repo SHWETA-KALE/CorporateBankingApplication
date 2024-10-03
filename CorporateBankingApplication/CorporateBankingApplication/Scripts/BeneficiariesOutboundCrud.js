@@ -90,6 +90,60 @@ function updateBeneficiaryStatus(beneficiaryId, isActive) {
 
 //add new beneficiary
 
+//add new beneficiary
+
+//function addNewBeneficiary() {
+//    var formData = new FormData();
+
+//    // Append normal input fields
+//    formData.append("BeneficiaryName", $("#newBeneficiaryName").val());
+//    formData.append("AccountNumber", $("#newAccountNumber").val());
+//    formData.append("BankIFSC", $("#newBankIFSC").val());
+
+//    // Append file inputs
+//    var idProofFile = $("#BeneficiaryIdProof")[0].files[0]; // Access file input
+//    var addressProofFile = $("#BeneficiaryAddressProof")[0].files[0]; // Access file input
+
+//    formData.append("uploadedDocs1", idProofFile);
+//    formData.append("uploadedDocs2", addressProofFile);
+//    console.log(formData)
+//    $.ajax({
+//        url: "/Client/AddNewBeneficiary",
+//        type: "POST",
+//        data: formData,
+//        processData: false,  // Prevent jQuery from automatically transforming the data into a query string
+//        contentType: false,  // Prevent jQuery from setting Content-Type header; the browser will set it correctly
+//        success: function (response) {
+//            console.log(response)
+//            console.log(response.errors)
+//            if (response.success === false) {
+//                // Create an array to collect all error messages
+//                let errorMessages = [];
+
+//                // Iterate over each key in the errors object
+//                for (let key in response.errors) {
+//                    if (response.errors.hasOwnProperty(key)) {
+//                        errorMessages.push(`${ key }: ${ response.errors[key].join(", ") }`);
+//                    }
+//                }
+
+//                alert("Errors: " + errorMessages.join("\n"));
+//                console.log(response.errors);
+//                return;
+//            }
+
+//            alert("New Beneficiary added successfully");
+//            loadOutboundBeneficiaries();
+//            $("#addNewBeneficiary").hide();
+//            $("#beneficiaryList").show();
+//        },
+//        error: function (err) {
+//            alert("Error adding new Beneficiary");
+//            console.log(err);
+//        }
+//    });
+//}
+
 function addNewBeneficiary() {
     var formData = new FormData();
 
@@ -102,8 +156,6 @@ function addNewBeneficiary() {
     var idProofFile = $("#BeneficiaryIdProof")[0].files[0]; // Access file input
     var addressProofFile = $("#BeneficiaryAddressProof")[0].files[0]; // Access file input
 
-    console.log("ID Proof File:", idProofFile);
-    console.log("Address Proof File:", addressProofFile);
     formData.append("uploadedDocs1", idProofFile);
     formData.append("uploadedDocs2", addressProofFile);
     console.log(formData)
@@ -114,6 +166,24 @@ function addNewBeneficiary() {
         processData: false,  // Prevent jQuery from automatically transforming the data into a query string
         contentType: false,  // Prevent jQuery from setting Content-Type header; the browser will set it correctly
         success: function (response) {
+            console.log(response)
+            console.log(response.errors)
+            if (response.success === false) {
+                // Create an array to collect all error messages
+                let errorMessages = [];
+
+                // Iterate over each key in the errors object
+                for (let key in response.errors) {
+                    if (response.errors.hasOwnProperty(key)) {
+                        errorMessages.push(`${key}: ${response.errors[key].join(", ")}`);
+                    }
+                }
+
+                alert("Errors: " + errorMessages.join("\n"));
+                console.log(response.errors);
+                return;
+            }
+
             alert("New Beneficiary added successfully");
             loadOutboundBeneficiaries();
             $("#addNewBeneficiary").hide();
@@ -125,8 +195,6 @@ function addNewBeneficiary() {
         }
     });
 }
-
-
 
 
 
@@ -158,6 +226,42 @@ function getBeneficiary(beneficiaryId) {
         }
     });
 }
+//function modifyBeneficiary(formData) {
+//    $.ajax({
+//        url: "/Client/EditBeneficiary",
+//        type: "POST",
+//        data: formData,
+//        contentType: false,  // Prevent jQuery from overriding the content type
+//        processData: false,  // Prevent jQuery from processing the data
+//        success: function (response) {
+//            if (response.success === false) {
+//                // Create an array to collect all error messages
+//                let errorMessages = [];
+
+//                // Iterate over each key in the errors object
+//                for (let key in response.errors) {
+//                    if (response.errors.hasOwnProperty(key)) {
+//                        if (key !== "Id") {
+//                            errorMessages.push(`${ key }: ${ response.errors[key].join(", ") }`);
+//                        }
+//                    }
+//                }
+
+//                alert("Errors: " + errorMessages.join("\n"));
+//                console.log(response.errors);
+//                return;
+//            }
+//            alert("Beneficiary Details Edited Successfully");
+//            loadOutboundBeneficiaries();
+//            $("#beneficiaryList").show();
+//            $("#editBeneficiary").hide();
+
+//        },
+//        error: function (err) {
+//            alert("Error in Editing Beneficiary Details");
+//        }
+//    });
+//}
 
 function modifyBeneficiary(formData) {
     $.ajax({
@@ -167,14 +271,27 @@ function modifyBeneficiary(formData) {
         contentType: false,  // Prevent jQuery from overriding the content type
         processData: false,  // Prevent jQuery from processing the data
         success: function (response) {
-            if (response.success) {
-                alert("Beneficiary Details Edited Successfully");
-                loadOutboundBeneficiaries();
-                $("#beneficiaryList").show();
-                $("#editBeneficiary").hide();
-            } else {
-                alert(response.message);
+            if (response.success === false) {
+                // Create an array to collect all error messages
+                let errorMessages = [];
+
+                // Iterate over each key in the errors object
+                for (let key in response.errors) {
+                    if (response.errors.hasOwnProperty(key)) {
+                        if (key !== "Id") {
+                            errorMessages.push(`${key}: ${response.errors[key].join(", ")}`);
+                        }
+                    }
+                }
+
+                alert("Errors: " + errorMessages.join("\n"));
+                console.log(response.errors);
+                return;
             }
+            alert("Beneficiary Details Edited Successfully");
+            loadOutboundBeneficiaries();
+            $("#beneficiaryList").show();
+            $("#editBeneficiary").hide();
 
         },
         error: function (err) {
@@ -182,26 +299,4 @@ function modifyBeneficiary(formData) {
         }
     });
 }
-/*
-function modifyBeneficiary(modifiedBeneficiary) {
-    $.ajax({
-        url: "/Client/EditBeneficiary",
-        type: "POST",
-        data: modifiedBeneficiary,
-        success: function (response) {
-            if (response.success) {
-                alert("Beneficiary Details Edited Successfully");
-                loadOutboundBeneficiaries();
-                $("#beneficiaryList").show();
-                $("#editBeneficiary").hide();
-            } else {
-                alert(response.message);
-            }
 
-        },
-        error: function (err) {
-            alert("Error in Editing Beneficiary Details");
-        }
-    });
-}
-*/

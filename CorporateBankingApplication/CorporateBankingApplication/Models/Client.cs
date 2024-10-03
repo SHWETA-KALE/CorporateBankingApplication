@@ -31,7 +31,7 @@ namespace CorporateBankingApplication.Models
         public virtual IList<Beneficiary> Beneficiaries { get; set; } = new List<Beneficiary>();
         public virtual IList<Document> Documents { get; set; } = new List<Document>();
 
-        public virtual IList<Report> Reports { get; set; } = new List<Report>();
+        //public virtual IList<Report> Reports { get; set; } = new List<Report>();
 
         public virtual IList<Employee> Employees { get; set; } = new List<Employee>();
 

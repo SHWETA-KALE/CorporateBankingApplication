@@ -14,6 +14,7 @@ namespace CorporateBankingApplication
             AreaRegistration.RegisterAllAreas();
             UnityConfig.RegisterComponents();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            GlobalFilters.Filters.Add(new HandleErrorAttribute());
         }
     }
 }

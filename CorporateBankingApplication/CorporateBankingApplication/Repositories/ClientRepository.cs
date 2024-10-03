@@ -20,12 +20,12 @@ namespace CorporateBankingApplication.Repositories
         }
         public void AddEmployee(Employee employee)
         {
-            using(var transaction = _session.BeginTransaction())
+            using (var transaction = _session.BeginTransaction())
             {
                 _session.Save(employee);
                 transaction.Commit();
             }
-           
+
         }
 
         public List<Employee> GetAllEmployees(Guid clientId)
@@ -46,17 +46,17 @@ namespace CorporateBankingApplication.Repositories
 
         public void UpdateEmployee(Employee employee)
         {
-            using(var transaction = _session.BeginTransaction())
+            using (var transaction = _session.BeginTransaction())
             {
                 _session.Update(employee);
                 transaction.Commit();
             }
-            
+
         }
 
         public void UpdateEmployeeStatus(Guid id, bool isActive)
         {
-            using(var transaction = _session.BeginTransaction())
+            using (var transaction = _session.BeginTransaction())
             {
                 var employee = _session.Get<Employee>(id);
                 if (employee != null)
@@ -66,7 +66,7 @@ namespace CorporateBankingApplication.Repositories
                     transaction.Commit();
                 }
             }
-            
+
         }
 
 
@@ -89,12 +89,12 @@ namespace CorporateBankingApplication.Repositories
 
         public List<Employee> GetEmployeesByIds(List<Guid> employeeIds)
         {
-            return _session.Query<Employee>().Where(e=>employeeIds.Contains(e.Id)).ToList();
+            return _session.Query<Employee>().Where(e => employeeIds.Contains(e.Id)).ToList();
         }
 
         public void AddSalaryDisbursement(SalaryDisbursement salaryDisbursement)
         {
-            using(var transaction = _session.BeginTransaction())
+            using (var transaction = _session.BeginTransaction())
             {
                 _session.Save(salaryDisbursement);
                 transaction.Commit();
@@ -109,7 +109,7 @@ namespace CorporateBankingApplication.Repositories
             // Get the first day of the next month
             var endOfMonth = startOfMonth.AddMonths(1);
 
-            return _session.Query<SalaryDisbursement>().FirstOrDefault(sd=>sd.Employee.Id == employeeId && sd.DisbursementDate >= startOfMonth && sd.DisbursementDate < endOfMonth);
+            return _session.Query<SalaryDisbursement>().FirstOrDefault(sd => sd.Employee.Id == employeeId && sd.DisbursementDate >= startOfMonth && sd.DisbursementDate < endOfMonth);
         }
 
 
@@ -175,10 +175,12 @@ namespace CorporateBankingApplication.Repositories
         /*******************************PAYMENTS*********************************/
         public List<Beneficiary> GetBeneficiaryList(Guid clientId)
         {
+            var client = GetClientById(clientId);
             var beneficiaries = _session.Query<Beneficiary>().Where(b =>
-            (b.Client.Id == clientId && b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.OUTBOUND && b.IsActive == true)
-            || (b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.INBOUND && b.IsActive == true)).ToList();
+    (b.Client.Id == clientId && b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.OUTBOUND && b.IsActive == true)
+    || (b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.INBOUND && b.IsActive == true && b.BeneficiaryName != client.UserName)).ToList();
             return beneficiaries;
+
         }
     }
 }

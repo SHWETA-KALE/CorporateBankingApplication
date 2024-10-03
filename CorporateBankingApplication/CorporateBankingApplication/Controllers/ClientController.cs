@@ -19,6 +19,7 @@ using System.Reflection;
 namespace CorporateBankingApplication.Controllers
 {
     [Authorize(Roles = "Client")]
+   // [HandleError]
     public class ClientController : Controller
     {
         private readonly IClientService _clientService;
@@ -28,6 +29,7 @@ namespace CorporateBankingApplication.Controllers
             _clientService = clientService;
         }
 
+        [AllowAnonymous]
         public ActionResult ClientDashboard()
         {
             if (Session["UserId"] == null)
@@ -36,10 +38,28 @@ namespace CorporateBankingApplication.Controllers
             }
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
+            if (client == null)
+            {
+                throw new InvalidOperationException("Client not found");
+            }
             return View(client);
+            //throw new Exception("this is an exception");
+
         }
         public ActionResult Index()
         {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            //for checking onboarding status
+            ViewBag.Client = client;
+            if (client == null)
+            {
+                throw new InvalidOperationException("Client not found");
+            }
             return View();
         }
 
@@ -53,6 +73,11 @@ namespace CorporateBankingApplication.Controllers
 
             Guid clientId = (Guid)Session["UserId"];
             var employees = _clientService.GetAllEmployees(clientId);
+            if (employees == null || !employees.Any())
+            {
+                throw new InvalidOperationException("No employees found for this client");
+            }
+
 
             var employeeDtos = employees.Select(e => new EmployeeDTO
             {
@@ -72,14 +97,15 @@ namespace CorporateBankingApplication.Controllers
 
         public ActionResult Add(EmployeeDTO employeedto)
         {
+            
             if (!ModelState.IsValid)
             {
-                // Collect validation errors and return them in your response
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                               .Select(e => e.ErrorMessage)
-                                               .ToList();
-
-                return Json(new { success = false, errors = errors });
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return Json(new { success = false, errors });
             }
             if (Session["UserId"] == null)
             {
@@ -148,27 +174,21 @@ namespace CorporateBankingApplication.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(employeeDto);
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return Json(new { success = false, errors });
             }
             if (Session["UserId"] == null)
             {
                 return new HttpStatusCodeResult(401, "Unauthorized");
             }
-
-
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
 
-            // Collect validation errors and return them as a response
-            //if (!ModelState.IsValid)
-            //{
-            //    return Json(new
-            //    {
-            //        success = false,
-            //        errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
-            //    });
-            //}
-
+           
             if (client == null)
             {
                 return new HttpStatusCodeResult(400, "Client not found");
@@ -204,15 +224,7 @@ namespace CorporateBankingApplication.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-            // Collect validation errors and return them as a response
-            //if (!ModelState.IsValid)
-            //{
-            //    return Json(new
-            //    {
-            //        success = false,
-            //        errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
-            //    });
-            //}
+           
 
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
@@ -247,15 +259,6 @@ namespace CorporateBankingApplication.Controllers
                 return RedirectToAction("Login", "User");
             }
 
-            // Collect validation errors and return them as a response
-            //if (!ModelState.IsValid)
-            //{
-            //    return Json(new
-            //    {
-            //        success = false,
-            //        errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
-            //    });
-            //}
 
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
@@ -271,6 +274,26 @@ namespace CorporateBankingApplication.Controllers
 
             var companyIdProof = Request.Files["uploadedFiles1"];
             var addressProof = Request.Files["uploadedFiles2"];
+
+            //for doc validation
+            if (companyIdProof == null || companyIdProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("Document1", "Company Id Proof field is required.");
+            }
+
+            if (addressProof == null || addressProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("Document2", "Address Proof field is required.");
+            }
+            if (!ModelState.IsValid)
+            {
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return View(clientDTO);
+            }
 
             if (companyIdProof != null && companyIdProof.ContentLength > 0)
             {
@@ -402,6 +425,14 @@ namespace CorporateBankingApplication.Controllers
         /*************************** MANAGE BENEFICIARIES *****************************/
         public ActionResult ViewAllOutboundBeneficiaries()
         {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            //for checking onboarding status
+            ViewBag.Client = client;
             return View();
         }
 
@@ -424,8 +455,60 @@ namespace CorporateBankingApplication.Controllers
             return Json(new { success = true });
         }
 
+        //public ActionResult AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO)
+        //{
+        //    if (Session["UserId"] == null)
+        //    {
+        //        return new HttpStatusCodeResult(401, "Unauthorized");
+        //    }
+
+        //    Guid clientId = (Guid)Session["UserId"];
+        //    var client = _clientService.GetClientById(clientId);
+        //    if (client == null)
+        //    {
+        //        return new HttpStatusCodeResult(400, "Client not found");
+        //    }
+        //    var uploadedFiles = new List<HttpPostedFileBase>();
+
+        //    var idProof = Request.Files["uploadedDocs1"];
+        //    var addressProof = Request.Files["uploadedDocs2"];
+
+        //    //for doc validation
+        //    if (idProof == null || idProof.ContentLength == 0)
+        //    {
+        //        ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
+        //    }
+
+        //    if (addressProof == null || addressProof.ContentLength == 0)
+        //    {
+        //        ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
+        //    }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        // Collect errors into a dictionary to return as JSON
+        //        var errors = ModelState.ToDictionary(
+        //            kvp => kvp.Key,
+        //            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+        //        );
+        //        return Json(new { success = false, errors });
+        //    }
+
+        //    if (idProof != null && idProof.ContentLength > 0)
+        //    {
+        //        uploadedFiles.Add(idProof);
+        //    }
+
+        //    if (addressProof != null && addressProof.ContentLength > 0)
+        //    {
+        //        uploadedFiles.Add(addressProof);
+        //    }
+        //    _clientService.AddNewBeneficiary(beneficiaryDTO, client, uploadedFiles);
+        //    return Json(new { success = true });
+        //}
+
         public ActionResult AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO)
         {
+
             if (Session["UserId"] == null)
             {
                 return new HttpStatusCodeResult(401, "Unauthorized");
@@ -441,8 +524,25 @@ namespace CorporateBankingApplication.Controllers
 
             var idProof = Request.Files["uploadedDocs1"];
             var addressProof = Request.Files["uploadedDocs2"];
+            //for doc validation
+            if (idProof == null || idProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
+            }
 
-
+            if (addressProof == null || addressProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
+            }
+            if (!ModelState.IsValid)
+            {
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return Json(new { success = false, errors });
+            }
             if (idProof != null && idProof.ContentLength > 0)
             {
                 uploadedFiles.Add(idProof);
@@ -481,6 +581,58 @@ namespace CorporateBankingApplication.Controllers
                 }
             }, JsonRequestBehavior.AllowGet);
         }
+        //public ActionResult EditBeneficiary(BeneficiaryDTO beneficiaryDTO)
+        //{
+        //    if (Session["UserId"] == null)
+        //    {
+        //        return new HttpStatusCodeResult(401, "Unauthorized");
+        //    }
+        //    Guid clientId = (Guid)Session["UserId"];
+        //    var client = _clientService.GetClientById(clientId);
+
+        //    if (client == null)
+        //    {
+        //        return new HttpStatusCodeResult(400, "Client not found");
+        //    }
+        //    var existingBeneficiary = _clientService.GetBeneficiaryById(beneficiaryDTO.Id);
+        //    var uploadedFiles = new List<HttpPostedFileBase>();
+
+        //    var idProof = Request.Files["newIdProof"];
+        //    var addressProof = Request.Files["newAddressProof"];
+
+        //    //for doc validation
+        //    if (idProof == null || idProof.ContentLength == 0)
+        //    {
+        //        ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
+        //    }
+
+        //    if (addressProof == null || addressProof.ContentLength == 0)
+        //    {
+        //        ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
+        //    }
+        //    if (!ModelState.IsValid)
+        //    {
+        //        // Collect errors into a dictionary to return as JSON
+        //        var errors = ModelState.ToDictionary(
+        //            kvp => kvp.Key,
+        //            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+        //        );
+        //        return Json(new { success = false, errors });
+        //    }
+
+        //    if (idProof != null && idProof.ContentLength > 0)
+        //    {
+        //        uploadedFiles.Add(idProof);
+        //    }
+
+        //    if (addressProof != null && addressProof.ContentLength > 0)
+        //    {
+        //        uploadedFiles.Add(addressProof);
+        //    }
+        //    _clientService.UpdateBeneficiary(beneficiaryDTO, client, uploadedFiles);
+        //    return Json(new { success = true, message = "Beneficiary updated successfully" });
+        //}
+
         public ActionResult EditBeneficiary(BeneficiaryDTO beneficiaryDTO)
         {
             if (Session["UserId"] == null)
@@ -494,12 +646,32 @@ namespace CorporateBankingApplication.Controllers
             {
                 return new HttpStatusCodeResult(400, "Client not found");
             }
+
             var existingBeneficiary = _clientService.GetBeneficiaryById(beneficiaryDTO.Id);
             var uploadedFiles = new List<HttpPostedFileBase>();
 
             var idProof = Request.Files["newIdProof"];
             var addressProof = Request.Files["newAddressProof"];
 
+            //for doc validation
+            if (idProof == null || idProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
+            }
+
+            if (addressProof == null || addressProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
+            }
+            if (!ModelState.IsValid)
+            {
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return Json(new { success = false, errors });
+            }
 
             if (idProof != null && idProof.ContentLength > 0)
             {
@@ -513,7 +685,6 @@ namespace CorporateBankingApplication.Controllers
             _clientService.UpdateBeneficiary(beneficiaryDTO, client, uploadedFiles);
             return Json(new { success = true, message = "Beneficiary updated successfully" });
         }
-
         /***************************PROFILE*****************************/
 
         public ActionResult ViewClientProfile()
@@ -560,19 +731,23 @@ namespace CorporateBankingApplication.Controllers
                 _clientService.AddBalance(id, amount);
                 return Json(new { success = true });
             }
-           
-
         }
 
         /*******************************PAYMENTS*********************************/
         public ActionResult ViewBeneficiaryListForPayment()
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
-
             Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            //for checking onboarding status
+            ViewBag.Client = client;
             var beneficiaryList = _clientService.GetBeneficiaryList(clientId);
             if (beneficiaryList == null || !beneficiaryList.Any())
             {
