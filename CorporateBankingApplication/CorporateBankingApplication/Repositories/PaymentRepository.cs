@@ -36,8 +36,17 @@ namespace CorporateBankingApplication.Repositories
         {
             using (var transaction = _session.BeginTransaction())
             {
-                _session.Update(payment);
-                transaction.Commit();
+                try
+                {
+                    _session.Update(payment);
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback(); 
+                    throw;
+                }
+               
             }
         }
 

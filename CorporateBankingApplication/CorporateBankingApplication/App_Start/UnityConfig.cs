@@ -31,6 +31,9 @@ namespace CorporateBankingApplication
             container.RegisterType<IPaymentService, PaymentService>();
             container.RegisterType<IPaymentRepository, PaymentRepository>();
 
+            container.RegisterType<IReportService, ReportService>();
+            container.RegisterType<IReportRepository, ReportRepository>();
+
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

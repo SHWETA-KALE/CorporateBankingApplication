@@ -1,101 +1,4 @@
-﻿@*@model IEnumerable<CorporateBankingApplication.DTOs.EmployeeSalaryDisbursementDTO>
-
-    @{
-        ViewBag.Title = "Verify Salary Disbursement";
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
-
-    <h2>Salary Disbursements Request</h2>
-
-    <table id="salaryDisbursementsTable" class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Disbursement ID</th>
-                <th>Company Name</th>
-                <th>Employee First Name</th>
-                <th>Employee Last Name</th>
-                <th>Salary</th>
-                <th>Disbursement Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Any())
-            {
-                foreach (var disbursement in Model)
-                {
-                    <tr>
-                        <td>@disbursement.SalaryDisbursementId</td>
-                        <td>@disbursement.CompanyName</td>
-                        <td>@disbursement.EmployeeFirstName</td>
-                        <td>@disbursement.EmployeeLastName</td>
-                        <td>@disbursement.Salary.ToString("F2")</td>
-                        <td>@disbursement.DisbursementDate.ToShortDateString()</td>
-                        <td>@disbursement.SalaryStatus.ToString()</td>
-                        <td>
-                            <button class="btn btn-success approve-btn" onclick="approveDisbursement('@disbursement.SalaryDisbursementId')">Approve</button>
-                            <button class="btn btn-danger reject-btn" onclick="rejectDisbursement('@disbursement.SalaryDisbursementId')">Reject</button>
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="8" class="text-center">No pending salary disbursements available.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <button id="refreshButton" class="btn btn-primary">Refresh Data</button>
-
-    @section Scripts {
-
-        <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-        <script>
-            function approveDisbursement(salaryDisbursementId) {
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("ApproveDisbursement", "Admin")',
-                    data: { salaryDisbursementId: salaryDisbursementId },
-                    success: function(response) {
-                        if (response.success) {
-                            alert(response.message);
-                            // Optionally refresh the disbursement list or reload the page
-                            location.reload();
-                        } else {
-                            alert(response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert("An error occurred while approving the disbursement: " + error);
-                    }
-                });
-            }
-
-            function rejectDisbursement(salaryDisbursementId) {
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("RejectDisbursement", "Admin")',
-                    data: { salaryDisbursementId: salaryDisbursementId },
-                    success: function(response) {
-                        if (response.success) {
-                            alert(response.message);
-                            // Optionally refresh the disbursement list or reload the page
-                            location.reload();
-                        } else {
-                            alert(response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert("An error occurred while rejecting the disbursement: " + error);
-                    }
-                });
-            }
-        </script>
-    }*@
+﻿
 @model IEnumerable<CorporateBankingApplication.DTOs.EmployeeSalaryDisbursementDTO>
 
 @{
@@ -143,9 +46,13 @@
             }
         </tbody>
     </table>
-    <button id="approveSelected" class="btn btn-lg btn-success">Approve Selected</button>
-    <button id="rejectSelected" class="btn btn-lg btn-danger">Reject Selected</button>
-    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary" })
+    @if (Model != null && Model.Any())
+    {
+        <button id="approveSelected" class="btn btn-outline-dark">Approve Selected</button>
+        <button id="rejectSelected" class="btn btn-outline-dark">Reject Selected</button>
+    }
+    <br />
+    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary my-5" })
 </div>
 @section Scripts {
 
@@ -215,25 +122,7 @@
             });
         })
 
-        @*function approveDisbursement(salaryDisbursementId) {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("ApproveDisbursement", "Admin")',
-                data: { salaryDisbursementId: salaryDisbursementId },
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.message);
-                        // Optionally refresh the disbursement list or reload the page
-                        location.reload();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert("An error occurred while approving the disbursement: " + error);
-                }
-            });
-        }*@
+      
 
         function rejectDisbursement(salaryDisbursementId) {
             $.ajax({

@@ -175,3 +175,7 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Newtonso
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Razorpay.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\BouncyCastle.Crypto.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Newtonsoft.Json.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\BouncyCastle.Cryptography.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\itextsharp.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\BouncyCastle.Cryptography.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\itextsharp.xml

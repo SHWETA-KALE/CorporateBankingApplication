@@ -24,7 +24,7 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.OnBoardingStatus).CustomType<CorporateStatus>().Not.Nullable(); //enum
             HasMany(x => x.Beneficiaries).Cascade.All().Inverse();
             HasMany(x => x.Documents).Cascade.All().Inverse();
-            HasMany(x => x.Reports).Cascade.All().Inverse();
+            //HasMany(x => x.Reports).Cascade.All().Inverse();
             HasMany(x => x.Employees).Cascade.All().Inverse();
         }
     }

@@ -15,7 +15,9 @@ namespace CorporateBankingApplication.Models
 
         public virtual string GeneratedBy { get; set; }
 
-        public virtual Client Client { get; set; }
+        public virtual User User { get; set; }  
+
+        //public virtual Client Client { get; set; }
 
         ///filepath for the report 
 

@@ -25,11 +25,11 @@ namespace CorporateBankingApplication.DTOs
         public bool IsActive { get; set; }
         public string BeneficiaryStatus { get; set; }
 
-        [Required]
+        
         [Display(Name = "Beneficiary Id Proof")]
 
         public HttpPostedFileBase BeneficiaryIdProof { get; set; }
-        [Required]
+        
         [Display(Name = "Beneficiary Address Proof")]
 
         public HttpPostedFileBase BeneficiaryAddressProof { get; set; }

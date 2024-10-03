@@ -45,19 +45,6 @@ namespace CorporateBankingApplication.Services
             return _userRepository.GetUserByUsername(username); //fetch the user from repository
         }
 
-
-
-        //public string DetermineDocumentType(string fileName)
-        //{
-
-        //    if (fileName.Contains("company ID proof"))
-        //        return "company ID proof";
-        //    else if (fileName.Contains("payment"))
-        //        return "Payment";
-        //    else
-        //        return "Transaction";
-        //}
-
         public void CreateNewClient(ClientDTO clientDto, IList<HttpPostedFileBase> uploadedFiles)
         {
             var client = new Client()

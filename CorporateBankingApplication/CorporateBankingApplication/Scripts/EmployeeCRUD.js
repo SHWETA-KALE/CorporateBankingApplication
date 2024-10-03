@@ -1,5 +1,4 @@
-﻿
-function LoadEmployees() {
+﻿function LoadEmployees() {
     $.ajax({
         url: "/Client/GetAllEmployees",
         type: "GET",
@@ -72,52 +71,6 @@ function LoadEmployees() {
     });
 }
 
-//function addNewEmployee() {
-//    var newEmployee = {
-//        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val(),
-//        FirstName: $("#newFName").val(),
-//        LastName: $("#newLName").val(),
-//        Email: $("#newEmail").val(),
-//        Position: $("#newPosition").val(),
-//        Phone: $("#newPhone").val(),
-//        Salary: $("#newSalary").val()
-//    };
-
-//    $.ajax({
-//        url: "/Client/Add",
-//        type: "POST",
-//        data: newEmployee,
-//        success: function (response) {
-//            if (response.success) {
-//                alert("New Employee added successfully");
-//                LoadEmployees();
-//                $("#newRecord").hide();
-//                $("#employeeList").show();
-//            } else {
-//                //$.each(response.errors, function (key, value) {
-//                //    $("#" + key).after('<span class="text-danger">' + value + '</span>');
-//                //});
-
-//                // Clear previous validation messages
-//                $('.text-danger').remove();
-
-//                // Display validation errors in the respective fields
-//                $.each(response.errors, function (key, errors) {
-//                    var inputField = $("#" + key);
-//                    if (inputField.length) {
-//                        inputField.after("<span class='text-danger'>" + errors.join(', ') + "</span>");
-//                    }
-//                });
-
-//            }
-
-//        },
-//        error: function (err) {
-//            alert("error adding new employee");
-//            console.log(err);
-//        }
-//    })
-//}
 
 function addNewEmployee() {
     var newEmployee = {
@@ -134,6 +87,21 @@ function addNewEmployee() {
         type: "POST",
         data: newEmployee,
         success: function (response) {
+
+            if (response.success === false) {
+                // Create an array to collect all error messages
+                let errorMessages = [];
+
+                // Iterate over each key in the errors object
+                for (let key in response.errors) {
+                    if (response.errors.hasOwnProperty(key)) {
+                        errorMessages.push(`${ key }: ${ response.errors[key].join(", ") }`);
+                    }
+                }
+                alert("Errors: " + errorMessages.join("\n"));
+                console.log(response.errors);
+                return;
+            }
             alert("New Employee added successfully");
             LoadEmployees();
             $("#newRecord").hide();
@@ -176,15 +144,25 @@ function modifyRecord(modifiedEmployee) {
         type: "POST",
         data: modifiedEmployee,
         success: function (response) {
-            if (response.success) {
-                alert("Employee Edited Successfully");
-                LoadEmployees();
-                $("#employeeList").show();
-                $("#editEmployee").hide();
-            } else {
-                alert(response.message);
-            }
+            if (response.success === false) {
+                // Create an array to collect all error messages
+                let errorMessages = [];
 
+                // Iterate over each key in the errors object
+                for (let key in response.errors) {
+                    if (response.errors.hasOwnProperty(key)) {
+                        errorMessages.push(`${key}: ${ response.errors[key].join(", ") }`);
+                    }
+                }
+
+                alert("Errors: " + errorMessages.join("\n"));
+                console.log(response.errors);
+                return;
+            }
+            alert("Employee Edited Successfully");
+            LoadEmployees();
+            $("#employeeList").show();
+            $("#editEmployee").hide();
         },
         error: function (err) {
             alert("Error Editing Employee Record");

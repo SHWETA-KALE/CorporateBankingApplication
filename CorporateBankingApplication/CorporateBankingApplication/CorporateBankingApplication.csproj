@@ -58,6 +58,9 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="CsvHelper, Version=33.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.33.0.1\lib\net48\CsvHelper.dll</HintPath>
     </Reference>
@@ -66,6 +69,9 @@
     </Reference>
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Http.Features, Version=5.0.17.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.5.0.17\lib\net461\Microsoft.AspNetCore.Http.Features.dll</HintPath>
@@ -402,6 +408,11 @@
     <Content Include="Scripts\jquery-ui-1.10.0.min.js" />
     <Content Include="Scripts\jquery.jqGrid.js" />
     <Content Include="Scripts\jquery.jqGrid.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\myClientJqGrid.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -411,6 +422,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\PaymentController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Data\NHibernateHelper.cs" />
     <Compile Include="Data\PasswordHelper.cs" />
@@ -425,6 +437,7 @@
     <Compile Include="DTOs\UserDTO.cs" />
     <Compile Include="Enum\BeneficiaryType.cs" />
     <Compile Include="Enum\CorporateStatus.cs" />
+    <Compile Include="Exceptions\EnsureBeneficiaries.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -454,8 +467,10 @@
     <Compile Include="Repositories\IAdminRepository.cs" />
     <Compile Include="Repositories\IClientRepository.cs" />
     <Compile Include="Repositories\IPaymentRepository.cs" />
+    <Compile Include="Repositories\IReportRepository.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />
     <Compile Include="Repositories\PaymentRepository.cs" />
+    <Compile Include="Repositories\ReportRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\AdminService.cs" />
     <Compile Include="Services\ClientService.cs" />
@@ -464,8 +479,10 @@
     <Compile Include="Services\IClientService.cs" />
     <Compile Include="Services\IEmailService.cs" />
     <Compile Include="Services\IPaymentService.cs" />
+    <Compile Include="Services\IReportService.cs" />
     <Compile Include="Services\IUserService.cs" />
     <Compile Include="Services\PaymentService.cs" />
+    <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="WebRoleProvider.cs" />
   </ItemGroup>
@@ -498,7 +515,6 @@
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
-    <Content Include="Views\Client\Index.cshtml" />
     <Content Include="Views\Client\_AddRecordPartial.cshtml" />
     <Content Include="Views\Client\_EditRecordPartial.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
@@ -510,16 +526,22 @@
     <Content Include="Views\User\AboutUs.cshtml" />
     <Content Include="Views\Client\EditClientRegistrationDetails.cshtml" />
     <Content Include="Views\Admin\AdminDashboard.cshtml" />
-    <Content Include="Views\Client\ClientDashboard.cshtml" />
     <Content Include="Views\Client\_AddBeneficiaryPartial.cshtml" />
     <Content Include="Views\Client\_EditBeneficiaryPartial.cshtml" />
-    <Content Include="Views\Client\ViewAllOutboundBeneficiaries.cshtml" />
     <Content Include="Views\Admin\VerifyOutboundBeneficiaryData.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Admin\ViewAdminProfile.cshtml" />
     <Content Include="Views\Client\ViewBeneficiaryListForPayment.cshtml" />
     <Content Include="Views\Client\ViewClientProfile.cshtml" />
     <Content Include="Views\Client\_AddBalancePartial.cshtml" />
+    <Content Include="Views\Admin\VerifyPayments.cshtml" />
+    <Content Include="Views\Client\Index.cshtml" />
+    <Content Include="Views\Client\ViewAllOutboundBeneficiaries.cshtml" />
+    <Content Include="Views\Client\ClientDashboard.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Report\ViewPayments.cshtml" />
+    <Content Include="Views\Report\ViewSalaryDisbursements.cshtml" />
+    <Content Include="Views\Report\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

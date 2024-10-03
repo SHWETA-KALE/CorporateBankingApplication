@@ -42,5 +42,6 @@ namespace CorporateBankingApplication.Repositories
         //payment verification
         IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status);
 
+        void UpdatePaymentStatus(Guid paymentId, CorporateStatus status);
     }
 }
