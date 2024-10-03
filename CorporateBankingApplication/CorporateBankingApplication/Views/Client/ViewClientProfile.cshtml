@@ -1,5 +1,5 @@
 ﻿@model CorporateBankingApplication.DTOs.ClientDTO
-
+@using CorporateBankingApplication.Enum
 @{
     ViewBag.Title = "ViewClientProfile";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -99,7 +99,10 @@
                         }
                     </dd>
                 </dl>
-                <button type="button" class="btn btn-outline-dark" id="addBalanceBtn">Update Balance</button>
+                @if (Model.OnboardingStatus == CorporateStatus.APPROVED)
+                {
+                    <button type="button" class="btn btn-outline-dark" id="addBalanceBtn">Update Balance</button>
+                }
                 <div id="addNewBalance" style="display:none" class="container">
                     @Html.Partial("_AddBalancePartial")
                 </div>
@@ -131,7 +134,17 @@
 
 <script>
     $("#addBalanceBtn").click(function () {
-        $("#addNewBalance").toggle();
+
+        //$("#addNewBalance").toggle();
+        //var status = $("#clientStatus").val();
+        //console.log(status)
+        //if (status == 'PENDING' || status == 'REJECTED') {
+        //    alert("You cannot update your balance as your status is not yet approved");
+        //    return;
+        //}
+        //else {
+        //}
+        $("#addNewBalance").toggle();   
     });
     // Add click event to open modal and display document
     $(".open-document").click(function (e) {

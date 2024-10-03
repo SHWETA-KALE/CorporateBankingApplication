@@ -16,7 +16,7 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.GeneratedDate).Not.Nullable();
             Map(x => x.ReportType).Not.Nullable();
             Map(x => x.GeneratedBy).Not.Nullable();
-            References(x => x.Client).Column("ClientId").Cascade.None().Not.Nullable();
+            References(x => x.User).Column("UserId").Cascade.None().Not.Nullable();
         }
     }
 }

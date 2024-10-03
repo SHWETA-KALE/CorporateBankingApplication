@@ -23,9 +23,6 @@ namespace CorporateBankingApplication.Models
 
         public virtual Role Role { get; set; } = new Role();
 
-        //public virtual DateTime LoginDate { get; set; } => analytics
-
-
-
+        public virtual IList<Report> Reports { get; set; } = new List<Report>();
     }
 }

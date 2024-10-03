@@ -60,7 +60,7 @@ namespace CorporateBankingApplication.Repositories
 
         public List<Client> GetPendingClients()
         {
-            var clients = _session.Query<Client>().FetchMany(c => c.Documents).Where(c => c.OnBoardingStatus == CorporateStatus.PENDING).ToList();
+            var clients = _session.Query<Client>().FetchMany(c => c.Documents).Where(c => c.OnBoardingStatus == CorporateStatus.PENDING && c.IsActive == true).ToList();
             return clients;
         }
 

@@ -11,25 +11,29 @@ namespace CorporateBankingApplication.DTOs
     public class BeneficiaryDTO
     {
         public Guid Id { get; set; }
+
+        [Required]
         [Display(Name = "Beneficiary Name")]
         public string BeneficiaryName { get; set; }
+
+        [Required]
         [Display(Name = "Account Number")]
-
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "Account number must be exactly 12 digits.")]
         public string AccountNumber { get; set; }
+
+        [Required]
         [Display(Name = "IFSC")]
-
         public string BankIFSC { get; set; }
-        [Display(Name = "Type")]
 
+
+        [Display(Name = "Type")]
         public string BeneficiaryType { get; set; }
         public bool IsActive { get; set; }
         public string BeneficiaryStatus { get; set; }
 
-        [Required]
         [Display(Name = "Beneficiary Id Proof")]
 
         public HttpPostedFileBase BeneficiaryIdProof { get; set; }
-        [Required]
         [Display(Name = "Beneficiary Address Proof")]
 
         public HttpPostedFileBase BeneficiaryAddressProof { get; set; }

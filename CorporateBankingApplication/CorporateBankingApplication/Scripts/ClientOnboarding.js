@@ -83,5 +83,3 @@ function updateClientStatus(clientId, status) {
 }
 
 
-
-

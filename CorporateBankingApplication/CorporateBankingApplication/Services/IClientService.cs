@@ -32,6 +32,7 @@ namespace CorporateBankingApplication.Services
         void UpdateBeneficiaryStatus(Guid id, bool isActive);
         void AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles);
         Beneficiary GetBeneficiaryById(Guid id);
+        BeneficiaryDTO GetBeneficiary(Guid id);
         void UpdateBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles);
 
         //payments

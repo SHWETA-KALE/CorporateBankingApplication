@@ -47,9 +47,10 @@ namespace CorporateBankingApplication.DTOs
         [Required]
         public CorporateStatus OnboardingStatus { get; set; }
 
-       
+        [Display(Name = "Company Id Proof")]
         public HttpPostedFileBase Document1 { get; set; }
-       
+
+        [Display(Name = "Address Proof")]
         public HttpPostedFileBase Document2 { get; set; }
 
         

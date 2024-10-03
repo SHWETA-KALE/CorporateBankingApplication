@@ -23,6 +23,7 @@ namespace CorporateBankingApplication.Repositories
             //var existingUser = _session.Query<User>().FirstOrDefault(u => u.UserName == user.UserName && PasswordHelper.VerifyPassword(user.Password, u.Password));
             //return existingUser;
 
+            //var existingUser = _session.Query<User>().FirstOrDefault(u => u.UserName == user.UserName);
             var existingUser = _session.Query<User>().FirstOrDefault(u => u.UserName == user.UserName);
 
             if (existingUser != null && PasswordHelper.VerifyPassword(user.Password, existingUser.Password))

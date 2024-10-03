@@ -35,8 +35,8 @@
             </div>
         </div>
     }
-    @if (Model.OnBoardingStatus == CorporateStatus.APPROVED)
-    {
+    @*@if (Model.OnBoardingStatus == CorporateStatus.APPROVED)
+    {*@
         <!-- Services Section -->
         <h3 class="text-center text-primary mb-4">Services</h3>
 
@@ -91,10 +91,10 @@
                         </div>
                         <h5 class="card-title text-primary">Report Generation</h5>
                         <p class="card-text">Generate and view reports for payments and salaries.</p>
-                        @Html.ActionLink("Go to Reports", "GenerateClientReports", "Client", null, new { @class = "btn btn-outline-primary" })
+                        @Html.ActionLink("Go to Reports", "Index", "Report", null, new { @class = "btn btn-outline-primary" })
                     </div>
                 </div>
             </div>
         </div>
-}
+@*}*@
     </div>

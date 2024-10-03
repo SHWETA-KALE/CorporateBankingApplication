@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container mt-5">
+    <!-- Reports Section -->
+    <h2 class="text-center text-primary mb-4">Reports</h2>
+
+    <div class="row">
+        <!-- Payment Reports Card -->
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100 rounded-5">
+                <div class="card-body text-center py-5">
+                    <div class="icon-container mb-3">
+                        <i class="fas fa-credit-card fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Payment Reports</h5>
+                    <p class="card-text">View and generate reports for payments made to BizBank and other transactions.</p>
+                    @Html.ActionLink("View Payment Reports", "ViewPayments", "Report", null, new { @class = "btn btn-outline-primary" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Salary Disbursement Reports Card -->
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100 rounded-5">
+                <div class="card-body text-center py-5">
+                    <div class="icon-container mb-3">
+                        <i class="fas fa-dollar-sign fa-3x text-white"></i>
+                    </div>
+                    <h5 class="card-title text-primary">Salary Disbursement Reports</h5>
+                    <p class="card-text">View and generate reports for salary disbursements.</p>
+                    @Html.ActionLink("View Salary Reports", "ViewSalaryDisbursements", "Report", null, new { @class = "btn btn-outline-primary" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

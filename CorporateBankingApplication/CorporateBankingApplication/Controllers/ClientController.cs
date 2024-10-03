@@ -40,6 +40,14 @@ namespace CorporateBankingApplication.Controllers
         }
         public ActionResult Index()
         {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            //for checking onboarding status
+            ViewBag.Client = client;
             return View();
         }
 
@@ -74,12 +82,12 @@ namespace CorporateBankingApplication.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Collect validation errors and return them in your response
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                               .Select(e => e.ErrorMessage)
-                                               .ToList();
-
-                return Json(new { success = false, errors = errors });
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return Json(new { success = false, errors });
             }
             if (Session["UserId"] == null)
             {
@@ -89,14 +97,12 @@ namespace CorporateBankingApplication.Controllers
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
 
-
-
             if (client == null)
             {
                 return new HttpStatusCodeResult(400, "Client not found");
             }
+
             employeedto.IsActive = true;
-            //employeedto.Client = client;
 
             _clientService.AddEmployee(employeedto, client);
 
@@ -111,8 +117,10 @@ namespace CorporateBankingApplication.Controllers
                 Salary = employeedto.Salary,
                 IsActive = employeedto.IsActive
             });
-
         }
+
+
+
         [HttpGet]
         public ActionResult GetEmployeeById(Guid id)
         {
@@ -148,7 +156,12 @@ namespace CorporateBankingApplication.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(employeeDto);
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return Json(new { success = false, errors });
             }
             if (Session["UserId"] == null)
             {
@@ -158,17 +171,6 @@ namespace CorporateBankingApplication.Controllers
 
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
-
-            // Collect validation errors and return them as a response
-            //if (!ModelState.IsValid)
-            //{
-            //    return Json(new
-            //    {
-            //        success = false,
-            //        errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
-            //    });
-            //}
-
             if (client == null)
             {
                 return new HttpStatusCodeResult(400, "Client not found");
@@ -238,10 +240,10 @@ namespace CorporateBankingApplication.Controllers
         [HttpPost]
         public ActionResult EditClientRegistrationDetails(ClientDTO clientDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(clientDTO);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(clientDTO);
+            //}
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
@@ -271,6 +273,25 @@ namespace CorporateBankingApplication.Controllers
 
             var companyIdProof = Request.Files["uploadedFiles1"];
             var addressProof = Request.Files["uploadedFiles2"];
+            //for doc validation
+            if (companyIdProof == null || companyIdProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("Document1", "Company Id Proof field is required.");
+            }
+
+            if (addressProof == null || addressProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("Document2", "Address Proof field is required.");
+            }
+            if (!ModelState.IsValid)
+            {
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return View(clientDTO);
+            }
 
             if (companyIdProof != null && companyIdProof.ContentLength > 0)
             {
@@ -402,6 +423,14 @@ namespace CorporateBankingApplication.Controllers
         /*************************** MANAGE BENEFICIARIES *****************************/
         public ActionResult ViewAllOutboundBeneficiaries()
         {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            //for checking onboarding status
+            ViewBag.Client = client;
             return View();
         }
 
@@ -426,6 +455,7 @@ namespace CorporateBankingApplication.Controllers
 
         public ActionResult AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO)
         {
+            
             if (Session["UserId"] == null)
             {
                 return new HttpStatusCodeResult(401, "Unauthorized");
@@ -441,8 +471,25 @@ namespace CorporateBankingApplication.Controllers
 
             var idProof = Request.Files["uploadedDocs1"];
             var addressProof = Request.Files["uploadedDocs2"];
+            //for doc validation
+            if (idProof == null || idProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
+            }
 
-
+            if (addressProof == null || addressProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
+            }
+            if (!ModelState.IsValid)
+            {
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return Json(new { success = false, errors });
+            }
             if (idProof != null && idProof.ContentLength > 0)
             {
                 uploadedFiles.Add(idProof);
@@ -494,12 +541,32 @@ namespace CorporateBankingApplication.Controllers
             {
                 return new HttpStatusCodeResult(400, "Client not found");
             }
+          
             var existingBeneficiary = _clientService.GetBeneficiaryById(beneficiaryDTO.Id);
             var uploadedFiles = new List<HttpPostedFileBase>();
 
             var idProof = Request.Files["newIdProof"];
             var addressProof = Request.Files["newAddressProof"];
 
+            //for doc validation
+            if (idProof == null || idProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
+            }
+
+            if (addressProof == null || addressProof.ContentLength == 0)
+            {
+                ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
+            }
+            if (!ModelState.IsValid)
+            {
+                // Collect errors into a dictionary to return as JSON
+                var errors = ModelState.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                return Json(new { success = false, errors });
+            }
 
             if (idProof != null && idProof.ContentLength > 0)
             {
@@ -546,22 +613,12 @@ namespace CorporateBankingApplication.Controllers
         }
 
         /**************************AddBalance***************************/
-        //CORRECTIONNNNNNNNNNN
         [HttpPost]
         public ActionResult AddBalance(Guid id, double amount)
         {
-            var client = _clientService.GetClientById(id);
-            if (client.OnBoardingStatus == CorporateStatus.PENDING || client.OnBoardingStatus == CorporateStatus.REJECTED)
-            {
-                return Json(new { success = false, message = "Cannot update balance as you are not approved"});
-            }
-            else
-            {
-                _clientService.AddBalance(id, amount);
-                return Json(new { success = true });
-            }
-           
 
+            _clientService.AddBalance(id, amount);
+            return Json(new { success = true });
         }
 
         /*******************************PAYMENTS*********************************/
@@ -573,6 +630,8 @@ namespace CorporateBankingApplication.Controllers
             }
 
             Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            ViewBag.Client = client;
             var beneficiaryList = _clientService.GetBeneficiaryList(clientId);
             if (beneficiaryList == null || !beneficiaryList.Any())
             {
@@ -587,8 +646,8 @@ namespace CorporateBankingApplication.Controllers
 
             return View(model);
         }
-    
-        
+
+
         [HttpGet]
         public ActionResult GetBeneficiaryListForPayment()
         {

@@ -29,8 +29,5 @@ namespace CorporateBankingApplication.Models
         public virtual DateTime? PaymentApprovalDate { get; set; }
         public virtual string RazorpayPaymentId { get; set; }
         public virtual CorporateStatus PaymentStatus { get; set; }
-
-
-
     }
 }

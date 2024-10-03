@@ -143,9 +143,13 @@
             }
         </tbody>
     </table>
-    <button id="approveSelected" class="btn btn-lg btn-success">Approve Selected</button>
-    <button id="rejectSelected" class="btn btn-lg btn-danger">Reject Selected</button>
-    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary" })
+    @if (Model != null && Model.Any())
+    {
+        <button id="approveSelected" class="btn btn-outline-dark">Approve Selected</button>
+        <button id="rejectSelected" class="btn btn-outline-dark">Reject Selected</button>
+    }
+    <br />
+    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary my-5" })
 </div>
 @section Scripts {
 

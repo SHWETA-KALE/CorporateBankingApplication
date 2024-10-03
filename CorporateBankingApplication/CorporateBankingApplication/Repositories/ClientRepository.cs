@@ -149,6 +149,7 @@ namespace CorporateBankingApplication.Repositories
         public Beneficiary GetBeneficiaryById(Guid id)
         {
             return _session.Get<Beneficiary>(id);
+            //return _session.Query<Beneficiary>().SingleOrDefault(b => b.Id == id);
         }
         public void UpdateBeneficiary(Beneficiary beneficiary)
         {
@@ -175,9 +176,10 @@ namespace CorporateBankingApplication.Repositories
         /*******************************PAYMENTS*********************************/
         public List<Beneficiary> GetBeneficiaryList(Guid clientId)
         {
+            var client = GetClientById(clientId);
             var beneficiaries = _session.Query<Beneficiary>().Where(b =>
             (b.Client.Id == clientId && b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.OUTBOUND && b.IsActive == true)
-            || (b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.INBOUND && b.IsActive == true)).ToList();
+            || (b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.INBOUND && b.IsActive == true && b.BeneficiaryName != client.UserName)).ToList();
             return beneficiaries;
         }
     }

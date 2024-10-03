@@ -11,11 +11,13 @@ namespace CorporateBankingApplication.Models
 
         public virtual DateTime GeneratedDate { get; set; }   
 
-        public virtual string ReportType { get; set; }  // PaymentReport, SalaryReport, TransactionReport
+        public virtual string ReportType { get; set; }  // PaymentReport, SalaryReport
 
         public virtual string GeneratedBy { get; set; }
 
-        public virtual Client Client { get; set; }
+        //public virtual Client Client { get; set; }
+        public virtual User User { get; set; }
+        //change this to user
 
         ///filepath for the report 
 

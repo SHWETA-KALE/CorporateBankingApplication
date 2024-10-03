@@ -232,6 +232,25 @@ namespace CorporateBankingApplication.Services
             return _clientRepository.GetBeneficiaryById(id);
         }
 
+        public BeneficiaryDTO GetBeneficiary(Guid id)
+        {
+            var beneficiary = _clientRepository.GetBeneficiaryById(id);
+            if (beneficiary == null)
+            {
+                return null; // or throw an exception based on your needs
+            }
+
+            return new BeneficiaryDTO
+            {
+                Id = beneficiary.Id,
+                BeneficiaryName = beneficiary.BeneficiaryName,
+                AccountNumber = beneficiary.AccountNumber,
+                BankIFSC = beneficiary.BankIFSC
+                // Add other properties as needed
+            };
+        }
+
+
         public void UpdateBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles)
         {
             var existingBeneficiary = _clientRepository.GetBeneficiaryById(beneficiaryDTO.Id);

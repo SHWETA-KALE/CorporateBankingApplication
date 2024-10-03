@@ -17,6 +17,7 @@ namespace CorporateBankingApplication.Mappings
             Map(u => u.Password).Not.Nullable();
             Map(u => u.Email).Not.Nullable();
             HasOne(u=>u.Role).Cascade.None().PropertyRef(r=>r.User).Constrained();
+            HasMany(x => x.Reports).Cascade.All().Inverse();
         }
     }
 }

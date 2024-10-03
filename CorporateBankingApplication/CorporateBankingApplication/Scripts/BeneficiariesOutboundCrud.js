@@ -102,8 +102,6 @@ function addNewBeneficiary() {
     var idProofFile = $("#BeneficiaryIdProof")[0].files[0]; // Access file input
     var addressProofFile = $("#BeneficiaryAddressProof")[0].files[0]; // Access file input
 
-    console.log("ID Proof File:", idProofFile);
-    console.log("Address Proof File:", addressProofFile);
     formData.append("uploadedDocs1", idProofFile);
     formData.append("uploadedDocs2", addressProofFile);
     console.log(formData)
@@ -114,6 +112,24 @@ function addNewBeneficiary() {
         processData: false,  // Prevent jQuery from automatically transforming the data into a query string
         contentType: false,  // Prevent jQuery from setting Content-Type header; the browser will set it correctly
         success: function (response) {
+            console.log(response)
+            console.log(response.errors)
+            if (response.success === false) {
+                // Create an array to collect all error messages
+                let errorMessages = [];
+
+                // Iterate over each key in the errors object
+                for (let key in response.errors) {
+                    if (response.errors.hasOwnProperty(key)) {
+                        errorMessages.push(`${key}: ${response.errors[key].join(", ")}`);
+                    }
+                }
+
+                alert("Errors: " + errorMessages.join("\n"));
+                console.log(response.errors);
+                return;
+            }
+
             alert("New Beneficiary added successfully");
             loadOutboundBeneficiaries();
             $("#addNewBeneficiary").hide();
@@ -132,7 +148,6 @@ function addNewBeneficiary() {
 
 //edit button onclick
 function editBeneficiary(beneficiaryId) {
-    console.log("Edit button clicked for beneficiary:", beneficiaryId);
     getBeneficiary(beneficiaryId);
     $("#beneficiaryList").hide();
     $("#editBeneficiary").show();
@@ -144,11 +159,13 @@ function getBeneficiary(beneficiaryId) {
         type: "GET",
         data: { id: beneficiaryId },
         success: function (response) {
+            console.log(response)
             if (response.success) {
                 $("#editBeneficiaryId").val(response.beneficiary.Id);
                 $("#editedBeneficiaryName").val(response.beneficiary.BeneficiaryName);
                 $("#editedAccountNumber").val(response.beneficiary.AccountNumber);
                 $("#editedBankIFSC").val(response.beneficiary.BankIFSC);
+                //    console.log(beneficiary.BeneficiaryName)
             } else {
                 alert(response.message);
             }
@@ -167,14 +184,27 @@ function modifyBeneficiary(formData) {
         contentType: false,  // Prevent jQuery from overriding the content type
         processData: false,  // Prevent jQuery from processing the data
         success: function (response) {
-            if (response.success) {
-                alert("Beneficiary Details Edited Successfully");
-                loadOutboundBeneficiaries();
-                $("#beneficiaryList").show();
-                $("#editBeneficiary").hide();
-            } else {
-                alert(response.message);
+            if (response.success === false) {
+                // Create an array to collect all error messages
+                let errorMessages = [];
+
+                // Iterate over each key in the errors object
+                for (let key in response.errors) {
+                    if (response.errors.hasOwnProperty(key)) {
+                        if (key !== "Id") {
+                            errorMessages.push(`${key}: ${response.errors[key].join(", ")}`);
+                        }
+                    }
+                }
+
+                alert("Errors: " + errorMessages.join("\n"));
+                console.log(response.errors);
+                return;
             }
+            alert("Beneficiary Details Edited Successfully");
+            loadOutboundBeneficiaries();
+            $("#beneficiaryList").show();
+            $("#editBeneficiary").hide();
 
         },
         error: function (err) {

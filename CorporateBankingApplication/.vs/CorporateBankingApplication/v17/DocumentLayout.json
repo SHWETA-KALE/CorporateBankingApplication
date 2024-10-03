@@ -1,31 +1,7 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\CAPSTONE\\CorporateBankingApplication\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/DELL1545/CorporateBankingDB/True/SqlTable/dbo.Beneficiaries.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\views\\client\\_editbeneficiarypartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\views\\client\\_editbeneficiarypartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\services\\clientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\services\\clientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\views\\client\\_addbalancepartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\views\\client\\_addbalancepartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\services\\iclientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\services\\iclientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\roshani.poojari\\Desktop\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -33,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -41,82 +17,11 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "dbo.Beneficiaries [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/DELL1545/CorporateBankingDB/True/SqlTable/dbo.Beneficiaries.sql",
-              "ToolTip": "dbo.Beneficiaries [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-10-01T20:43:36.682Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "_EditBeneficiaryPartial.cshtml",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Client\\_EditBeneficiaryPartial.cshtml",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Views\\Client\\_EditBeneficiaryPartial.cshtml",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Client\\_EditBeneficiaryPartial.cshtml",
-              "RelativeToolTip": "CorporateBankingApplication\\Views\\Client\\_EditBeneficiaryPartial.cshtml",
-              "ViewState": "AQIAADkAAAAAAAAAAAAAAEgAAAAWAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-01T20:34:13.273Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "_AddBalancePartial.cshtml",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Client\\_AddBalancePartial.cshtml",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Views\\Client\\_AddBalancePartial.cshtml",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Client\\_AddBalancePartial.cshtml",
-              "RelativeToolTip": "CorporateBankingApplication\\Views\\Client\\_AddBalancePartial.cshtml",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAADQAAAAVAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-01T20:17:59.5Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ClientController.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "ViewState": "AQIAACMCAAAAAAAAAAAuwCwCAAANAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-01T20:11:04.456Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
               "Name": "ST:0:0:{fbcae063-e2c0-4ab1-a516-996ea3dafb72}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "IClientService.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\IClientService.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Services\\IClientService.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\IClientService.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Services\\IClientService.cs",
-              "ViewState": "AQIAABoAAAAAAAAAAAAuwCcAAAAYAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-01T20:13:03.732Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ClientService.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\ClientService.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Services\\ClientService.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\ClientService.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Services\\ClientService.cs",
-              "ViewState": "AQIAABcBAAAAAAAAAAAiwCQBAABJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-01T20:12:28.95Z"
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             }
           ]
         }
