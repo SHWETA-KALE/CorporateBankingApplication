@@ -14,6 +14,7 @@ using CorporateBankingApplication.Services;
 
 namespace CorporateBankingApplication.Controllers
 {
+    [RoutePrefix("")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -22,12 +23,16 @@ namespace CorporateBankingApplication.Controllers
         {
             _userService = userService;
         }
+
         [AllowAnonymous]
+        [Route("")]
         public ActionResult Index()
         {
             return View();
         }
+
         [AllowAnonymous]
+        [Route("about-us")]
         public ActionResult AboutUs()
         {
             return View();
@@ -35,6 +40,7 @@ namespace CorporateBankingApplication.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [Route("login")]
         public ActionResult Login()
         {
             return View();
@@ -43,12 +49,56 @@ namespace CorporateBankingApplication.Controllers
        
         [HttpPost]
         [AllowAnonymous]
+        [Route("login")]
+        //public ActionResult Login(UserDTO userDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(userDto);
+        //    }
+        //    var result = _userService.IsLogging(userDto);
+        //    if (result != null)
+        //    {
+        //        var user = _userService.GetUserByUsername(userDto.UserName);
+        //        if (result == "Client")
+        //        {
+        //            var client = user as Client;
+        //            if (client != null && !client.IsActive)
+        //            {
+        //                ModelState.AddModelError("", "Account is inactive!!");
+        //                return View(userDto);
+        //            }
+        //        }
+        //        FormsAuthentication.SetAuthCookie(user.UserName, true);
+        //        Session["UserId"] = user.Id;
+        //        if (result == "Admin")
+        //        {
+        //            return RedirectToAction("AdminDashboard", "Admin");
+        //        }
+        //        else
+        //        {
+        //            return RedirectToAction("ClientDashboard", "Client");
+        //        }
+        //    }
+        //    ModelState.AddModelError("", "Username / Password doesn't exist!!");
+        //    return View(userDto);
+        //}
+
         public ActionResult Login(UserDTO userDto)
         {
             if (!ModelState.IsValid)
             {
                 return View(userDto);
             }
+
+            // Get CAPTCHA response from the form submission
+            var captchaResponse = Request["g-recaptcha-response"];
+            if (!ValidateCaptcha(captchaResponse))
+            {
+                ModelState.AddModelError("RecaptchaError", "Captcha validation failed. Please try again.");
+                return View(userDto);
+            }
+
             var result = _userService.IsLogging(userDto);
             if (result != null)
             {
@@ -77,8 +127,21 @@ namespace CorporateBankingApplication.Controllers
             return View(userDto);
         }
 
+        // Add this method to validate reCAPTCHA
+        private bool ValidateCaptcha(string captchaResponse)
+        {
+            var secretKey = "6Ldd_FcqAAAAAGe6HQhVgh-4489Hy2nbeZOBA3qR"; // Your Google reCAPTCHA secret key
+            var client = new System.Net.WebClient();
+            var result = client.DownloadString(
+                $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={captchaResponse}");
+            var captchaResult = Newtonsoft.Json.JsonConvert.DeserializeObject<CaptchaResult>(result);
+            // && captchaResult.Score >= 0.3
+            return captchaResult.Success;
+        }
+
         [HttpGet]
         [AllowAnonymous]
+        [Route("register")]
         public ActionResult Register()
         {
             return View();
@@ -87,6 +150,7 @@ namespace CorporateBankingApplication.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [Route("register")]
         public ActionResult Register(ClientDTO clientDTO)
         {
             if (!ModelState.IsValid)
@@ -130,6 +194,8 @@ namespace CorporateBankingApplication.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Client")]
+        [Route("logout")]
+
         //[AllowAnonymous]
         public ActionResult Logout()
         {
@@ -138,36 +204,37 @@ namespace CorporateBankingApplication.Controllers
             return RedirectToAction("Index");
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult RegisterAdmin()
-        {
-            return View();
-        }
+        //[AllowAnonymous]
+        //[HttpGet]
+
+        //public ActionResult RegisterAdmin()
+        //{
+        //    return View();
+        //}
 
 
-        [AllowAnonymous]
-        [HttpPost]
-        public ActionResult RegisterAdmin(Admin admin)
-        {
-            using (var session = NHibernateHelper.CreateSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    admin.Password = PasswordHelper.HashPassword(admin.Password);
-                    var role = new Role
-                    {
-                        RoleName = "Admin",
-                        User = admin
-                    };
-                    session.Save(admin);
-                    session.Save(role);
-                    transaction.Commit();
-                    return RedirectToAction("Login");
-                }
+        //[AllowAnonymous]
+        //[HttpPost]
+        //public ActionResult RegisterAdmin(Admin admin)
+        //{
+        //    using (var session = NHibernateHelper.CreateSession())
+        //    {
+        //        using (var transaction = session.BeginTransaction())
+        //        {
+        //            admin.Password = PasswordHelper.HashPassword(admin.Password);
+        //            var role = new Role
+        //            {
+        //                RoleName = "Admin",
+        //                User = admin
+        //            };
+        //            session.Save(admin);
+        //            session.Save(role);
+        //            transaction.Commit();
+        //            return RedirectToAction("Login");
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
 
     }

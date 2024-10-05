@@ -1,4 +1,5 @@
 ﻿using CorporateBankingApplication.Enum;
+using CorporateBankingApplication.Validations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,7 @@ namespace CorporateBankingApplication.DTOs
         [Required]
         [Display(Name = "Username")]
         [StringLength(100, ErrorMessage = "Username cannot exceed 100 characters.")]
+        [UniqueUserName]
         public string UserName { get; set; }
 
         [Required]
@@ -25,9 +27,13 @@ namespace CorporateBankingApplication.DTOs
         [Display(Name = "Email Id")]
         [EmailAddress(ErrorMessage = "Invalid Email Address.")]
         public string Email { get; set; }
+
+
         [Required]
         [Display(Name = "Company Name")]
         public string CompanyName { get; set; }
+
+
         [Required]
         [Display(Name = "Contact Information")]
         public string ContactInformation { get; set; }
@@ -40,14 +46,17 @@ namespace CorporateBankingApplication.DTOs
 
         [Required]
         [Display(Name = "Account Number")]
-        [RegularExpression(@"^\d{12}$", ErrorMessage = "Account number must be exactly 12 digits.")]
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "Account number must be exactly 12 digits and contain only numbers.")]
+        [UniqueAccountNumber]
         public string AccountNumber { get; set; }
         [Required]
         public string IFSC { get; set; }
         [Required]
         public CorporateStatus OnboardingStatus { get; set; }
 
-       
+        public string BeneficiaryStatus { get; set; }
+
+
         public HttpPostedFileBase Document1 { get; set; }
        
         public HttpPostedFileBase Document2 { get; set; }
@@ -56,5 +65,25 @@ namespace CorporateBankingApplication.DTOs
         public List<string> DocumentPaths { get; set; } = new List<string>();
 
         public List<DocumentDTO> Documents { get; set; }
+
+
+
+
+        [Required]
+        [Display(Name = "Previous Password")]
+        public string PreviousPassword { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long.")]
+        [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one letter and one number.")]
+        [Display(Name = "New Password")]
+
+        public string NewPassword { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long.")]
+        [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one letter and one number.")]
+        [Display(Name = "Confirm New Password")]
+        public string ConfirmNewPassword { get; set; }
     }
 }

@@ -17,9 +17,14 @@
                 <div class="card-body mx-5 px-5 my-5">
                     @using (Html.BeginForm("ViewBeneficiaryListForPayment", "Client", FormMethod.Post, new { @id = "paymentForm" }))
                     {
+                        <div class="mb-3">
+                            <small class="text-danger">Fields marked with * are required.</small>
+                        </div>
+
                         @Html.AntiForgeryToken()
                         <div class="form-group mb-3">
                             @Html.Label("Select Beneficiary:", new { @class = "form-label" })
+                            <span class="text-danger">*</span>
                             @Html.DropDownList("BeneficiaryId",
                             new SelectList(Model.Beneficiaries, "Id", "BeneficiaryName"),
                             "Select a Beneficiary", new { @id = "Beneficiary_Id", @class = "form-select" })
@@ -30,6 +35,7 @@
 
                         <div class="form-group mb-3">
                             @Html.Label("Amount", new { @class = "form-label" })
+                            <span class="text-danger">*</span>
                             @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", type = "number", step = "0.01", min = "0" })
                             @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
                         </div>
@@ -64,6 +70,17 @@
             var beneficiaryId = $('#Beneficiary_Id').val();
             var amount = $('input[name="Amount"]').val();
 
+            // Check if the user has selected a beneficiary
+            if (beneficiaryId === "" || beneficiaryId === null) {
+                alert("Please select a beneficiary before proceeding.");
+                return; 
+            }
+
+            // Check if the amount is provided and greater than 0
+            if (amount === "" || parseFloat(amount) <= 0) {
+                alert("Please enter a valid amount greater than zero.");
+                return; 
+            }
             // AJAX request to initiate payment
             $.ajax({
                 url: '@Url.Action("InitiatePayment", "Payment")',

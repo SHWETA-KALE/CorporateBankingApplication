@@ -1,15 +1,65 @@
-﻿function loadOutboundBeneficiaries() {
+﻿//function loadOutboundBeneficiaries() {
+//    $.ajax({
+//        url: "/Client/GetAllOutboundBeneficiaries",
+//        type: "GET",
+//        success: function (data) {
+//            $("#beneficiaryTblBody").empty()
+//            if (data.length > 0) {
+//                $.each(data, function (index, item) {
+//                    console.log(data)
+//                    var documentLinks = item.DocumentUrls.map(function (url) {
+//                        var fileName = url.split('/').pop(); // Extract file name from URL
+//                        return `<a href="#" class="document-link" data-url="${url}">${fileName}</a>`; // Include data-url       <button onclick="editBeneficiary('${item.Id}')" class="btn btn-outline-dark edit-btn" style="${item.IsActive ? '' : 'display:none;'}">Edit</button>
+//                    }).join("<br/> ");
+
+//                    var row = `<tr>
+//                        <td>${item.BeneficiaryName}</td>
+//                        <td>${item.AccountNumber}</td>
+//                        <td>${item.BankIFSC}</td>
+//                        <td>${item.BeneficiaryStatus}</td>
+//                        <td>${item.BeneficiaryType}</td>
+//                        <td>
+//                            <input type="checkbox" class="is-active-checkbox" data-beneficiaryid="${item.Id}" ${item.IsActive ? "checked" : ""} />
+//                        </td>
+//                        <td>${documentLinks}</td>
+//                        <td class="editbeneficiary-btn-cell">
+//                            <button onclick="editBeneficiary('${item.Id}')" class="btn btn-outline-dark edit-btn" style="${item.IsActive && item.BeneficiaryType !== 'INBOUND' ? '' : 'display:none;'}">Edit</button>
+//                        </td>
+//                    </tr>`;
+
+//                    $("#beneficiaryTblBody").append(row);
+//                });
+
+//                $(".is-active-checkbox").change(function () {
+//                    var beneficiaryId = $(this).data("beneficiaryid");
+//                    var isActive = $(this).is(":checked");
+//                    updateBeneficiaryStatus(beneficiaryId, isActive);
+//                });
+//            } else {
+//                $("#beneficiaryTblBody").append("<tr><td colspan='5'>No outbound beneficiaries found.</td></tr>");
+//            }
+//        },
+//        error: function (err) {
+//            $("#beneficiaryTblBody").empty();
+//            alert("No data available");
+//        }
+//    });
+//}
+
+
+// Load outbound beneficiaries with optional searchTerm
+function loadOutboundBeneficiaries(searchTerm = "") {
     $.ajax({
         url: "/Client/GetAllOutboundBeneficiaries",
         type: "GET",
+        data: { searchTerm: searchTerm }, // Pass searchTerm to the server
         success: function (data) {
-            $("#beneficiaryTblBody").empty()
+            $("#beneficiaryTblBody").empty();
             if (data.length > 0) {
                 $.each(data, function (index, item) {
-                    console.log(data)
                     var documentLinks = item.DocumentUrls.map(function (url) {
-                        var fileName = url.split('/').pop(); // Extract file name from URL
-                        return `<a href="#" class="document-link" data-url="${url}">${fileName}</a>`; // Include data-url
+                        var fileName = url.split('/').pop();
+                        return `<a href="#" class="document-link" data-url="${url}">${fileName}</a>`;
                     }).join("<br/> ");
 
                     var row = `<tr>
@@ -23,7 +73,7 @@
                         </td>
                         <td>${documentLinks}</td>
                         <td class="editbeneficiary-btn-cell">
-                            <button onclick="editBeneficiary('${item.Id}')" class="btn btn-outline-dark edit-btn" style="${item.IsActive ? '' : 'display:none;'}">Edit</button>
+                            <button onclick="editBeneficiary('${item.Id}')" class="btn btn-outline-dark edit-btn" style="${item.IsActive && item.BeneficiaryType !== 'INBOUND' ? '' : 'display:none;'}">Edit</button>
                         </td>
                     </tr>`;
 
@@ -36,16 +86,21 @@
                     updateBeneficiaryStatus(beneficiaryId, isActive);
                 });
             } else {
-                $("#beneficiaryTblBody").append("<tr><td colspan='5'>No outbound beneficiaries found.</td></tr>");
+                $("#beneficiaryTblBody").append("<tr><td colspan='8'>No outbound beneficiaries found.</td></tr>");
             }
         },
-        error: function (err) {
+        error: function () {
             $("#beneficiaryTblBody").empty();
             alert("No data available");
         }
     });
 }
 
+// Trigger search when typing in the search input
+$("#searchBeneficiary").on("input", function () {
+    var searchTerm = $(this).val();
+    loadOutboundBeneficiaries(searchTerm);
+});
 
 $(document).on("click", ".document-link", function (e) {
     e.preventDefault(); // Prevent the default link behavior

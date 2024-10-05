@@ -10,6 +10,7 @@ namespace CorporateBankingApplication.DTOs
     {
 
         [Required]
+        
         public string DocumentType { get; set; }
 
         [Required]

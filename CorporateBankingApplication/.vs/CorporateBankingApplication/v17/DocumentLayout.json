@@ -3,19 +3,12 @@
   "WorkspaceRootPath": "D:\\CAPSTONE\\CorporateBankingApplication\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\controllers\\reportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\reportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/DELL1545/CorporateBankingDB/True/SqlTable/dbo.Clients.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\views\\report\\viewpayments.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\views\\report\\viewpayments.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\views\\report\\viewsalarydisbursements.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\views\\report\\viewsalarydisbursements.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -25,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,54 +31,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "dbo.Clients [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/DELL1545/CorporateBankingDB/True/SqlTable/dbo.Clients.sql",
-              "ToolTip": "dbo.Clients [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-10-03T02:24:05.922Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{fbcae063-e2c0-4ab1-a516-996ea3dafb72}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ViewPayments.cshtml",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Report\\ViewPayments.cshtml",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Views\\Report\\ViewPayments.cshtml",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Report\\ViewPayments.cshtml",
-              "RelativeToolTip": "CorporateBankingApplication\\Views\\Report\\ViewPayments.cshtml",
-              "ViewState": "AQIAAEcAAAAAAAAAAAAiwEcAAAAMAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-03T02:23:31.262Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ViewSalaryDisbursements.cshtml",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Report\\ViewSalaryDisbursements.cshtml",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Views\\Report\\ViewSalaryDisbursements.cshtml",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Report\\ViewSalaryDisbursements.cshtml",
-              "RelativeToolTip": "CorporateBankingApplication\\Views\\Report\\ViewSalaryDisbursements.cshtml",
-              "ViewState": "AQIAAE4AAAAAAAAAAAAiwGQAAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-03T02:23:10.428Z",
+              "Title": "ClientController.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\ClientController.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\Controllers\\ClientController.cs",
+              "ViewState": "AQIAAD0EAAAAAAAAAAAAAO4DAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-05T13:10:41.251Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ReportController.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ReportController.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\ReportController.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ReportController.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Controllers\\ReportController.cs",
-              "ViewState": "AQIAAHkAAAAAAAAAAAAkwIoAAAANAAAA",
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\AdminController.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\Controllers\\AdminController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-03T02:21:38.202Z",
+              "WhenOpened": "2024-10-05T13:10:39.711Z",
               "EditorCaption": ""
             }
           ]

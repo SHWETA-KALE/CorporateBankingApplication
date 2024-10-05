@@ -10,6 +10,7 @@ using System.Web.Mvc;
 
 namespace CorporateBankingApplication.Controllers
 {
+    [Authorize(Roles = "Client")]
     public class PaymentController : Controller
     {
         private readonly IClientService _clientService;

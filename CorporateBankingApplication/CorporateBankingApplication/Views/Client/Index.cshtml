@@ -10,15 +10,22 @@
     {
         <div>
             <h2 class="text-center">List Of Employees</h2>
+
             <div class="d-flex justify-content-between my-3">
                 <button type="button" class="btn btn-outline-dark" id="btnBulkUpload">Upload CSV Of Employee Details</button>
                 <input type="file" id="csvFileInput" style="display:none;" />
+
 
                 <button type="button" class="btn btn-outline-dark" id="btnAdd">
                     Add New Employee
                 </button>
             </div>
 
+            <div class="mb-5">
+                <input type="text" id="searchFirstName" class="form-control" placeholder="Search by First Name" style="width:200px; display:inline-block;" />
+                <input type="text" id="searchLastName" class="form-control" placeholder="Search by Last Name" style="width:200px; display:inline-block;" />
+                <button id="btnSearch" class="btn btn-outline-dark">Search</button>
+            </div>
             <input type="hidden" id="isBatch" value="false" />
 
             <table class="table text-center">

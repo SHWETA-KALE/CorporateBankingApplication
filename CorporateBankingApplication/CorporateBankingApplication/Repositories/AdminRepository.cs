@@ -3,11 +3,13 @@ using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Models;
 using NHibernate;
 using NHibernate.Linq;
+using Razorpay.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Windows.Forms;
+using Payment = CorporateBankingApplication.Models.Payment;
 
 namespace CorporateBankingApplication.Repositories
 {
@@ -60,7 +62,7 @@ namespace CorporateBankingApplication.Repositories
 
         public List<Client> GetPendingClients()
         {
-            var clients = _session.Query<Client>().FetchMany(c => c.Documents).Where(c => c.OnBoardingStatus == CorporateStatus.PENDING && c.IsActive==true).ToList();
+            var clients = _session.Query<Client>().FetchMany(c => c.Documents).Where(c => c.OnBoardingStatus == CorporateStatus.PENDING && c.IsActive == true).ToList();
             return clients;
         }
 
@@ -70,20 +72,29 @@ namespace CorporateBankingApplication.Repositories
         }
 
         //update client onboarding status & add it as a beneficiary
+        //public void UpdateClient(Client client)
+        //{
+        //    using (var transaction = _session.BeginTransaction())
+        //    {
+        //        var beneficiary = new Beneficiary()
+        //        {
+        //            BeneficiaryName = client.UserName,
+        //            AccountNumber = client.AccountNumber,
+        //            BankIFSC = client.IFSC,
+        //            BeneficiaryStatus = client.OnBoardingStatus,
+        //            BeneficiaryType = BeneficiaryType.INBOUND,
+        //            IsActive = client.IsActive
+        //        };
+        //        _session.Save(beneficiary);
+        //        _session.Update(client);
+        //        transaction.Commit();
+        //    }
+        //}
+
         public void UpdateClient(Client client)
         {
             using (var transaction = _session.BeginTransaction())
             {
-                var beneficiary = new Beneficiary()
-                {
-                    BeneficiaryName = client.UserName,
-                    AccountNumber = client.AccountNumber,
-                    BankIFSC = client.IFSC,
-                    BeneficiaryStatus = client.OnBoardingStatus,
-                    BeneficiaryType = BeneficiaryType.INBOUND,
-                    IsActive = client.IsActive
-                };
-                _session.Save(beneficiary);
                 _session.Update(client);
                 transaction.Commit();
             }
@@ -108,6 +119,7 @@ namespace CorporateBankingApplication.Repositories
         {
             return _session.Query<SalaryDisbursement>()
                            .Where(x => x.SalaryStatus == status)
+                           .OrderByDescending(x => x.DisbursementDate)
                            .Select(x => new EmployeeSalaryDisbursementDTO
                            {
                                SalaryDisbursementId = x.Id,
@@ -121,7 +133,7 @@ namespace CorporateBankingApplication.Repositories
                            .ToList();
         }
 
-      
+
 
         public bool ApproveSalaryDisbursement(Guid salaryDisbursementId)
         {
@@ -179,7 +191,7 @@ namespace CorporateBankingApplication.Repositories
                 }
                 catch (Exception ex)
                 {
-                    
+
                     transaction.Rollback();
                     throw;
                 }
@@ -227,14 +239,17 @@ namespace CorporateBankingApplication.Repositories
 
         public IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status)
         {
+           
             return _session.Query<Payment>()
                 .Where(x => x.PaymentStatus == status)
+                .OrderByDescending(x => x.PaymentRequestDate)
                 .Select(x => new PaymentDTO
                 {
                     PaymentId = x.Id,
                     CompanyName = x.Beneficiary.BeneficiaryName,
                     AccountNumber = x.Beneficiary.AccountNumber,
-                    BeneficiaryType = x.Beneficiary.BeneficiaryType.ToString().ToUpper(),
+                    // BeneficiaryType = x.Beneficiary.BeneficiaryType.ToString().ToUpper(),
+                    BeneficiaryType = x.Beneficiary.BeneficiaryType,
                     Amount = x.Amount,
                     PaymentRequestDate = x.PaymentRequestDate
                 })
@@ -244,9 +259,9 @@ namespace CorporateBankingApplication.Repositories
         public void UpdatePaymentStatus(Guid paymentId, CorporateStatus status)
         {
             var payment = _session.Get<Payment>(paymentId);
-            
 
-            
+
+
             if (payment != null)
             {
                 payment.PaymentStatus = status;
@@ -260,7 +275,7 @@ namespace CorporateBankingApplication.Repositories
                         client.Balance -= payment.Amount;
                         _session.Update(client);
                     }
-                    }
+                }
                 _session.Update(payment);
                 _session.Flush(); // Save changes to the database
             }
@@ -280,5 +295,83 @@ namespace CorporateBankingApplication.Repositories
             }
         }
 
+        //REPORTS
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements()
+        {
+            return _session.Query<SalaryDisbursement>().OrderBy(s => s.DisbursementDate)
+                           .Select(x => new EmployeeSalaryDisbursementDTO
+                           {
+                               SalaryDisbursementId = x.Id,
+                               CompanyName = x.Employee.Client.CompanyName,
+                               EmployeeFirstName = x.Employee.FirstName,
+                               EmployeeLastName = x.Employee.LastName,
+                               Salary = x.Employee.Salary,
+                               DisbursementDate = x.DisbursementDate,
+                               SalaryStatus = x.SalaryStatus
+                           })
+                           .ToList();
+        }
+        public List<PaymentDTO> GetPayments()
+        {
+
+            return _session.Query<Payment>().OrderBy(p => p.PaymentRequestDate)
+                           .Select(x => new PaymentDTO
+                           {
+                               PaymentId = x.Id,
+                               CompanyName = _session.Get<Client>(x.ClientId).CompanyName,
+                               AccountNumber = _session.Get<Client>(x.ClientId).UserName,
+                               BeneficiaryName = x.Beneficiary.BeneficiaryName,
+                               Amount = x.Amount,
+                               PaymentRequestDate = x.PaymentRequestDate,
+                               PaymentStatus = x.PaymentStatus
+                           })
+                           .ToList();
+        }
+        public void AddReportInfo(Guid id)
+        {
+            var user = _session.Get<User>(id);
+            var report = new Report
+            {
+                Id = Guid.NewGuid(),
+                GeneratedDate = DateTime.Now,
+                ReportType = "Salary Disbursement",
+                GeneratedBy = "Admin",
+                User = user
+            };
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Save(report);
+                transaction.Commit();
+            }
+        }
+        public void AddPaymentReportInfo(Guid id)
+        {
+            var user = _session.Get<User>(id);
+            var report = new Report
+            {
+                Id = Guid.NewGuid(),
+                GeneratedDate = DateTime.Now,
+                ReportType = "Payment",
+                GeneratedBy = "Admin",
+                User = user
+            };
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Save(report);
+                transaction.Commit();
+            }
+        }
+
+        //Analytics
+
+        //public int GetClientsOnboardedToday()
+        //{
+        //    using (var txn = _session.BeginTransaction())
+        //    {
+        //        var today = DateTime.Today;
+        //        var count = _session.Query<Client>().Where(c => c.)
+        //    }
+
+        //}
     }
 }

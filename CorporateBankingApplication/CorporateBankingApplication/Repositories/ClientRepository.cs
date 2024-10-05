@@ -1,4 +1,6 @@
-﻿using CorporateBankingApplication.Enum;
+﻿using CorporateBankingApplication.Data;
+using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Models;
 using NHibernate;
 using NHibernate.Linq;
@@ -7,9 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using System.Web;
+using System.Web.Mvc;
 
 namespace CorporateBankingApplication.Repositories
 {
+    [HandleError]
     public class ClientRepository : IClientRepository
     {
         private readonly ISession _session;
@@ -22,8 +26,16 @@ namespace CorporateBankingApplication.Repositories
         {
             using (var transaction = _session.BeginTransaction())
             {
-                _session.Save(employee);
-                transaction.Commit();
+                try
+                {
+                    _session.Save(employee);
+                   // throw new Exception("Simulated exception to test rollback");
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
             }
 
         }
@@ -53,7 +65,6 @@ namespace CorporateBankingApplication.Repositories
             }
 
         }
-
         public void UpdateEmployeeStatus(Guid id, bool isActive)
         {
             using (var transaction = _session.BeginTransaction())
@@ -96,8 +107,17 @@ namespace CorporateBankingApplication.Repositories
         {
             using (var transaction = _session.BeginTransaction())
             {
-                _session.Save(salaryDisbursement);
-                transaction.Commit();
+                try
+                {
+                    _session.Save(salaryDisbursement);
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+                
             }
         }
 
@@ -114,10 +134,36 @@ namespace CorporateBankingApplication.Repositories
 
 
         /*beneficiaries*/
+        //public List<Beneficiary> GetAllOutboundBeneficiaries(Guid clientId)
+        //{
+        //    var beneficiaries = _session.Query<Beneficiary>().Where(b => b.Client.Id == clientId && b.BeneficiaryType == BeneficiaryType.OUTBOUND).ToList();
+        //    return beneficiaries;
+        //}
+
+        /*beneficiaries*/
         public List<Beneficiary> GetAllOutboundBeneficiaries(Guid clientId)
         {
-            var beneficiaries = _session.Query<Beneficiary>().Where(b => b.Client.Id == clientId && b.BeneficiaryType == BeneficiaryType.OUTBOUND).ToList();
+            var beneficiaries = _session.Query<Beneficiary>().Where(b => b.Client.Id == clientId).OrderBy(b => b.BeneficiaryType).ToList();
             return beneficiaries;
+        }
+        //new addition
+        public List<Client> GetAllInboundBeneficiaries(Guid clientId)
+        {
+            var existingBeneficiaries = _session.Query<Beneficiary>()
+                .Select(b => b.BeneficiaryName) // Get only the BeneficiaryName for comparison
+                .ToList();
+
+            // Fetch all clients that are approved and not the current client
+            var existingClients = _session.Query<Client>()
+                .Where(c => c.Id != clientId && c.OnBoardingStatus == CorporateStatus.APPROVED)
+                .ToList();
+
+            // Filter clients who are not in the beneficiary list
+            var clientsNotInBeneficiaries = existingClients
+                .Where(c => !existingBeneficiaries.Contains(c.UserName))
+                .ToList();
+
+            return clientsNotInBeneficiaries;
         }
 
         public void UpdateBeneficiaryStatus(Guid id, bool isActive)
@@ -172,15 +218,103 @@ namespace CorporateBankingApplication.Repositories
             }
         }
 
+        public void SaveNewPassword(Guid id, string password)
+        {
+            using (var transaction = _session.BeginTransaction())
+            {
+                var client = _session.Get<Client>(id);
+                client.Password = PasswordHelper.HashPassword(password);
+                _session.Update(client);
+                transaction.Commit();
+            }
+        }
+
         /*******************************PAYMENTS*********************************/
+        //    public List<Beneficiary> GetBeneficiaryList(Guid clientId)
+        //    {
+        //        var client = GetClientById(clientId);
+        //        var beneficiaries = _session.Query<Beneficiary>().Where(b =>
+        //(b.Client.Id == clientId && b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.OUTBOUND && b.IsActive == true)
+        //|| (b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.INBOUND && b.IsActive == true && b.BeneficiaryName != client.UserName)).ToList();
+        //        return beneficiaries;
+
+        //    }
+
         public List<Beneficiary> GetBeneficiaryList(Guid clientId)
         {
             var client = GetClientById(clientId);
-            var beneficiaries = _session.Query<Beneficiary>().Where(b =>
-    (b.Client.Id == clientId && b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.OUTBOUND && b.IsActive == true)
-    || (b.BeneficiaryStatus == CorporateStatus.APPROVED && b.BeneficiaryType == BeneficiaryType.INBOUND && b.IsActive == true && b.BeneficiaryName != client.UserName)).ToList();
+            var beneficiaries = _session.Query<Beneficiary>().Where(b => b.Client.Id == clientId && b.BeneficiaryStatus == CorporateStatus.APPROVED && b.IsActive == true).ToList();
             return beneficiaries;
+        }
 
+
+        //REPORTS
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid id)
+        {
+            return _session.Query<SalaryDisbursement>().Where(x => x.Employee.Client.Id == id)
+                           .OrderBy(s => s.DisbursementDate)
+                           .Select(x => new EmployeeSalaryDisbursementDTO
+                           {
+                               SalaryDisbursementId = x.Id,
+                               CompanyName = x.Employee.Client.CompanyName,
+                               EmployeeFirstName = x.Employee.FirstName,
+                               EmployeeLastName = x.Employee.LastName,
+                               Salary = x.Employee.Salary,
+                               DisbursementDate = x.DisbursementDate,
+                               SalaryStatus = x.SalaryStatus
+                           })
+                           .ToList();
+        }
+        public List<PaymentDTO> GetPayments(Guid id)
+        {
+
+            return _session.Query<Payment>().Where(x => x.ClientId == id)
+                           .OrderBy(p => p.PaymentRequestDate)
+                           .Select(x => new PaymentDTO
+                           {
+                               PaymentId = x.Id,
+                               CompanyName = _session.Get<Client>(x.ClientId).CompanyName,
+                               AccountNumber = _session.Get<Client>(x.ClientId).UserName,
+                               BeneficiaryName = x.Beneficiary.BeneficiaryName,
+                               Amount = x.Amount,
+                               PaymentRequestDate = x.PaymentRequestDate,
+                               PaymentStatus = x.PaymentStatus
+                           })
+                           .ToList();
+        }
+        public void AddReportInfo(Guid id)
+        {
+            var user = _session.Get<User>(id);
+            var report = new Report
+            {
+                Id = Guid.NewGuid(),
+                GeneratedDate = DateTime.Now,
+                ReportType = "Salary Disbursement",
+                GeneratedBy = "Admin",
+                User = user
+            };
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Save(report);
+                transaction.Commit();
+            }
+        }
+        public void AddPaymentReportInfo(Guid id)
+        {
+            var user = _session.Get<User>(id);
+            var report = new Report
+            {
+                Id = Guid.NewGuid(),
+                GeneratedDate = DateTime.Now,
+                ReportType = "Payment",
+                GeneratedBy = "Client",
+                User = user
+            };
+            using (var transaction = _session.BeginTransaction())
+            {
+                _session.Save(report);
+                transaction.Commit();
+            }
         }
     }
 }

@@ -7,11 +7,20 @@
 
 <div>
     <h2 class="text-center my-4 pt-3">Payment Approval Requests</h2>
+    <!-- Add search input field for company name -->
+    <div class="form-group mb-5">
+        <input type="text" id="searchClient" class="form-control" placeholder="Search by Client's Name..." />
+    </div>
     <table id="paymentApprovalsTable" class="table text-center">
         <thead class="thead-dark my-3">
             <tr>
-                <th>Select</th>
-                <th>Payment ID</th>
+                <th>
+                    <!-- Select All Checkbox -->
+                    <input type="checkbox" id="selectAll" />
+                    Select All
+                </th>
+                <th>Client's Name</th>
+                <th>Beneficiary Name</th>
                 <th>Account Number</th>
                 <th>Beneficiary Type</th>
                 <th>Amount</th>
@@ -27,7 +36,8 @@
                         <td>
                             <input type="checkbox" class="payment-checkbox" value="@payment.PaymentId" />
                         </td>
-                        <td>@payment.PaymentId</td>
+                        <td>@payment.Username</td>
+                        <td>@payment.CompanyName</td>
                         <td>@payment.AccountNumber</td>
                         <td>@payment.BeneficiaryType</td>
                         <td>@payment.Amount.ToString("F2")</td>
@@ -50,10 +60,10 @@
         <button id="rejectSelectedPayments" class="btn btn-outline-dark">Reject Selected</button>
     }
     <br />
-    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary" })
+    @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary mt-5" })
 </div>
 
-@section Scripts {
+@*@section Scripts {
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script>
         // Get selected checkboxes
@@ -118,5 +128,127 @@
                 }
             });
         });
+    </script>}*@
+
+<div class="loader-overlay" style="display:none;" id="loader">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<style>
+    .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* High z-index to make sure it stays on top */
+    }
+
+    /* Optional to remove page scrolling */
+    body.loader-active {
+        overflow: hidden;
+    }
+</style>
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script>
+        // Get selected checkboxes
+        function getSelectedPayments() {
+            var selectedIds = [];
+            $(".payment-checkbox:checked").each(function () {
+                selectedIds.push($(this).val());
+            });
+            return selectedIds;
+        }
+
+        //select/ deselect all checkboxes when "Select All" is clicked
+        $('#selectAll').change(function () {
+            $('.payment-checkbox').prop('checked', this.checked);
+        });
+
+        // If an individual checkbox is unchecked, uncheck "Select All"
+        $('.payment-checkbox').change(function () {
+            if (!this.checked) {
+                $('#selectAll').prop('checked', false);
+            }
+            // If all individual checkboxes are checked, check "Select All"
+            if ($('.payment-checkbox:checked').length === $('.payment-checkbox').length) {
+                $('#selectAll').prop('checked', true);
+            }
+        })
+        function showLoader() {
+            $("#loader").show();
+        }
+        function hideLoader() {
+            setTimeout(function () {
+                $("#loader").hide();
+            }, 5000);
+        }
+        // Approve selected payments
+        $('#approveSelectedPayments').click(function () {
+            showLoader();
+            var selectedIds = getSelectedPayments();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one payment approval request.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ApprovePayments", "Admin")',
+                data: { disbursementIds: selectedIds },
+                traditional: true,
+                success: function (response) {
+                    hideLoader();
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    hideLoader();
+                    alert("An error occurred while approving the payments: " + error);
+                }
+            });
+        });
+
+        // Reject selected payments
+        $('#rejectSelectedPayments').click(function () {
+            var selectedIds = getSelectedPayments();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one payment approval request.");
+                return;
+            }
+            showLoader();
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RejectPayments", "Admin")',
+                data: { disbursementIds: selectedIds },
+                traditional: true,
+                success: function (response) {
+                    hideLoader();
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    hideLoader();
+                    alert("An error occurred while rejecting the payments: " + error);
+                }
+            });
+        });
     </script>
-}
+    }

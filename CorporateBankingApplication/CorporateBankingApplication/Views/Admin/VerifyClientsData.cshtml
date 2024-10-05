@@ -10,19 +10,27 @@
     <table class="table">
         <thead class="thead-dark">
             <tr>
+                <th>
+                    <input type="checkbox" id="selectAllClients" />
+                    @Html.DisplayName("Select")
+                </th>
                 <th>@Html.DisplayNameFor(model => model.UserName)</th>
                 <th>@Html.DisplayNameFor(model => model.Email)</th>
                 <th>@Html.DisplayNameFor(model => model.CompanyName)</th>
                 <th>@Html.DisplayNameFor(model => model.ContactInformation)</th>
                 <th>@Html.DisplayNameFor(model => model.Location)</th>
                 <th>@Html.DisplayName("Documents")</th><!--for document showing-->
-                <th>@Html.DisplayName("Action")</th>
+
             </tr>
         </thead>
         <tbody id="clientToBeVerifiedTblBody">
             <!-- Data comes from AJAX -->
         </tbody>
     </table>
+    <div class="d-flex mb-5">
+        <button onclick="approveClient()" id="approveClientBtn" class="btn btn-outline-dark mx-3">Approve</button>
+        <button onclick="rejectClient()" id="rejectClientBtn" class="btn btn-outline-dark">Reject</button>
+    </div>
     @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary" })
 </div>
 
@@ -44,12 +52,41 @@
     </div>
 </div>
 
+<div class="loader-overlay" style="display:none;" id="loader">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<!-- Rejection Reason Modal -->
+<div class="modal fade" id="rejectionReasonModal" tabindex="-1" role="dialog" aria-labelledby="rejectionReasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary" style="display: flex; justify-content: space-between; align-items: center;">
+                <h5 class="modal-title" id="rejectionReasonModalLabel">Rejection Reason</h5>
+                <button type="button" class="closeRejectionPopup border-0 bg-transparent text-light btn-lg" data-dismiss="modal" aria-label="Close" style="font-size: 2rem; line-height: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea id="rejectionReason" class="form-control" rows="4" placeholder="Please provide the reason for rejection"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary closeRejectionPopup" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitRejectionReason">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/ClientOnboarding.js"></script>
+
+
 <script>
     $(document).ready(() => {
         loadClientsForVerification();
     })
 </script>
+
 
 <style>
     /* Additional Custom Styles */
@@ -69,5 +106,24 @@
     .table th, .table td {
         vertical-align: middle;
         padding: 15px;
+    }
+
+    /* Full-screen overlay to cover the whole page */
+    .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* High z-index to make sure it stays on top */
+    }
+
+    /* Optional to remove page scrolling */
+    body.loader-active {
+        overflow: hidden;
     }
 </style>
