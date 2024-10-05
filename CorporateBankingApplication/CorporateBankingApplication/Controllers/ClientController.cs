@@ -15,11 +15,13 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CorporateBankingApplication.Data;
 using System.Reflection;
+using FluentNHibernate.Mapping;
+using iTextSharp.text.pdf;
 
 namespace CorporateBankingApplication.Controllers
 {
     [Authorize(Roles = "Client")]
-   // [HandleError]
+    // [HandleError]
     public class ClientController : Controller
     {
         private readonly IClientService _clientService;
@@ -64,7 +66,38 @@ namespace CorporateBankingApplication.Controllers
         }
 
 
-        public ActionResult GetAllEmployees()
+        //public ActionResult GetAllEmployees()
+        //{
+        //    if (Session["UserId"] == null)
+        //    {
+        //        return RedirectToAction("Login", "User");
+        //    }
+
+        //    Guid clientId = (Guid)Session["UserId"];
+        //    var employees = _clientService.GetAllEmployees(clientId);
+        //    if (employees == null || !employees.Any())
+        //    {
+        //        throw new InvalidOperationException("No employees found for this client");
+        //    }
+
+
+        //    var employeeDtos = employees.Select(e => new EmployeeDTO
+        //    {
+        //        Id = e.Id,
+        //        FirstName = e.FirstName,
+        //        LastName = e.LastName,
+        //        Email = e.Email,
+        //        Position = e.Position,
+        //        Phone = e.Phone,
+        //        Salary = e.Salary,
+        //        IsActive = e.IsActive
+        //    }).ToList();
+
+        //    return Json(employeeDtos, JsonRequestBehavior.AllowGet);
+        //}
+
+
+        public ActionResult GetAllEmployees(string firstName, string lastName)
         {
             if (Session["UserId"] == null)
             {
@@ -73,11 +106,22 @@ namespace CorporateBankingApplication.Controllers
 
             Guid clientId = (Guid)Session["UserId"];
             var employees = _clientService.GetAllEmployees(clientId);
+
+            // Apply search filter if firstName or lastName is provided
+            if (!string.IsNullOrEmpty(firstName))
+            {
+                employees = employees.Where(e => e.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(lastName))
+            {
+                employees = employees.Where(e => e.LastName.IndexOf(lastName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
+
             if (employees == null || !employees.Any())
             {
                 throw new InvalidOperationException("No employees found for this client");
             }
-
 
             var employeeDtos = employees.Select(e => new EmployeeDTO
             {
@@ -94,10 +138,9 @@ namespace CorporateBankingApplication.Controllers
             return Json(employeeDtos, JsonRequestBehavior.AllowGet);
         }
 
-
         public ActionResult Add(EmployeeDTO employeedto)
         {
-            
+
             if (!ModelState.IsValid)
             {
                 // Collect errors into a dictionary to return as JSON
@@ -188,7 +231,7 @@ namespace CorporateBankingApplication.Controllers
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
 
-           
+
             if (client == null)
             {
                 return new HttpStatusCodeResult(400, "Client not found");
@@ -224,7 +267,7 @@ namespace CorporateBankingApplication.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-           
+
 
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
@@ -374,9 +417,21 @@ namespace CorporateBankingApplication.Controllers
 
         //***************************SALARY DISBURSEMENT***************************
         [HttpPost]
-        public ActionResult DisburseSalary(List<Guid> employeeIds, bool isBatch)
+        public ActionResult DisburseSalary(List<Guid> employeeIds, bool isBatch, double amount)
         {
+            //
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
 
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            if (client.Balance < amount)
+            {
+                return Json(new { success = false, message = "You don't have enough balance. Visit your profile to update your balance." });
+            }
+            //
             if (employeeIds == null || !employeeIds.Any())
             {
                 return Json(new { success = false, message = "No employees selected for salary disbursement." });
@@ -436,17 +491,32 @@ namespace CorporateBankingApplication.Controllers
             return View();
         }
 
-        public ActionResult GetAllOutboundBeneficiaries()
+      
+
+        public ActionResult GetAllOutboundBeneficiaries(string searchTerm)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
             Guid clientId = (Guid)Session["UserId"];
-            var urlHelper = new UrlHelper(Request.RequestContext); // Create UrlHelper here
+            var urlHelper = new UrlHelper(Request.RequestContext);
+
+            // Get all beneficiaries
             var beneficiaries = _clientService.GetAllOutboundBeneficiaries(clientId, urlHelper);
+
+            // Apply search filter if searchTerm is provided
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                beneficiaries = beneficiaries
+                                .Where(b => b.BeneficiaryName.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                                .ToList();
+            }
+
             return Json(beneficiaries, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult UpdateBeneficiaryStatus(Guid id, bool isActive)
         {
             Guid clientId = (Guid)Session["UserId"];
@@ -454,58 +524,70 @@ namespace CorporateBankingApplication.Controllers
             _clientService.UpdateBeneficiaryStatus(id, isActive);
             return Json(new { success = true });
         }
+        //new addition
+        public ActionResult ViewAllInboundBeneficiaries()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            //for checking onboarding status
+            ViewBag.Client = client;
+            return View();
+        }
 
-        //public ActionResult AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO)
-        //{
-        //    if (Session["UserId"] == null)
-        //    {
-        //        return new HttpStatusCodeResult(401, "Unauthorized");
-        //    }
-
-        //    Guid clientId = (Guid)Session["UserId"];
-        //    var client = _clientService.GetClientById(clientId);
-        //    if (client == null)
-        //    {
-        //        return new HttpStatusCodeResult(400, "Client not found");
-        //    }
-        //    var uploadedFiles = new List<HttpPostedFileBase>();
-
-        //    var idProof = Request.Files["uploadedDocs1"];
-        //    var addressProof = Request.Files["uploadedDocs2"];
-
-        //    //for doc validation
-        //    if (idProof == null || idProof.ContentLength == 0)
-        //    {
-        //        ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
-        //    }
-
-        //    if (addressProof == null || addressProof.ContentLength == 0)
-        //    {
-        //        ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
-        //    }
-        //    if (!ModelState.IsValid)
-        //    {
-        //        // Collect errors into a dictionary to return as JSON
-        //        var errors = ModelState.ToDictionary(
-        //            kvp => kvp.Key,
-        //            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-        //        );
-        //        return Json(new { success = false, errors });
-        //    }
-
-        //    if (idProof != null && idProof.ContentLength > 0)
-        //    {
-        //        uploadedFiles.Add(idProof);
-        //    }
-
-        //    if (addressProof != null && addressProof.ContentLength > 0)
-        //    {
-        //        uploadedFiles.Add(addressProof);
-        //    }
-        //    _clientService.AddNewBeneficiary(beneficiaryDTO, client, uploadedFiles);
-        //    return Json(new { success = true });
-        //}
-
+        public ActionResult GetAllInboundBeneficiaries()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var beneficiaries = _clientService.GetAllInboundBeneficiaries(clientId);
+            return Json(beneficiaries, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AddInboundBeneficiary(List<Guid> beneficiaryIds)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            if (beneficiaryIds == null || !beneficiaryIds.Any())
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "No beneficiaries selected for addition."
+                });
+            }
+            bool success = true;
+            foreach (var id in beneficiaryIds)
+            {
+                //_clientService.AddInboundBeneficiary(id);   
+                _clientService.AddInboundBeneficiary(clientId,id);   
+                success = true;
+                //break;
+            }
+            if (success)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "Inbound Beneficiary/s added successfully."
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Failed to add Inbound Beneficiary/s."
+                });
+            }
+        }
         public ActionResult AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO)
         {
 
@@ -716,15 +798,38 @@ namespace CorporateBankingApplication.Controllers
             return View(clientDto);
         }
 
+        public ActionResult ChangePassword(string previousPassword, string newPassword, string confirmNewPassword)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var previousPasswordCheck = _clientService.CheckPassword(clientId,previousPassword);
+            if (previousPasswordCheck)
+            {
+                if( newPassword != null && newPassword == confirmNewPassword)
+                {
+                    _clientService.SaveNewPassword(clientId, newPassword);
+                    return Json(new { success = true, message = "Password updated successfully." });
+                }
+            }
+            if (newPassword != null && newPassword != confirmNewPassword)
+            {
+                return Json(new { success = false, message = "Passwords don't match." });
+            }
+            return Json(new { success = false, message = "Error in updating password" });
+        }
+
         /**************************AddBalance***************************/
-        //CORRECTIONNNNNNNNNNN
+
         [HttpPost]
         public ActionResult AddBalance(Guid id, double amount)
         {
             var client = _clientService.GetClientById(id);
             if (client.OnBoardingStatus == CorporateStatus.PENDING || client.OnBoardingStatus == CorporateStatus.REJECTED)
             {
-                return Json(new { success = false, message = "Cannot update balance as you are not approved"});
+                return Json(new { success = false, message = "Cannot update balance as you are not approved" });
             }
             else
             {
@@ -762,8 +867,8 @@ namespace CorporateBankingApplication.Controllers
 
             return View(model);
         }
-    
-        
+
+
         [HttpGet]
         public ActionResult GetBeneficiaryListForPayment()
         {
@@ -789,6 +894,248 @@ namespace CorporateBankingApplication.Controllers
             return Json(new { success = true, data = paymentBeneficiaryDTO }, JsonRequestBehavior.AllowGet);
         }
 
+        /***********************************REPORTS ****************************************/
 
+        public ActionResult ReportView()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            return View();
+        }
+
+        public ActionResult ViewSalaryDisbursements()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            ViewBag.Client = client;
+            var salaryDisbursements = _clientService.GetAllSalaryDisbursements(clientId);
+            return View(salaryDisbursements);
+        }
+
+        //public ActionResult ViewSalaryDisbursements(DateTime? startDate, DateTime? endDate, string beneficiaryName)
+        //{
+        //    if (Session["UserId"] == null)
+        //    {
+        //        return RedirectToAction("Login", "User");
+        //    }
+
+        //    Guid clientId = (Guid)Session["UserId"];
+        //    var client = _clientService.GetClientById(clientId);
+        //    ViewBag.Client = client;
+
+        //    // Get all disbursements, and apply filters
+        //    var salaryDisbursements = _clientService.GetAllSalaryDisbursements(clientId);
+
+        //    if (startDate.HasValue)
+        //    {
+        //        salaryDisbursements = salaryDisbursements.Where(sd => sd.DisbursementDate >= startDate.Value).ToList();
+        //    }
+
+        //    if (endDate.HasValue)
+        //    {
+        //        salaryDisbursements = salaryDisbursements.Where(sd => sd.DisbursementDate <= endDate.Value).ToList();
+        //    }
+
+        //    if (!string.IsNullOrEmpty(beneficiaryName))
+        //    {
+        //        salaryDisbursements = salaryDisbursements
+        //            .Where(sd => sd.EmployeeFirstName.IndexOf(beneficiaryName, StringComparison.OrdinalIgnoreCase) >= 0 ||
+        //                         sd.EmployeeLastName.IndexOf(beneficiaryName, StringComparison.OrdinalIgnoreCase) >= 0)
+        //            .ToList();
+        //    }
+
+        //    ViewBag.StartDate = startDate;
+        //    ViewBag.EndDate = endDate;
+        //    ViewBag.BeneficiaryName = beneficiaryName;
+
+        //    return View(salaryDisbursements);
+        //}
+
+
+        public ActionResult DownloadSalaryDisbursementsPDFReport()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var list = _clientService.GetAllSalaryDisbursements(clientId);
+            // Create a new PDF document
+            using (var memoryStream = new MemoryStream())
+            {
+                var doc = new iTextSharp.text.Document();
+                PdfWriter.GetInstance(doc, memoryStream);
+                doc.Open();
+
+                // Create a table for better formatting
+                var table = new PdfPTable(6); // Create a table with 5 columns
+                table.AddCell("ID");
+                table.AddCell("Client Company Name");
+                table.AddCell("Employee Name");
+                table.AddCell("Salary");
+                table.AddCell("Disbursement Date");
+                table.AddCell("Status");
+
+                // Add data to the table
+                foreach (var emp in list)
+                {
+                    table.AddCell(emp.SalaryDisbursementId.ToString());
+                    table.AddCell(emp.CompanyName);
+                    table.AddCell($"{emp.EmployeeFirstName} {emp.EmployeeLastName}");
+                    table.AddCell(emp.Salary.ToString("C")); // Format as currency
+                    table.AddCell(emp.DisbursementDate.ToShortDateString());
+                    table.AddCell(emp.SalaryStatus.ToString());
+                }
+
+                // Add the table to the document
+                doc.Add(table);
+                doc.Close(); // Closing the document finalizes it
+
+                // Prepare the byte array to return
+                byte[] bytes = memoryStream.ToArray();
+
+                //add in report table
+                _clientService.AddReportInfo(clientId);
+
+                return File(bytes, "application/pdf", "SalaryDisbursement.pdf");
+            }
+        }
+
+        //public ActionResult DownloadSalaryDisbursementsPDFReport(DateTime? startDate, DateTime? endDate, string beneficiaryName)
+        //{
+        //    if (Session["UserId"] == null)
+        //    {
+        //        return RedirectToAction("Login", "User");
+        //    }
+
+        //    Guid clientId = (Guid)Session["UserId"];
+        //    var list = _clientService.GetAllSalaryDisbursements(clientId);
+
+        //    // Apply the same filters used in the view
+        //    if (startDate.HasValue)
+        //    {
+        //        list = list.Where(sd => sd.DisbursementDate >= startDate.Value).ToList();
+        //    }
+
+        //    if (endDate.HasValue)
+        //    {
+        //        list = list.Where(sd => sd.DisbursementDate <= endDate.Value).ToList();
+        //    }
+
+        //    if (!string.IsNullOrEmpty(beneficiaryName))
+        //    {
+        //        list = list
+        //            .Where(sd =>
+        //                sd.EmployeeFirstName.IndexOf(beneficiaryName, StringComparison.OrdinalIgnoreCase) >= 0 ||
+        //                sd.EmployeeLastName.IndexOf(beneficiaryName, StringComparison.OrdinalIgnoreCase) >= 0)
+        //            .ToList();
+        //    }
+
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        var doc = new iTextSharp.text.Document();
+        //        PdfWriter.GetInstance(doc, memoryStream);
+        //        doc.Open();
+
+        //        // Create a table for better formatting
+        //        var table = new PdfPTable(6); // Create a table with 6 columns
+        //        table.AddCell("ID");
+        //        table.AddCell("Client Company Name");
+        //        table.AddCell("Employee Name");
+        //        table.AddCell("Salary");
+        //        table.AddCell("Disbursement Date");
+        //        table.AddCell("Status");
+
+        //        // Add data to the table
+        //        foreach (var emp in list)
+        //        {
+        //            table.AddCell(emp.SalaryDisbursementId.ToString());
+        //            table.AddCell(emp.CompanyName);
+        //            table.AddCell($"{emp.EmployeeFirstName} {emp.EmployeeLastName}");
+        //            table.AddCell(emp.Salary.ToString("C")); // Format as currency
+        //            table.AddCell(emp.DisbursementDate.ToShortDateString());
+        //            table.AddCell(emp.SalaryStatus.ToString());
+        //        }
+
+        //        doc.Add(table);
+        //        doc.Close();
+
+        //        byte[] bytes = memoryStream.ToArray();
+
+        //        return File(bytes, "application/pdf", "SalaryDisbursement.pdf");
+        //    }
+        //}
+
+
+        public ActionResult ViewPayments()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid clientId = (Guid)Session["UserId"];
+            var client = _clientService.GetClientById(clientId);
+            ViewBag.Client = client;
+            var payments = _clientService.GetPayments(clientId);
+            return View(payments);
+        }
+
+        public ActionResult DownloadPaymentPDFReport()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid userId = (Guid)Session["UserId"];
+            var list = _clientService.GetPayments(userId);
+
+            // Create a new PDF document
+            using (var memoryStream = new MemoryStream())
+            {
+                var doc = new iTextSharp.text.Document();
+                PdfWriter.GetInstance(doc, memoryStream);
+                doc.Open();
+
+                // Create a table for better formatting
+                var table = new PdfPTable(7); // Create a table with 5 columns
+                table.AddCell("ID");
+                table.AddCell("Client Company Name");
+                table.AddCell("Account Number");
+                table.AddCell("Beneficiary Name");
+                table.AddCell("Amount");
+                table.AddCell("Payment Request Date");
+                table.AddCell("Status");
+
+                // Add data to the table
+                foreach (var pay in list)
+                {
+                    table.AddCell(pay.PaymentId.ToString());
+                    table.AddCell(pay.CompanyName);
+                    table.AddCell(pay.AccountNumber);
+                    table.AddCell(pay.BeneficiaryName); // Format as currency
+                    table.AddCell(pay.Amount.ToString()); // Format as currency
+                    table.AddCell(pay.PaymentRequestDate.ToShortDateString());
+                    table.AddCell(pay.PaymentStatus.ToString());
+                }
+
+                // Add the table to the document
+                doc.Add(table);
+                doc.Close(); // Closing the document finalizes it
+
+                // Prepare the byte array to return
+                byte[] bytes = memoryStream.ToArray();
+
+                //add in report table
+                _clientService.AddPaymentReportInfo(userId);
+
+                return File(bytes, "application/pdf", "Payment.pdf");
+            }
+        }
     }
 }

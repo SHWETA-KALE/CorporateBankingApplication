@@ -107,7 +107,30 @@ namespace CorporateBankingApplication.Services
             return clientDtos;
         }
 
-        public bool UpdateClientOnboardingStatus(Guid id, string status)
+        //public bool UpdateClientOnboardingStatus(Guid id, string status)
+        //{
+        //    var client = _adminRepository.GetClientById(id);
+        //    if (client == null)
+        //    {
+        //        // Client not found
+        //        return false;
+        //    }
+        //    // Update onboarding status based on the status string
+        //    if (status == "APPROVED")
+        //    {
+        //        client.OnBoardingStatus = CorporateStatus.APPROVED;
+        //        _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Approved!!", $"Dear {client.UserName}, Your client account has been approved as all submitted details and documents meet our onboarding requirements. Now you can access all our services.");
+        //    }
+        //    else if (status == "REJECTED")
+        //    {
+        //        client.OnBoardingStatus = CorporateStatus.REJECTED;
+        //        _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!", $"Dear {client.UserName}, Your client account has been rejected due to discrepancies in the submitted details and documents, which do not meet our onboarding requirements.");
+        //    }
+        //    _adminRepository.UpdateClient(client);
+        //    return true;
+        //}
+
+        public bool UpdateClientOnboardingStatus(Guid id, string status, string rejectionReason = "")
         {
             var client = _adminRepository.GetClientById(id);
             if (client == null)
@@ -115,20 +138,26 @@ namespace CorporateBankingApplication.Services
                 // Client not found
                 return false;
             }
+
             // Update onboarding status based on the status string
             if (status == "APPROVED")
             {
                 client.OnBoardingStatus = CorporateStatus.APPROVED;
-                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Approved!!", $"Dear {client.UserName}, Your client account has been approved as all submitted details and documents meet our onboarding requirements. Now you can access all our services.");
+                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Approved!!",
+                    $"Dear {client.UserName}, Your client account has been approved as all submitted details and documents meet our onboarding requirements. Now you can access all our services.");
             }
             else if (status == "REJECTED")
             {
                 client.OnBoardingStatus = CorporateStatus.REJECTED;
-                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!", $"Dear {client.UserName}, Your client account has been rejected due to discrepancies in the submitted details and documents, which do not meet our onboarding requirements.");
+                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!",
+                    $"Dear {client.UserName}, Your client account has been rejected due to the following reason:\n\n{rejectionReason}\n\n. Please contact support for further clarification.");
             }
+
             _adminRepository.UpdateClient(client);
             return true;
         }
+
+
 
         //*******************Salary disbursement***************
 
@@ -221,12 +250,13 @@ namespace CorporateBankingApplication.Services
                 BeneficiaryName = b.BeneficiaryName,
                 AccountNumber = b.AccountNumber,
                 BankIFSC = b.BankIFSC,
+                ClientName = b.Client.UserName,
                 BeneficiaryType = b.BeneficiaryType.ToString().ToUpper(),
                 DocumentUrls = b.Documents.Select(d => urlHelper.Content(d.FilePath)).ToList()
             }).ToList();
             return beneficiariesDto;
         }
-        public bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status)
+        public bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status, string rejectionReason = "")
         {
             var beneficiary = _adminRepository.GetBeneficiaryById(id);
             if (beneficiary.Client == null)
@@ -243,7 +273,7 @@ namespace CorporateBankingApplication.Services
             else if (status == "REJECTED")
             {
                 beneficiary.BeneficiaryStatus = CorporateStatus.REJECTED;
-                _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Rejected!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been rejected due to discrepancies in the submitted details and documents.");
+                _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Rejected!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been rejected due to the following reason:\n\n{rejectionReason}\n\n.");
             }
             _adminRepository.UpdateBeneficiary(beneficiary);
             return true;
@@ -277,5 +307,30 @@ namespace CorporateBankingApplication.Services
                 _adminRepository.UpdatePaymentStatus(paymentId, status);
             }
         }
+
+
+        /********************************REPORTS*******************************/
+
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements()
+        {
+            return _adminRepository.GetAllSalaryDisbursements();
+        }
+
+        public List<PaymentDTO> GetPayments()
+        {
+            return _adminRepository.GetPayments();    
+        }
+
+        public void AddReportInfo(Guid id)
+        {
+            _adminRepository.AddReportInfo(id);
+        }
+
+        public void AddPaymentReportInfo(Guid id)
+        {
+            _adminRepository.AddPaymentReportInfo(id);
+        }
+
+
     }
 }

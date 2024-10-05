@@ -20,7 +20,7 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.BeneficiaryStatus).CustomType<CorporateStatus>().Not.Nullable();
             Map(x => x.BeneficiaryType).CustomType<BeneficiaryType>().Not.Nullable();
             Map(x => x.IsActive).Not.Nullable();
-            References(x => x.Client).Column("ClientId").Cascade.None().Nullable();
+            References(x => x.Client).Column("ClientId").Cascade.None().Not.Nullable();
             HasMany(x => x.Payments).Cascade.All().Inverse();
             HasMany(x => x.Documents).Cascade.All().Inverse();
         }

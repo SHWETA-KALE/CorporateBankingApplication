@@ -43,5 +43,14 @@ namespace CorporateBankingApplication.Repositories
         IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status);
 
         void UpdatePaymentStatus(Guid paymentId, CorporateStatus status);
+
+
+        //REPORTS
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements();
+
+        List<PaymentDTO> GetPayments();
+        void AddReportInfo(Guid id);
+
+        void AddPaymentReportInfo(Guid id);
     }
 }

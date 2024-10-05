@@ -1,4 +1,5 @@
-﻿using CorporateBankingApplication.DTOs;
+﻿using CorporateBankingApplication.Data;
+using CorporateBankingApplication.DTOs;
 using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Repositories;
@@ -180,6 +181,41 @@ namespace CorporateBankingApplication.Services
             }).ToList();
             return beneficiariesDto;
         }
+
+        //new addition
+        public List<ClientDTO> GetAllInboundBeneficiaries(Guid clientId)
+        {
+            var beneficiaries = _clientRepository.GetAllInboundBeneficiaries(clientId);
+            var beneficiariesDto = beneficiaries.Select(b => new ClientDTO
+            {
+                Id = b.Id,
+                CompanyName = b.UserName,
+                AccountNumber = b.AccountNumber,
+                IFSC = b.IFSC,
+                BeneficiaryStatus = "APPROVED",
+                IsActive = b.IsActive,
+            }).ToList();
+            return beneficiariesDto;
+        }
+
+        public void AddInboundBeneficiary(Guid clientId,Guid id)
+        {
+            var client = _clientRepository.GetClientById(clientId);
+            var beneficiary = _clientRepository.GetClientById(id);
+            var inboundBeneficiary = new Beneficiary()
+            {
+                //BeneficiaryName = client.CompanyName,
+                BeneficiaryName = beneficiary.UserName,
+                AccountNumber = beneficiary.AccountNumber,
+                BankIFSC = beneficiary.IFSC,
+                BeneficiaryStatus = CorporateStatus.APPROVED,
+                BeneficiaryType = BeneficiaryType.INBOUND,
+                IsActive = beneficiary.IsActive,
+                Client = client
+            };
+            _clientRepository.AddNewBeneficiary(inboundBeneficiary);
+        }
+
         public void UpdateBeneficiaryStatus(Guid id, bool isActive)
         {
             _clientRepository.UpdateBeneficiaryStatus(id, isActive);
@@ -296,7 +332,19 @@ namespace CorporateBankingApplication.Services
             
             _clientRepository.AddBalance(id, amount);
         }
-
+        public bool CheckPassword(Guid id, string password)
+        {
+            var client = GetClientById(id);
+            if(client !=null && PasswordHelper.VerifyPassword(password, client.Password))
+            {
+                return true;
+            }
+            return false;
+        }
+        public void SaveNewPassword(Guid clientId, string newPassword)
+        {
+            _clientRepository.SaveNewPassword(clientId, newPassword);
+        }
         /*******************************PAYMENTS*********************************/
         public List<BeneficiaryDTO> GetBeneficiaryList(Guid id)
         {
@@ -315,5 +363,28 @@ namespace CorporateBankingApplication.Services
             }).ToList();
             return beneficiaryDTOs;
         }
+
+        /********************************REPORTS*******************************/
+
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid id)
+        {
+            return _clientRepository.GetAllSalaryDisbursements(id);
+        }
+
+        public List<PaymentDTO> GetPayments(Guid id)
+        {
+            return _clientRepository.GetPayments(id);
+        }
+
+        public void AddReportInfo(Guid id)
+        {
+            _clientRepository.AddReportInfo(id);
+        }
+
+        public void AddPaymentReportInfo(Guid id)
+        {
+            _clientRepository.AddPaymentReportInfo(id);
+        }
+
     }
 }

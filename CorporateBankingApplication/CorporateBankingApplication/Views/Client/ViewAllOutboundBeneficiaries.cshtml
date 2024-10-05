@@ -11,14 +11,17 @@
     {
         <div class="container pt-5" id="beneficiaryList">
 
-            <h2 class="text-center my-4 pt-3">List Of Outbound Beneficiaries</h2>
-            <p>
-                <div>
-                    <button type="button" class="btn btn-outline-dark" id="btnAddBeneficiary">
-                        Add New Beneficiary
-                    </button>
-                </div>
-            </p>
+            <h2 class="text-center my-4 pt-3">List Of Beneficiaries</h2>
+          
+            <div class="d-flex justify-content-between mb-3">
+                <input type="text" id="searchBeneficiary" class="form-control w-50" placeholder="Search by Beneficiary Name" />
+                <button type="button" class="btn btn-outline-dark" id="btnAddBeneficiary">
+                    Add New Outbound Beneficiary
+                </button>
+                <button type="button" class="btn btn-outline-dark" id="btnAddInboundBeneficiary">
+                    Add New Inbound Beneficiary
+                </button>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -71,7 +74,6 @@
         <div class="modal-content">
             <div class="modal-header text-bg-primary" style="display: flex; justify-content: space-between; align-items: center;">
                 <h5 class="modal-title px-3" id="documentModalLabel" style="margin: 0;">Beneficiary Document</h5>
-                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">*@
                 <button type="button" class="close border-0 text-bg-primary btn-lg" data-dismiss="modal" aria-label="Close" style="font-size: 2rem; line-height: 1;">
 
                     <span aria-hidden="true">&times;</span>
@@ -91,6 +93,7 @@
 <div id="editBeneficiary" style="display:none" class="container">
     @Html.Partial("_EditBeneficiaryPartial")
 </div>
+
 <script src="~/Scripts/BeneficiariesOutboundCrud.js"></script>
 <script>
     $(document).ready(() => {
@@ -99,6 +102,9 @@
     $("#btnAddBeneficiary").click(function () {
         $("#beneficiaryList").hide();
         $("#addNewBeneficiary").show();
+    });
+    $("#btnAddInboundBeneficiary").click(function () {
+        window.location.href = '@Url.Action("ViewAllInboundBeneficiaries", "Client")';
     });
     //document modal closing button
     $('.close').on('click', function () {

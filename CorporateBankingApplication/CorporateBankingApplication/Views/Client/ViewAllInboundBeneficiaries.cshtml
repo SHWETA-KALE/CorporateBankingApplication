@@ -1,0 +1,86 @@
+﻿
+@model IEnumerable<CorporateBankingApplication.DTOs.ClientDTO>
+
+@using CorporateBankingApplication.Enum
+
+@{
+    ViewBag.Title = "ViewAllInboundBeneficiaries";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var clientOnboardingStatus = ViewBag.Client?.OnBoardingStatus;
+
+}
+
+
+<div>
+    @if (clientOnboardingStatus == CorporateStatus.APPROVED)
+    {
+        <div class="container pt-5" id="inboundBeneficiaryList">
+            <div id="showAdd">
+                <h2 class="text-center my-4 pt-3">List Of Inbound Beneficiaries</h2>
+                <!-- Add search input field for company name -->
+                <div class="form-group mb-5">
+                    <input type="text" id="searchCompany" class="form-control" placeholder="Search by Beneficiary Name..." />
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAllInbounds" />
+                                @Html.DisplayName("Select")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Beneficiary Name")
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AccountNumber)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.IFSC)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.BeneficiaryStatus)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="inboundBeneficiaryTblBody">
+                        <!--data comes from ajax-->
+                    </tbody>
+                </table>
+                <button id="addInboundSelected" class="btn btn-outline-dark">Add Beneficiary</button>
+
+            </div>
+            <br />
+            @Html.ActionLink("Go Back To Beneficiary List", "ViewAllOutboundBeneficiaries", "Client", null, new { @class = "btn btn-lg btn-primary mt-5" })
+
+        </div>
+
+    }
+    else
+    {
+        <div class="container my-5 pt-lg-5">
+            <div class="alert alert-warning text-center my-5">
+                The client's onboarding process is not yet completed. Please wait for approval to access the our services.
+            </div>
+            @Html.ActionLink("Go Back To Dashboard", "ClientDashboard", null, new { @class = "btn btn-lg btn-primary mt-5" })
+
+        </div>
+
+    }
+
+</div>
+
+
+
+
+<script src="~/Scripts/BeneficiariesInboundList.js"></script>
+<script>
+    $(document).ready(() => {
+        loadInboundBeneficiaries();
+    })
+    $('#searchCompany').on('keyup', function () {
+        var searchText = $(this).val().toLowerCase();
+        $('#inboundBeneficiaryTblBody tr').filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+        });
+    });
+</script>

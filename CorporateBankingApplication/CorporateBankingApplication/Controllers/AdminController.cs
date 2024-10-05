@@ -1,9 +1,13 @@
 ﻿using Azure.Core;
 using CorporateBankingApplication.DTOs;
 using CorporateBankingApplication.Enum;
+using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Services;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -144,18 +148,53 @@ namespace CorporateBankingApplication.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateClientOnboardingStatus(Guid id, string status)
+
+
+        //public ActionResult UpdateClientOnboardingStatus(List<Guid> id, string status)
+        //{
+        //    bool allSucceeded = true; // Flag to track if all updates succeeded
+        //    foreach (var clientid in id)
+        //    {
+        //        var result = _adminService.UpdateClientOnboardingStatus(clientid, status);
+        //        if (!result)
+        //        {
+        //            allSucceeded = false; // Set to false if any client update fails
+        //        }
+        //    }
+
+        //    if (allSucceeded)
+        //    {
+        //        return Json(new { success = true });
+        //    }
+        //    else
+        //    {
+        //        return Json(new { success = false, message = "One or more clients failed to update status" });
+        //    }
+        //}
+
+        public ActionResult UpdateClientOnboardingStatus(List<Guid> id, string status, string rejectionReason = "")
         {
-            var result = _adminService.UpdateClientOnboardingStatus(id, status);
-            if (result)
+            bool allSucceeded = true; // Flag to track if all updates succeeded
+            foreach (var clientid in id)
+            {
+                var result = _adminService.UpdateClientOnboardingStatus(clientid, status, rejectionReason);
+                if (!result)
+                {
+                    allSucceeded = false; // Set to false if any client update fails
+                }
+            }
+
+            if (allSucceeded)
             {
                 return Json(new { success = true });
             }
             else
             {
-                return Json(new { success = false, message = "Failed to update status" });
+                return Json(new { success = false, message = "One or more clients failed to update status" });
             }
         }
+
+
 
         //*************************Salary Disbursement Verification*******************************
 
@@ -264,16 +303,25 @@ namespace CorporateBankingApplication.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status)
+        public ActionResult UpdateOutboundBeneficiaryOnboardingStatus(List<Guid> id, string status, string rejectionReason = "")
         {
-            var result = _adminService.UpdateOutboundBeneficiaryOnboardingStatus(id, status);
-            if (result)
+            bool allSucceeded = true; // Flag to track if all updates succeeded
+            foreach (var beneficiaryid in id)
+            {
+                var result = _adminService.UpdateOutboundBeneficiaryOnboardingStatus(beneficiaryid, status, rejectionReason);
+                if (!result)
+                {
+                    allSucceeded = false; // Set to false if any client update fails
+                }
+            }
+
+            if (allSucceeded)
             {
                 return Json(new { success = true });
             }
             else
             {
-                return Json(new { success = false, message = "Failed to update status" });
+                return Json(new { success = false, message = "One or more beneficiaries failed to update status" });
             }
         }
 
@@ -338,5 +386,139 @@ namespace CorporateBankingApplication.Controllers
 
 
         }
+
+
+        /***********************************REPORTS ****************************************/
+
+        public ActionResult ReportView()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            return View();
+        }
+
+        public ActionResult ViewSalaryDisbursements()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            var salaryDisbursements = _adminService.GetAllSalaryDisbursements();
+            return View(salaryDisbursements);
+        }
+
+        public ActionResult DownloadSalaryDisbursementsPDFReport()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid adminId = (Guid)Session["UserId"];
+            var list = _adminService.GetAllSalaryDisbursements();
+            // Create a new PDF document
+            using (var memoryStream = new MemoryStream())
+            {
+                var doc = new iTextSharp.text.Document();
+                PdfWriter.GetInstance(doc, memoryStream);
+                doc.Open();
+
+                // Create a table for better formatting
+                var table = new PdfPTable(6); // Create a table with 5 columns
+                table.AddCell("ID");
+                table.AddCell("Client Company Name");
+                table.AddCell("Employee Name");
+                table.AddCell("Salary");
+                table.AddCell("Disbursement Date");
+                table.AddCell("Status");
+
+                // Add data to the table
+                foreach (var emp in list)
+                {
+                    table.AddCell(emp.SalaryDisbursementId.ToString());
+                    table.AddCell(emp.CompanyName);
+                    table.AddCell($"{emp.EmployeeFirstName} {emp.EmployeeLastName}");
+                    table.AddCell(emp.Salary.ToString("C")); // Format as currency
+                    table.AddCell(emp.DisbursementDate.ToShortDateString());
+                    table.AddCell(emp.SalaryStatus.ToString());
+                }
+
+                // Add the table to the document
+                doc.Add(table);
+                doc.Close(); // Closing the document finalizes it
+
+                // Prepare the byte array to return
+                byte[] bytes = memoryStream.ToArray();
+
+                //add in report table
+                _adminService.AddReportInfo(adminId);
+
+                return File(bytes, "application/pdf", "SalaryDisbursement.pdf");
+            }
+        }
+
+        public ActionResult ViewPayments()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            var payments = _adminService.GetPayments();
+            return View(payments);
+        }
+
+        public ActionResult DownloadPaymentPDFReport()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            Guid userId = (Guid)Session["UserId"];
+            var list = _adminService.GetPayments();
+
+            // Create a new PDF document
+            using (var memoryStream = new MemoryStream())
+            {
+                var doc = new iTextSharp.text.Document();
+                PdfWriter.GetInstance(doc, memoryStream);
+                doc.Open();
+
+                // Create a table for better formatting
+                var table = new PdfPTable(7); // Create a table with 5 columns
+                table.AddCell("ID");
+                table.AddCell("Client Company Name");
+                table.AddCell("Account Number");
+                table.AddCell("Beneficiary Name");
+                table.AddCell("Amount");
+                table.AddCell("Payment Request Date");
+                table.AddCell("Status");
+
+                // Add data to the table
+                foreach (var pay in list)
+                {
+                    table.AddCell(pay.PaymentId.ToString());
+                    table.AddCell(pay.CompanyName);
+                    table.AddCell(pay.AccountNumber);
+                    table.AddCell(pay.BeneficiaryName); // Format as currency
+                    table.AddCell(pay.Amount.ToString()); // Format as currency
+                    table.AddCell(pay.PaymentRequestDate.ToShortDateString());
+                    table.AddCell(pay.PaymentStatus.ToString());
+                }
+
+                // Add the table to the document
+                doc.Add(table);
+                doc.Close(); // Closing the document finalizes it
+
+                // Prepare the byte array to return
+                byte[] bytes = memoryStream.ToArray();
+
+                //add in report table
+                _adminService.AddPaymentReportInfo(userId);
+
+                return File(bytes, "application/pdf", "Payment.pdf");
+            }
+        }
+
     }
 }

@@ -102,10 +102,16 @@
                 </dl>
                 @if (Model.OnboardingStatus == CorporateStatus.APPROVED)
                 {
-                    <button type="button" class="btn btn-outline-dark" id="addBalanceBtn">Update Balance</button>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-outline-dark" id="addBalanceBtn">Update Balance</button>
+                        <button type="button" class="btn btn-outline-dark mx-3" id="changePasswordBtn">Change Password</button>
+                    </div>
                 }
                 <div id="addNewBalance" style="display:none" class="container">
                     @Html.Partial("_AddBalancePartial")
+                </div>
+                <div id="editPassword" style="display:none" class="container">
+                    @Html.Partial("_ChangePasswordPartial")
                 </div>
             </div>
 
@@ -137,6 +143,9 @@
     $("#addBalanceBtn").click(function () {
         $("#addNewBalance").toggle();
     });
+    $("#changePasswordBtn").click(function () {
+        $("#editPassword").toggle();
+    });
     // Add click event to open modal and display document
     $(".open-document").click(function (e) {
         e.preventDefault();
@@ -150,5 +159,27 @@
     });
     $('.close').on('click', function () {
         $('#documentModal').modal('hide');
+    });
+   
+    $('#submitChangePassword').click(function () {
+        var previousPassword = $("#previousPassword").val();
+        var newPassword = $("#newPassword").val();
+        var confirmNewPassword = $("#confirmNewPassword").val();
+        $.ajax({
+            url: "/Client/ChangePassword", 
+            type: "POST",
+            data: {
+                previousPassword: previousPassword,
+                newPassword: newPassword,
+                confirmNewPassword: confirmNewPassword
+            },
+            success: function () {
+                alert("Password changed successfully!");
+                $("#editPassword").hide();
+            },
+            error: function () {
+                alert("Error changing password.");
+            }
+        });
     });
 </script>

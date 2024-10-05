@@ -24,6 +24,7 @@ namespace CorporateBankingApplication.Controllers
             _clientService = clientService;
 
         }
+        
         public ActionResult Index()
         {
             if (Session["UserId"] == null)

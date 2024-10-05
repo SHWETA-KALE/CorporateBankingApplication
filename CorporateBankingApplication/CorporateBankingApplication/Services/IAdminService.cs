@@ -17,7 +17,8 @@ namespace CorporateBankingApplication.Services
 
         List<ClientDTO> GetClientsForVerification(UrlHelper urlHelper);
 
-        bool UpdateClientOnboardingStatus(Guid id, string status);
+        //bool UpdateClientOnboardingStatus(Guid id, string status);
+        bool UpdateClientOnboardingStatus(Guid id, string status, string rejectionReason);
 
         bool ToggleClientActiveStatus(Guid id, bool isActive, out string message);
 
@@ -35,7 +36,8 @@ namespace CorporateBankingApplication.Services
 
 
         List<BeneficiaryDTO> GetBeneficiariesForVerification(UrlHelper urlHelper);
-        bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status);
+        //bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status);
+        bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status,string rejectionReason);
 
         //admin profile 
         AdminDTO GetAdminById(Guid id);
@@ -44,5 +46,15 @@ namespace CorporateBankingApplication.Services
         IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status);
 
         void UpdatePaymentStatuses(List<Guid> paymentIds, CorporateStatus status);
+
+
+
+
+        /*********************REPORTS*********************/
+
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements();
+        List<PaymentDTO> GetPayments();
+        void AddReportInfo(Guid id);
+        void AddPaymentReportInfo(Guid id);
     }
 }

@@ -1,7 +1,13 @@
 ﻿function LoadEmployees() {
+    var firstName = $('#searchFirstName').val();
+    var lastName = $('#searchLastName').val();
     $.ajax({
         url: "/Client/GetAllEmployees",
         type: "GET",
+        data: {
+                    firstName: firstName,
+                    lastName: lastName
+                },
         success: function (data) {
             /* console.log(data);*/
             $("#employeesTable").empty();
@@ -15,7 +21,7 @@
                     <td>${employee.Position}</td>
                     <td>${employee.Phone}</td>
                     <td>${employee.Salary}</td>
-                   
+
 
                      <td>
                          <input type="checkbox" class="is-active-checkbox"
@@ -23,7 +29,7 @@
                                 ${employee.IsActive ? "checked" : ""} />
                      </td>
 
-                   
+
                     <td>
                     <input type="checkbox" class="is-SalaryDisbursed-checkbox"
                                 data-employeeid="${employee.Id}"
@@ -52,7 +58,7 @@
                 $(".is-SalaryDisbursed-checkbox").change(function () {
                     updateTotalSalary();
                 });
-                //Select all functionality 
+                //Select all functionality
                 $("#selectAllSalaryDisbursement").change(function () {
                     var isChecked = $(this).is(":checked");
                     $(".is-SalaryDisbursed-checkbox").prop("checked", isChecked);
@@ -70,6 +76,80 @@
         }
     });
 }
+
+
+//function LoadEmployees() {
+//    var firstName = $('#searchFirstName').val();
+//    var lastName = $('#searchLastName').val();
+
+//    $.ajax({
+//        url: "/Client/GetAllEmployees",
+//        type: "GET",
+//        data: {
+//            firstName: firstName,
+//            lastName: lastName
+//        },
+//        success: function (data) {
+//            $("#employeesTable").empty();
+
+//            if (data.length > 0) {
+//                $.each(data, function (index, employee) {
+//                    var row = `<tr>
+//                    <td>${employee.FirstName}</td>
+//                    <td>${employee.LastName}</td>
+//                    <td>${employee.Email}</td>
+//                    <td>${employee.Position}</td>
+//                    <td>${employee.Phone}</td>
+//                    <td>${employee.Salary}</td>
+//                    <td>
+//                        <input type="checkbox" class="is-active-checkbox"
+//                               data-employeeid="${employee.Id}"
+//                               ${employee.IsActive ? "checked" : ""} />
+//                    </td>
+//                    <td>
+//                        <input type="checkbox" class="is-SalaryDisbursed-checkbox"
+//                               data-employeeid="${employee.Id}"
+//                               ${employee.selectAllSalaryDisbursement ? "checked" : ""} />
+//                    </td>
+//                    <td class="edit-btn-cell">
+//                        <button onClick="editEmployee('${employee.Id}')" class="btn btn-outline-dark edit-btn"
+//                        style="${employee.IsActive ? '' : 'display:none;'}">Edit</button>
+//                    </td>
+//                    </tr>`;
+//                    $("#employeesTable").append(row);
+//                });
+
+//                $(".is-active-checkbox").change(function () {
+//                    var employeeId = $(this).data("employeeid");
+//                    var isActive = $(this).is(":checked");
+//                    updateEmployeeStatus(employeeId, isActive);
+//                });
+
+//                $(".is-SalaryDisbursed-checkbox").change(function () {
+//                    updateTotalSalary();
+//                });
+
+//                $("#selectAllSalaryDisbursement").change(function () {
+//                    var isChecked = $(this).is(":checked");
+//                    $(".is-SalaryDisbursed-checkbox").prop("checked", isChecked);
+//                    updateTotalSalary();
+//                });
+
+//                updateTotalSalary();
+//            } else {
+//                $("#employeesTable").append("<tr><td colspan='9'>No employees found.</td></tr>");
+//            }
+//        },
+//        error: function (err) {
+//            console.log("Error fetching employees:", err);
+//        }
+//    });
+//}
+
+$("#btnSearch").click(function () {
+    LoadEmployees();
+});
+
 
 
 function addNewEmployee() {
@@ -274,7 +354,9 @@ $("#csvFileInput").change(function (event) {
 $('#disburseSalary').click(function () {
 
     var employeeIds = [];
-   
+    //added new
+    var totalAmount = $("#salaryAmountInput").val()
+    console.log(totalAmount)
     // Loop through all the checkboxes that are checked
     $('.is-SalaryDisbursed-checkbox:checked').each(function () {
         employeeIds.push($(this).data('employeeid')); 
@@ -285,8 +367,8 @@ $('#disburseSalary').click(function () {
         $.ajax({
             type: 'POST',
             url: '/Client/DisburseSalary',
-           
-            data: { employeeIds: employeeIds, isBatch: isBatch },
+
+            data: { employeeIds: employeeIds, isBatch: isBatch, amount: totalAmount },
             success: function (response) {
                 if (response.success) {
                     alert(response.message);

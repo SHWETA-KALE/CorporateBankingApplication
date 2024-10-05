@@ -28,7 +28,9 @@ namespace CorporateBankingApplication.Services
 
         /*benenficiaries*/
         List<BeneficiaryDTO> GetAllOutboundBeneficiaries(Guid clientId, UrlHelper urlHelper);
-
+        //new addition
+        List<ClientDTO> GetAllInboundBeneficiaries(Guid clientId);
+        void AddInboundBeneficiary(Guid clientId, Guid id);
         void UpdateBeneficiaryStatus(Guid id, bool isActive);
         void AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles);
         Beneficiary GetBeneficiaryById(Guid id);
@@ -40,6 +42,14 @@ namespace CorporateBankingApplication.Services
         //balance update
         void AddBalance(Guid id, double amount);
 
+        bool CheckPassword(Guid id, string password);
+        void SaveNewPassword(Guid clientId, string newPassword);
 
+        /*********************REPORTS*********************/
+
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid id);
+        List<PaymentDTO> GetPayments(Guid id);
+        void AddReportInfo(Guid id);
+        void AddPaymentReportInfo(Guid id);
     }
 }

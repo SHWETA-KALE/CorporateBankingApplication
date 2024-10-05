@@ -11,11 +11,17 @@ namespace CorporateBankingApplication.DTOs
     public class BeneficiaryDTO
     {
         public Guid Id { get; set; }
+        [Required]
+
         [Display(Name = "Beneficiary Name")]
         public string BeneficiaryName { get; set; }
+        [Required]
+
         [Display(Name = "Account Number")]
 
         public string AccountNumber { get; set; }
+        [Required]
+
         [Display(Name = "IFSC")]
 
         public string BankIFSC { get; set; }
@@ -35,5 +41,8 @@ namespace CorporateBankingApplication.DTOs
         public HttpPostedFileBase BeneficiaryAddressProof { get; set; }
 
         public List<string> DocumentUrls { get; set; }
+
+        [Display(Name = "Client Name")]
+        public string ClientName { get; set; }
     }
 }

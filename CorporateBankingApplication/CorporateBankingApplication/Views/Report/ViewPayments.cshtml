@@ -1,15 +1,19 @@
-﻿@model IEnumerable<CorporateBankingApplication.DTOs.PaymentDTO>
+﻿
+
+@model IEnumerable<CorporateBankingApplication.DTOs.PaymentDTO>
 @using CorporateBankingApplication.Enum
 
 @{
     ViewBag.Title = "ViewPayments";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var clientOnboardingStatus = ViewBag.Client?.OnBoardingStatus;
+    var isAdmin = User.IsInRole("Admin");
+    var isClient = User.IsInRole("Client");
 }
-@if (clientOnboardingStatus == CorporateStatus.APPROVED)
+
+@if (isAdmin || (isClient && clientOnboardingStatus == CorporateStatus.APPROVED))
 {
     <h2 class="text-center my-4 pt-3">View Payments</h2>
-
 
     <table class="table">
         @if (Model != null && Model.Any())
@@ -70,6 +74,7 @@
             <p class="text-center my-4 pt-3">No payments to show.</p>
         }
     </table>
+
     if (Model != null && Model.Any())
     {
         <div>
@@ -77,21 +82,20 @@
         </div>
     }
 }
-else
+else if (isClient)
 {
     <div class="container my-5 pt-lg-5">
         <div class="alert alert-warning text-center my-5">
-            The client's onboarding process is not yet completed. Please wait for approval to access the our services.
+            The client's onboarding process is not yet completed. Please wait for approval to access our services.
         </div>
     </div>
-
 }
-@if (User.IsInRole("Client"))
+
+@if (isClient)
 {
     @Html.ActionLink("Go Back To Dashboard", "ClientDashboard", "Client", null, new { @class = "btn btn-lg btn-primary mt-5" })
 }
 else
 {
     @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", "Admin", null, new { @class = "btn btn-lg btn-primary mt-5" })
-
 }

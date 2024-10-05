@@ -346,6 +346,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\BeneficiariesInboundList.js" />
     <Content Include="Scripts\BeneficiariesOutboundCrud.js" />
     <Content Include="Scripts\BeneficiaryVerification.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -453,6 +454,7 @@
     <Compile Include="Mappings\UserMap.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Beneficiary.cs" />
+    <Compile Include="Models\CaptchaResult.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Employee.cs" />
@@ -542,6 +544,14 @@
     <Content Include="Views\Report\ViewPayments.cshtml" />
     <Content Include="Views\Report\ViewSalaryDisbursements.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
+    <Content Include="Views\Client\ViewAllInboundBeneficiaries.cshtml" />
+    <Content Include="Views\Client\_ChangePasswordPartial.cshtml" />
+    <Content Include="Views\Admin\ReportView.cshtml" />
+    <Content Include="Views\Admin\ViewSalaryDisbursements.cshtml" />
+    <Content Include="Views\Admin\ViewPayments.cshtml" />
+    <Content Include="Views\Client\ReportView.cshtml" />
+    <Content Include="Views\Client\ViewSalaryDisbursements.cshtml" />
+    <Content Include="Views\Client\ViewPayments.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -551,6 +561,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Captcha\" />
     <Folder Include="Views\Payment\" />
   </ItemGroup>
   <PropertyGroup>

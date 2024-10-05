@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -10,6 +12,7 @@ using CorporateBankingApplication.Data;
 using CorporateBankingApplication.DTOs;
 using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Services;
+using System.Diagnostics;
 
 
 namespace CorporateBankingApplication.Controllers
@@ -49,6 +52,15 @@ namespace CorporateBankingApplication.Controllers
             {
                 return View(userDto);
             }
+
+            // Get CAPTCHA response from the form submission
+            var captchaResponse = Request["g-recaptcha-response"];
+            if (!ValidateCaptcha(captchaResponse))
+            {
+                ModelState.AddModelError("RecaptchaError", "Captcha validation failed. Please try again.");
+                return View(userDto);
+            }
+
             var result = _userService.IsLogging(userDto);
             if (result != null)
             {
@@ -75,6 +87,18 @@ namespace CorporateBankingApplication.Controllers
             }
             ModelState.AddModelError("", "Username / Password doesn't exist!!");
             return View(userDto);
+        }
+
+        // Add this method to validate reCAPTCHA
+        private bool ValidateCaptcha(string captchaResponse)
+        {
+            var secretKey = "6Ldd_FcqAAAAAGe6HQhVgh-4489Hy2nbeZOBA3qR"; // Your Google reCAPTCHA secret key
+            var client = new System.Net.WebClient();
+            var result = client.DownloadString(
+                $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={captchaResponse}");
+            var captchaResult = Newtonsoft.Json.JsonConvert.DeserializeObject<CaptchaResult>(result);
+            // && captchaResult.Score >= 0.3
+            return captchaResult.Success;
         }
 
         [HttpGet]
@@ -138,36 +162,36 @@ namespace CorporateBankingApplication.Controllers
             return RedirectToAction("Index");
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult RegisterAdmin()
-        {
-            return View();
-        }
+        //[AllowAnonymous]
+        //[HttpGet]
+        //public ActionResult RegisterAdmin()
+        //{
+        //    return View();
+        //}
 
 
-        [AllowAnonymous]
-        [HttpPost]
-        public ActionResult RegisterAdmin(Admin admin)
-        {
-            using (var session = NHibernateHelper.CreateSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    admin.Password = PasswordHelper.HashPassword(admin.Password);
-                    var role = new Role
-                    {
-                        RoleName = "Admin",
-                        User = admin
-                    };
-                    session.Save(admin);
-                    session.Save(role);
-                    transaction.Commit();
-                    return RedirectToAction("Login");
-                }
+        //[AllowAnonymous]
+        //[HttpPost]
+        //public ActionResult RegisterAdmin(Admin admin)
+        //{
+        //    using (var session = NHibernateHelper.CreateSession())
+        //    {
+        //        using (var transaction = session.BeginTransaction())
+        //        {
+        //            admin.Password = PasswordHelper.HashPassword(admin.Password);
+        //            var role = new Role
+        //            {
+        //                RoleName = "Admin",
+        //                User = admin
+        //            };
+        //            session.Save(admin);
+        //            session.Save(role);
+        //            transaction.Commit();
+        //            return RedirectToAction("Login");
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
 
     }
