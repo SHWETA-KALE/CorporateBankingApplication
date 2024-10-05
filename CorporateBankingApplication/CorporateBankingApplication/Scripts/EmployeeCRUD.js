@@ -1,7 +1,13 @@
 ﻿function LoadEmployees() {
+    var firstName = $('#searchFirstName').val();
+    var lastName = $('#searchLastName').val();
     $.ajax({
         url: "/Client/GetAllEmployees",
         type: "GET",
+        data: {
+            firstName: firstName,
+            lastName: lastName
+        },
         success: function (data) {
             /* console.log(data);*/
             $("#employeesTable").empty();
@@ -70,7 +76,9 @@
         }
     });
 }
-
+$("#btnSearch").click(function () {
+    LoadEmployees();
+});
 
 function addNewEmployee() {
     var newEmployee = {
@@ -240,6 +248,32 @@ $("#btnBulkUpload").click(function () {
     $("#csvFileInput").click();
 });
 
+//$("#csvFileInput").change(function (event) {
+//    var formData = new FormData();
+//    var fileInput = event.target.files[0];
+//    formData.append("file", fileInput);
+
+//    $.ajax({
+//        url: "/Client/UploadCSV",
+//        type: "POST",
+//        contentType: false,
+//        processData: false,
+//        data: formData,
+//        success: function (response) {
+//            if (response.success) {
+//                alert("Employees uploaded successfully.");
+//                LoadEmployees(); 
+//            } else {
+//                alert("Error: " + response.message);
+//            }
+//        },
+//        error: function (err) {
+//            alert("Error uploading employees.");
+//            console.log(err);
+//        }
+//    });
+//});
+
 $("#csvFileInput").change(function (event) {
     var formData = new FormData();
     var fileInput = event.target.files[0];
@@ -254,19 +288,22 @@ $("#csvFileInput").change(function (event) {
         success: function (response) {
             if (response.success) {
                 alert("Employees uploaded successfully.");
-                LoadEmployees(); 
+                LoadEmployees(); // Function to refresh the employees list
             } else {
                 alert("Error: " + response.message);
             }
         },
         error: function (err) {
-            alert("Error uploading employees.");
-            console.log(err);
+            if (err.status === 500) {
+                // Redirect to custom error page for server-side exceptions
+                window.location.href = "/Error";
+            } else {
+                alert("Error uploading employees.");
+                console.log(err);
+            }
         }
     });
 });
-
-
 
 
 /****************SALARY DISBURSEMENT**********************/
@@ -274,6 +311,8 @@ $("#csvFileInput").change(function (event) {
 $('#disburseSalary').click(function () {
 
     var employeeIds = [];
+    //added new
+    var totalAmount = $("#salaryAmountInput").val()
    
     // Loop through all the checkboxes that are checked
     $('.is-SalaryDisbursed-checkbox:checked').each(function () {
@@ -286,7 +325,7 @@ $('#disburseSalary').click(function () {
             type: 'POST',
             url: '/Client/DisburseSalary',
            
-            data: { employeeIds: employeeIds, isBatch: isBatch },
+            data: { employeeIds: employeeIds, isBatch: isBatch, amount: totalAmount },
             success: function (response) {
                 if (response.success) {
                     alert(response.message);

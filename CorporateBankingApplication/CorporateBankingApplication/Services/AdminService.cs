@@ -2,8 +2,12 @@
 using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Models;
 using CorporateBankingApplication.Repositories;
+using iText.Kernel.Pdf;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using iText.Layout;
+using iText.Layout.Element;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -107,7 +111,30 @@ namespace CorporateBankingApplication.Services
             return clientDtos;
         }
 
-        public bool UpdateClientOnboardingStatus(Guid id, string status)
+        //public bool UpdateClientOnboardingStatus(Guid id, string status)
+        //{
+        //    var client = _adminRepository.GetClientById(id);
+        //    if (client == null)
+        //    {
+        //        // Client not found
+        //        return false;
+        //    }
+        //    // Update onboarding status based on the status string
+        //    if (status == "APPROVED")
+        //    {
+        //        client.OnBoardingStatus = CorporateStatus.APPROVED;
+        //        _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Approved!!", $"Dear {client.UserName}, Your client account has been approved as all submitted details and documents meet our onboarding requirements. Now you can access all our services.");
+        //    }
+        //    else if (status == "REJECTED")
+        //    {
+        //        client.OnBoardingStatus = CorporateStatus.REJECTED;
+        //        _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!", $"Dear {client.UserName}, Your client account has been rejected due to discrepancies in the submitted details and documents, which do not meet our onboarding requirements.");
+        //    }
+        //    _adminRepository.UpdateClient(client);
+        //    return true;
+        //}
+
+        public bool UpdateClientOnboardingStatus(Guid id, string status, string rejectionReason = "")
         {
             var client = _adminRepository.GetClientById(id);
             if (client == null)
@@ -115,17 +142,21 @@ namespace CorporateBankingApplication.Services
                 // Client not found
                 return false;
             }
+
             // Update onboarding status based on the status string
             if (status == "APPROVED")
             {
                 client.OnBoardingStatus = CorporateStatus.APPROVED;
-                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Approved!!", $"Dear {client.UserName}, Your client account has been approved as all submitted details and documents meet our onboarding requirements. Now you can access all our services.");
+                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Approved!!",
+                    $"Dear {client.UserName}, Your client account has been approved as all submitted details and documents meet our onboarding requirements. Now you can access all our services.");
             }
             else if (status == "REJECTED")
             {
                 client.OnBoardingStatus = CorporateStatus.REJECTED;
-                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!", $"Dear {client.UserName}, Your client account has been rejected due to discrepancies in the submitted details and documents, which do not meet our onboarding requirements.");
+                _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!",
+                    $"Dear {client.UserName}, Your client account has been rejected due to the following reason:\n\n{rejectionReason}\n\n. Please contact support for further clarification.");
             }
+
             _adminRepository.UpdateClient(client);
             return true;
         }
@@ -148,7 +179,7 @@ namespace CorporateBankingApplication.Services
             var client = _clientRepository.GetClientById(salaryDisbursement.Employee.Client.Id);
 
             var approved = _adminRepository.ApproveSalaryDisbursement(salaryDisbursementId);
-           
+
             if (approved)
             {
                 if (isBatch)
@@ -160,8 +191,8 @@ namespace CorporateBankingApplication.Services
                             FirstName = salaryDisbursement.Employee.FirstName,
                             LastName = salaryDisbursement.Employee.LastName,
                             Salary = salaryDisbursement.Employee.Salary
-                }
-            };
+                        }
+                    };
                     _emailService.SendBatchSalaryDisbursementApprovalEmail(client.Email, employeeSalaries, salaryDisbursement.DisbursementDate.ToString("MMMM yyyy"));
 
                 }
@@ -175,10 +206,48 @@ namespace CorporateBankingApplication.Services
                         Salary = salaryDisbursement.Employee.Salary
                     }, salaryDisbursement.Employee.Salary, salaryDisbursement.DisbursementDate.ToString("MMMM yyyy"));
                 }
+
+                var pdf = GeneratePayslipPdf(salaryDisbursement.Employee, salaryDisbursement);
+                _emailService.SendPayslipToEmployee(salaryDisbursement.Employee.Email, pdf);
                 return true;
             }
             return false;
         }
+
+        //generating payslip 
+        public byte[] GeneratePayslipPdf(Employee employee, SalaryDisbursement salaryDisbursement)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new PdfWriter(stream))
+                {
+                    using (var pdf = new PdfDocument(writer))
+                    {
+                        var document = new iText.Layout.Document(pdf);
+                        // Add payslip details
+                        document.Add(new Paragraph($"Payslip for: {employee.FirstName} {employee.LastName}"));
+                        document.Add(new Paragraph($"Employee ID: {employee.Id}"));
+                        document.Add(new Paragraph($"Designation: {employee.Position}"));
+                        // document.Add(new Paragraph($"Date of Joining: {employee.JoiningDate.ToString("dd MMMM yyyy")}"));
+                        document.Add(new Paragraph($"Salary Amount: {employee.Salary:C}"));
+                        document.Add(new Paragraph($"Date of Approval: {salaryDisbursement.DisbursementDate.ToString("dd MMMM yyyy")}"));
+                        document.Add(new Paragraph($"Amount in Words: {ConvertAmountToWords(employee.Salary)}"));
+
+                        // Close the document
+                        document.Close();
+                    }
+                }
+                return stream.ToArray();
+            }
+
+        }
+
+        public string ConvertAmountToWords(double amount)
+        {
+            return new ConvertAmountToWords().Convert(amount);
+        }
+
+
 
         public bool RejectSalaryDisbursement(Guid salaryDisbursementId, bool isBatch = false)
         {
@@ -221,12 +290,36 @@ namespace CorporateBankingApplication.Services
                 BeneficiaryName = b.BeneficiaryName,
                 AccountNumber = b.AccountNumber,
                 BankIFSC = b.BankIFSC,
+                ClientName = b.Client.UserName,
                 BeneficiaryType = b.BeneficiaryType.ToString().ToUpper(),
                 DocumentUrls = b.Documents.Select(d => urlHelper.Content(d.FilePath)).ToList()
             }).ToList();
             return beneficiariesDto;
         }
-        public bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status)
+        //public bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status)
+        //{
+        //    var beneficiary = _adminRepository.GetBeneficiaryById(id);
+        //    if (beneficiary.Client == null)
+        //    {
+        //        // Client not found
+        //        return false;
+        //    }
+        //    // Update onboarding status based on the status string
+        //    if (status == "APPROVED")
+        //    {
+        //        beneficiary.BeneficiaryStatus = CorporateStatus.APPROVED;
+        //        _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Approved!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been approved after verification of the details and documents submitted by you.");
+        //    }
+        //    else if (status == "REJECTED")
+        //    {
+        //        beneficiary.BeneficiaryStatus = CorporateStatus.REJECTED;
+        //        _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Rejected!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been rejected due to discrepancies in the submitted details and documents.");
+        //    }
+        //    _adminRepository.UpdateBeneficiary(beneficiary);
+        //    return true;
+        //}
+
+        public bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status, string rejectionReason = "")
         {
             var beneficiary = _adminRepository.GetBeneficiaryById(id);
             if (beneficiary.Client == null)
@@ -243,7 +336,7 @@ namespace CorporateBankingApplication.Services
             else if (status == "REJECTED")
             {
                 beneficiary.BeneficiaryStatus = CorporateStatus.REJECTED;
-                _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Rejected!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been rejected due to discrepancies in the submitted details and documents.");
+                _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Rejected!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been rejected due to the following reason:\n\n{rejectionReason}\n\n.");
             }
             _adminRepository.UpdateBeneficiary(beneficiary);
             return true;
@@ -275,7 +368,99 @@ namespace CorporateBankingApplication.Services
             foreach (var paymentId in paymentIds)
             {
                 _adminRepository.UpdatePaymentStatus(paymentId, status);
+
+                //fetching the payment details
+                var payment = _adminRepository.GetPaymentById(paymentId);
+
+                if (payment != null)
+                {
+                    var client = _clientRepository.GetClientById(payment.ClientId);
+                    if (client != null)
+                    {
+                        var subject = status == CorporateStatus.APPROVED ? "Payment Approved" : "Payment Rejected";
+                        var body = $"Dear {client.UserName}, your payment of {payment.Amount:C} has been {status.ToString().ToLower()}.";
+                        _emailService.SendClientOnboardingStatusEmail(client.Email, subject, body);
+
+                    }
+                }
+
             }
         }
+
+        /******************************REPORTS*****************************/
+
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements()
+        {
+            return _adminRepository.GetAllSalaryDisbursements();
+        }
+
+        public List<PaymentDTO> GetPayments()
+        {
+            return _adminRepository.GetPayments();
+        }
+
+        public void AddReportInfo(Guid id)
+        {
+            _adminRepository.AddReportInfo(id);
+        }
+
+        public void AddPaymentReportInfo(Guid id)
+        {
+            _adminRepository.AddPaymentReportInfo(id);
+        }
+
+        //Analytics 
+        //public AnalyticsDTO GetAnalyticsData()
+        //{
+        //    var analyticsData = new AnalyticsDTO
+        //    {
+        //        ClientsOnboardedToday = GetClientsOnboardedToday(),
+        //        PaymentTransactions = GetCompletedPaymentTransactions(),
+        //        SalaryDisbursements = GetSalaryDisbursements(),
+        //        MostAccessedFeatures = GetMostFrequentlyAccessedFeatures(),
+        //        UserEngagement = GetUserEngagement()
+        //    };
+
+        //    return analyticsData;
+        //}
+
+        //private int GetClientsOnboardedToday()
+        //{
+
+        //}
+
+        //private int GetCompletedPaymentTransactions()
+        //{
+        //    // Replace with actual logic to get count of payment transactions
+        //    return 120;
+        //}
+
+        //private int GetSalaryDisbursements()
+        //{
+        //    // Replace with actual logic to get count of salary disbursements
+        //    return 35;
+        //}
+
+        //private Dictionary<string, int> GetMostFrequentlyAccessedFeatures()
+        //{
+        //    // Replace with actual logic to get features data
+        //    return new Dictionary<string, int>
+        //    {
+        //        { "Dashboard", 150 },
+        //        { "Clients", 80 },
+        //        { "Transactions", 45 }
+        //    };
+        //}
+
+        //private Dictionary<string, int> GetUserEngagement()
+        //{
+        //    // Replace with actual logic to get user engagement data (e.g., time spent on pages)
+        //    return new Dictionary<string, int>
+        //    {
+        //        { "Dashboard", 500 },
+        //        { "Clients", 350 },
+        //        { "Transactions", 200 }
+        //    };
+        //}
     }
 }

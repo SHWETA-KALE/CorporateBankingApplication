@@ -1,4 +1,5 @@
-﻿using CorporateBankingApplication.Models;
+﻿using CorporateBankingApplication.DTOs;
+using CorporateBankingApplication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +35,21 @@ namespace CorporateBankingApplication.Repositories
         Beneficiary GetBeneficiaryById(Guid id);
         void UpdateBeneficiary(Beneficiary beneficiary);
 
+        List<Client> GetAllInboundBeneficiaries(Guid clientId);
+
         //payments
         List<Beneficiary> GetBeneficiaryList(Guid clientId);
 
         void AddBalance(Guid id, double amount);
+
+        void SaveNewPassword(Guid id, string password);
+
+        //REPORTS
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid id);
+
+        List<PaymentDTO> GetPayments(Guid id);
+        void AddReportInfo(Guid id);
+
+        void AddPaymentReportInfo(Guid id);
     }
 }

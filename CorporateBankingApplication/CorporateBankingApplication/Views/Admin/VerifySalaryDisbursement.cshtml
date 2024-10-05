@@ -7,10 +7,18 @@
 }
 <div>
     <h2 class="text-center my-4 pt-3">Salary Disbursements Requests</h2>
+    <!-- Add search input field for company name -->
+    <div class="form-group mb-5">
+        <input type="text" id="searchCompany" class="form-control" placeholder="Search by Company's Name..." />
+    </div>
     <table id="salaryDisbursementsTable" class="table text-center">
         <thead class="thead-dark my-3">
             <tr>
-                <th>Select</th>
+                <th>
+                    <!-- Select All Checkbox -->
+                    <input type="checkbox" id="selectAll" />
+                    Select All
+                </th>
                 <th>Company Name</th>
                 <th>Employee First Name</th>
                 <th>Employee Last Name</th>
@@ -48,16 +56,53 @@
     </table>
     @if (Model != null && Model.Any())
     {
-        <button id="approveSelected" class="btn btn-outline-dark">Approve Selected</button>
-        <button id="rejectSelected" class="btn btn-outline-dark">Reject Selected</button>
+        <button id="approveSelected" class="btn btn-outline-dark">Approve</button>
+        <button id="rejectSelected" class="btn btn-outline-dark">Reject</button>
     }
     <br />
     @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary my-5" })
 </div>
+<div class="loader-overlay" style="display:none;" id="loader">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<style>
+    /* Full-screen overlay to cover the whole page */
+    .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* High z-index to make sure it stays on top */
+    }
+
+    /* Optional to remove page scrolling */
+    body.loader-active {
+        overflow: hidden;
+    }
+</style>
 @section Scripts {
 
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script>
+
+        function showLoader() {
+            $("#loader").show();
+            setTimeout(function () {
+                hideLoader();
+            }, 5000);
+        }
+
+        function hideLoader() {
+            $("#loader").hide();
+        }
 
         // Get selected checkboxes
         function getSelectedDisbursements() {
@@ -67,6 +112,21 @@
             });
             return selectedIds;
         }
+        //select/ deselect all checkboxes when "Select All" is clicked
+        $('#selectAll').change(function () {
+            $('.salary-checkbox').prop('checked', this.checked);
+        });
+
+        // If an individual checkbox is unchecked, uncheck "Select All"
+        $('.salary-checkbox').change(function () {
+            if (!this.checked) {
+                $('#selectAll').prop('checked', false);
+            }
+            // If all individual checkboxes are checked, check "Select All"
+            if ($('.salary-checkbox:checked').length === $('.salary-checkbox').length) {
+                $('#selectAll').prop('checked', true);
+            }
+        })
 
         // Approve selected disbursements
         $('#approveSelected').click(function () {
@@ -76,6 +136,7 @@
                 return;
             }
 
+            showLoader();
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("ApproveDisbursements", "Admin")',
@@ -95,6 +156,7 @@
             });
         });
 
+      
         //Reject salary Disbursement
         $('#rejectSelected').click(function () {
             var selectedIds = getSelectedDisbursements();
@@ -102,7 +164,7 @@
                 alert("Please select at least one salary disbursement.");
                 return;
             }
-
+            showLoader();
             $.ajax({
                 type: "POST",
                  url: '@Url.Action("RejectDisbursements", "Admin")',
@@ -122,7 +184,7 @@
             });
         })
 
-      
+
 
         function rejectDisbursement(salaryDisbursementId) {
             $.ajax({
@@ -143,5 +205,12 @@
                 }
             });
         }
+        // Search filter for Company Name
+        $('#searchCompany').on('keyup', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('#salaryDisbursementsTable tbody tr').filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+            });
+        });
     </script>
 }

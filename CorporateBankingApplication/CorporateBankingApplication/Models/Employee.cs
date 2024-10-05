@@ -35,7 +35,7 @@ namespace CorporateBankingApplication.Models
 
         public virtual Client Client { get; set; }
 
-        //public virtual bool IsSelectedForDisbursement { get; set; }
+      
 
 
 

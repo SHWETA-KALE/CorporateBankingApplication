@@ -11,14 +11,16 @@
     {
         <div class="container pt-5" id="beneficiaryList">
 
-            <h2 class="text-center my-4 pt-3">List Of Outbound Beneficiaries</h2>
-            <p>
-                <div>
-                    <button type="button" class="btn btn-outline-dark" id="btnAddBeneficiary">
-                        Add New Beneficiary
-                    </button>
-                </div>
-            </p>
+            <h2 class="text-center my-4 pt-3">List Of Beneficiaries</h2>
+            <div class="d-flex justify-content-between mb-3">
+                <input type="text" id="searchBeneficiary" class="form-control w-50" placeholder="Search by Beneficiary Name" />
+                <button type="button" class="btn btn-outline-dark" id="btnAddBeneficiary">
+                    Add New Outbound Beneficiary
+                </button>
+                <button type="button" class="btn btn-outline-dark" id="btnAddInboundBeneficiary">
+                    Add New Inbound Beneficiary
+                </button>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -96,6 +98,9 @@
     $(document).ready(() => {
         loadOutboundBeneficiaries();
     })
+    $("#btnAddInboundBeneficiary").click(function () {
+     window.location.href = '@Url.Action("ViewAllInboundBeneficiaries", "Client")';
+ });
     $("#btnAddBeneficiary").click(function () {
         $("#beneficiaryList").hide();
         $("#addNewBeneficiary").show();

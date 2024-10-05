@@ -8,6 +8,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using System.Xml.Linq;
 using CorporateBankingApplication.DTOs;
 using CorporateBankingApplication.Models;
+using System.IO;
 
 namespace CorporateBankingApplication.Services
 {
@@ -63,7 +64,30 @@ namespace CorporateBankingApplication.Services
             smtpClient.Send(mailMessage);
         }
 
-       
+        //Payslip
+        public void SendPayslipToEmployee(string employeeEmail, byte[] payslipPdf)
+        {
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress("it.a.47.shweta.kale@gmail.com"),
+                Subject = "Your Payslip for " + DateTime.Now.ToString("MMMM yyyy"),
+                Body = "Dear Employee, please find your payslip attached.",
+                IsBodyHtml = true
+            };
+            mailMessage.To.Add(employeeEmail);
+
+            //Attach pdf
+            mailMessage.Attachments.Add(new Attachment(new MemoryStream(payslipPdf), "Payslip.pdf", "application/pdf"));
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                //Credentials = new NetworkCredential("it.a.47.shweta.kale@gmail.com", "IIpr sdnt Inxk xdto"),
+                Credentials = new NetworkCredential("it.b.32.roshani.poojari@gmail.com", "zobr qnbb fqlz lezb"),
+                EnableSsl = true
+            };
+            smtpClient.Send(mailMessage);
+        }
+
     }
 
 }

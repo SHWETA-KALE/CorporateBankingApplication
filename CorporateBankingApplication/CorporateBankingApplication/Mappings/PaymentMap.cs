@@ -20,6 +20,8 @@ namespace CorporateBankingApplication.Mappings
             Map(x => x.PaymentApprovalDate).Nullable();
             Map(x => x.RazorpayPaymentId);
             Map(x => x.ClientId);
+          //  References(x => x.Client).Column("ClientId").Cascade.None().Not.Nullable();
+
 
             References(x => x.Beneficiary).Column("BeneficiaryId").Cascade.None().Not.Nullable();
         }

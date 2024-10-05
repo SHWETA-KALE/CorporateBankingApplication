@@ -13,6 +13,8 @@ namespace CorporateBankingApplication.Services
         void SendSalaryDisbursementApprovalEmail(string clientEmail, EmployeeDTO employee, double salaryAmount, string month);
         void SendBatchSalaryDisbursementApprovalEmail(string clientEmail, List<EmployeeDTO> employeeSalaries, string month);
 
+        void SendPayslipToEmployee(string employeeEmail, byte[] payslipPdf);
+
 
 
     }

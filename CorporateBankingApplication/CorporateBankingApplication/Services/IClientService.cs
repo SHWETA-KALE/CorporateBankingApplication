@@ -34,12 +34,26 @@ namespace CorporateBankingApplication.Services
         Beneficiary GetBeneficiaryById(Guid id);
         void UpdateBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles);
 
+        List<ClientDTO> GetAllInboundBeneficiaries(Guid clientId);
+        void AddInboundBeneficiary(Guid clientId, Guid id);
+
         //payments
         List<BeneficiaryDTO> GetBeneficiaryList(Guid id);
 
         //balance update
         void AddBalance(Guid id, double amount);
 
+        //profile password
+        bool CheckPassword(Guid id, string password);
+
+        void SaveNewPassword(Guid clientId, string newPassword);
+
+        /*******************REPORTS*******************/
+
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid id);
+        List<PaymentDTO> GetPayments(Guid id);
+        void AddReportInfo(Guid id);
+        void AddPaymentReportInfo(Guid id);
 
     }
 }

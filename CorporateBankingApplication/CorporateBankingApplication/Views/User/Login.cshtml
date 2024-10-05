@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "Login";
 }
+<!-- Google reCAPTCHA Script -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <div class="container-fluid h-custom">
     @*<h2 class="mb-0 pt-5 text-center">Login</h2>*@
     <div class="row d-flex justify-content-center align-items-center h-100">
@@ -19,10 +21,13 @@
                     @Html.AntiForgeryToken()
 
                     <h2 class="text-center mb-4">Login</h2>
+
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
                     <div class="mx-5">
                         <div class="form-group">
                             @Html.LabelFor(model => model.UserName, new { @class = "control-label my-2" })
+                            <span class="text-danger">*</span>
                             @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control mx-auto mb-4", style = "max-width: 300px;" } })
                             @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
                         </div>
@@ -30,11 +35,21 @@
                         @*<div class="form-group text-center">*@
                         <div class="form-group">
                             @Html.LabelFor(model => model.Password, new { @class = "control-label my-2" })
+                            <span class="text-danger">*</span>
                             @*@Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control mx-auto mb-4", style = "max-width: 300px;" } })*@
                             @Html.PasswordFor(model => model.Password, new { @class = "form-control mx-auto mb-4", style = "max-width: 300px;" })
 
                             @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            <div class="mb-3">
+                                <small class="text-danger">Fields marked with * are required.</small>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Google reCAPTCHA Widget -->
+                    <div class="form-group text-center">
+                        <div class="g-recaptcha my-3" data-sitekey="6Ldd_FcqAAAAAIA342PJ4efsunegPrPDtY9u1yfh"></div>
+                        @Html.ValidationMessage("RecaptchaError", "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group text-center">
