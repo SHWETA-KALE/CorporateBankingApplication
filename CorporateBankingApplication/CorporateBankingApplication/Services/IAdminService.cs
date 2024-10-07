@@ -25,11 +25,8 @@ namespace CorporateBankingApplication.Services
         IEnumerable<EmployeeSalaryDisbursementDTO> GetPendingSalaryDisbursements();
 
 
-        //bool ApproveSalaryDisbursement(Guid salaryDisbursementId);
-        // bool RejectSalaryDisbursement(Guid salaryDisbursementId);
-
         bool ApproveSalaryDisbursement(Guid salaryDisbursementId, bool isBatch = false);
-        bool RejectSalaryDisbursement(Guid salaryDisbursementId, bool isBatch = false);
+        bool RejectSalaryDisbursement(Guid salaryDisbursementId,string reason, bool isBatch = false);
 
         //beneficiary
 
@@ -42,11 +39,11 @@ namespace CorporateBankingApplication.Services
 
         //payment verification 
         IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status);
+        void UpdatePaymentStatuses(List<Guid> paymentIds, CorporateStatus status, string reason = "");
 
-        void UpdatePaymentStatuses(List<Guid> paymentIds, CorporateStatus status);
 
-        //Analytics
-        //AnalyticsDTO GetAnalyticsData();
+       
+
 
         //payslip
         byte[] GeneratePayslipPdf(Employee employee, SalaryDisbursement salaryDisbursement);
@@ -54,8 +51,8 @@ namespace CorporateBankingApplication.Services
 
         /*******************REPORTS*******************/
 
-        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements();
-        List<PaymentDTO> GetPayments();
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null);
+        List<PaymentDTO> GetPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null);
         void AddReportInfo(Guid id);
         void AddPaymentReportInfo(Guid id);
     }

@@ -11,6 +11,7 @@
     <div class="form-group mb-5">
         <input type="text" id="searchClient" class="form-control" placeholder="Search by Client's Name..." />
     </div>
+
     <table id="paymentApprovalsTable" class="table text-center">
         <thead class="thead-dark my-3">
             <tr>
@@ -27,7 +28,7 @@
                 <th>Payment Date</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="paymentApprovalBody">
             @if (Model != null && Model.Any())
             {
                 foreach (var payment in Model)
@@ -59,76 +60,38 @@
         <button id="approveSelectedPayments" class="btn btn-outline-dark">Approve Selected</button>
         <button id="rejectSelectedPayments" class="btn btn-outline-dark">Reject Selected</button>
     }
+
     <br />
     @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary mt-5" })
+
+    <!-- Pagination Controls -->
+    <div id="paginationControls" class="d-flex justify-content-between mt-4">
+        <button id="prevPage" class="btn btn-outline-dark" disabled>Previous</button>
+        <span id="pageInfo">Page 1</span>
+        <button id="nextPage" class="btn btn-outline-dark">Next</button>
+    </div>
 </div>
 
-@*@section Scripts {
-    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-    <script>
-        // Get selected checkboxes
-        function getSelectedPayments() {
-            var selectedIds = [];
-            $(".payment-checkbox:checked").each(function () {
-                selectedIds.push($(this).val());
-            });
-            return selectedIds;
-        }
-
-        // Approve selected payments
-        $('#approveSelectedPayments').click(function () {
-            var selectedIds = getSelectedPayments();
-            if (selectedIds.length === 0) {
-                alert("Please select at least one payment approval request.");
-                return;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("ApprovePayments", "Admin")',
-                data: { disbursementIds: selectedIds },
-                traditional: true,
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.message);
-                        location.reload();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert("An error occurred while approving the payments: " + error);
-                }
-            });
-        });
-
-        // Reject selected payments
-        $('#rejectSelectedPayments').click(function () {
-            var selectedIds = getSelectedPayments();
-            if (selectedIds.length === 0) {
-                alert("Please select at least one payment approval request.");
-                return;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("RejectPayments", "Admin")',
-                data: { disbursementIds: selectedIds },
-                traditional: true,
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.message);
-                        location.reload();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert("An error occurred while rejecting the payments: " + error);
-                }
-            });
-        });
-    </script>}*@
+<!-- Rejection Reason Modal -->
+<div class="modal fade" id="rejectionReasonModal" tabindex="-1" role="dialog" aria-labelledby="rejectionReasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary" style="display: flex; justify-content: space-between; align-items: center;">
+                <h5 class="modal-title" id="rejectionReasonModalLabel">Rejection Reason</h5>
+                <button type="button" class="closeRejectionPopup border-0 bg-transparent text-light btn-lg" data-dismiss="modal" aria-label="Close" style="font-size: 2rem; line-height: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea id="rejectionReason" class="form-control" rows="4" placeholder="Please provide the reason for rejection"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary closeRejectionPopup" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitRejectionReason">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="loader-overlay" style="display:none;" id="loader">
     <div class="spinner-border text-primary" role="status">
@@ -159,6 +122,43 @@
 @section Scripts {
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script>
+        var currentPage = 1; // Start on the first page
+        var rowsPerPage = 5; // Set number of rows per page
+        var totalRows = @Model.Count(); // Total number of rows in the table
+        var totalPages = Math.ceil(totalRows / rowsPerPage); // Total number of pages
+
+        // Function to update the table for the current page
+        function updateTable() {
+            var startRow = (currentPage - 1) * rowsPerPage;
+            var endRow = startRow + rowsPerPage;
+
+            $('#paymentApprovalBody tr').hide(); // Hide all rows
+            $('#paymentApprovalBody tr').slice(startRow, endRow).show(); // Show only the rows for the current page
+
+            // Update the pagination buttons
+            $('#pageInfo').text("Page " + currentPage + " of " + totalPages);
+            $('#prevPage').prop('disabled', currentPage === 1);
+            $('#nextPage').prop('disabled', currentPage === totalPages);
+        }
+
+        // Call the function to initially set the table
+        updateTable();
+
+        // Pagination button event handlers
+        $('#prevPage').click(function () {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTable();
+            }
+        });
+
+        $('#nextPage').click(function () {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateTable();
+            }
+        });
+
         // Get selected checkboxes
         function getSelectedPayments() {
             var selectedIds = [];
@@ -168,7 +168,7 @@
             return selectedIds;
         }
 
-        //select/ deselect all checkboxes when "Select All" is clicked
+        // Select/ deselect all checkboxes when "Select All" is clicked
         $('#selectAll').change(function () {
             $('.payment-checkbox').prop('checked', this.checked);
         });
@@ -183,6 +183,7 @@
                 $('#selectAll').prop('checked', true);
             }
         })
+
         function showLoader() {
             $("#loader").show();
         }
@@ -197,6 +198,7 @@
             var selectedIds = getSelectedPayments();
             if (selectedIds.length === 0) {
                 alert("Please select at least one payment approval request.");
+                hideLoader();
                 return;
             }
 
@@ -228,27 +230,50 @@
                 alert("Please select at least one payment approval request.");
                 return;
             }
-            showLoader();
+            // Showing the rejection reason modal
+            $('#rejectionReasonModal').modal('show');
 
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("RejectPayments", "Admin")',
-                data: { disbursementIds: selectedIds },
-                traditional: true,
-                success: function (response) {
-                    hideLoader();
-                    if (response.success) {
-                        alert(response.message);
-                        location.reload();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    hideLoader();
-                    alert("An error occurred while rejecting the payments: " + error);
+            $('#submitRejectionReason').click(function () {
+                var rejectionReason = $('#rejectionReason').val();
+
+                if (!rejectionReason) {
+                    alert("Please provide a reason for rejection.");
+                    return;
                 }
+                showLoader();
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RejectPayments", "Admin")',
+                    data: {
+                        disbursementIds: selectedIds,
+                        reason: rejectionReason
+                    },
+                    traditional: true,
+                    success: function (response) {
+                        hideLoader();
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        hideLoader();
+                        alert("An error occurred while rejecting the payments: " + error);
+                    }
+                });
+
+                // Close the modal after submission
+                $('#rejectionReasonModal').modal('hide');
             });
         });
+
+        // Close modal event handlers
+        $('.closeRejectionPopup').click(function () {
+            $('#rejectionReasonModal').modal('hide');
+            $('#rejectionReason').val(''); // Clear the textarea
+        });
     </script>
-    }
+}

@@ -248,31 +248,7 @@ $("#btnBulkUpload").click(function () {
     $("#csvFileInput").click();
 });
 
-//$("#csvFileInput").change(function (event) {
-//    var formData = new FormData();
-//    var fileInput = event.target.files[0];
-//    formData.append("file", fileInput);
 
-//    $.ajax({
-//        url: "/Client/UploadCSV",
-//        type: "POST",
-//        contentType: false,
-//        processData: false,
-//        data: formData,
-//        success: function (response) {
-//            if (response.success) {
-//                alert("Employees uploaded successfully.");
-//                LoadEmployees(); 
-//            } else {
-//                alert("Error: " + response.message);
-//            }
-//        },
-//        error: function (err) {
-//            alert("Error uploading employees.");
-//            console.log(err);
-//        }
-//    });
-//});
 
 $("#csvFileInput").change(function (event) {
     var formData = new FormData();

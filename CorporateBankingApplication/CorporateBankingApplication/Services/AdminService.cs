@@ -25,12 +25,7 @@ namespace CorporateBankingApplication.Services
             _emailService = emailService;
             _clientRepository = clientRepository;
         }
-        //public List<Client> ViewAllClients()
-        //{
-        //    var clients = _adminRepository.GetAllClients();
-        //    return clients;
-        //}
-
+        
         public List<ClientDTO> ViewAllClients()
         {
             var clients = _adminRepository.GetAllClients();
@@ -111,28 +106,6 @@ namespace CorporateBankingApplication.Services
             return clientDtos;
         }
 
-        //public bool UpdateClientOnboardingStatus(Guid id, string status)
-        //{
-        //    var client = _adminRepository.GetClientById(id);
-        //    if (client == null)
-        //    {
-        //        // Client not found
-        //        return false;
-        //    }
-        //    // Update onboarding status based on the status string
-        //    if (status == "APPROVED")
-        //    {
-        //        client.OnBoardingStatus = CorporateStatus.APPROVED;
-        //        _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Approved!!", $"Dear {client.UserName}, Your client account has been approved as all submitted details and documents meet our onboarding requirements. Now you can access all our services.");
-        //    }
-        //    else if (status == "REJECTED")
-        //    {
-        //        client.OnBoardingStatus = CorporateStatus.REJECTED;
-        //        _emailService.SendClientOnboardingStatusEmail(client.Email, "Client Rejected!!", $"Dear {client.UserName}, Your client account has been rejected due to discrepancies in the submitted details and documents, which do not meet our onboarding requirements.");
-        //    }
-        //    _adminRepository.UpdateClient(client);
-        //    return true;
-        //}
 
         public bool UpdateClientOnboardingStatus(Guid id, string status, string rejectionReason = "")
         {
@@ -249,7 +222,7 @@ namespace CorporateBankingApplication.Services
 
 
 
-        public bool RejectSalaryDisbursement(Guid salaryDisbursementId, bool isBatch = false)
+        public bool RejectSalaryDisbursement(Guid salaryDisbursementId, string reason, bool isBatch = false)
         {
             // return  _adminRepository.RejectSalaryDisbursement(salaryDisbursementId); 
             var salaryDisbursement = _adminRepository.GetSalaryDisbursementById(salaryDisbursementId);
@@ -265,8 +238,14 @@ namespace CorporateBankingApplication.Services
             {
                 if (isBatch)
                 {
+                    string subject = "Salary Disbursement Request Rejected";
+                    string body = $"Dear {client.CompanyName}, your salary disbursement request has been rejected.";
+                    if (!string.IsNullOrEmpty(reason))
+                    {
+                        body += $"\n\nReason for rejection: {reason}";
+                    }
                     // Send batch rejection email
-                    _emailService.SendClientOnboardingStatusEmail(client.Email, "Salary Disbursement Request Rejected", $"Dear {client.CompanyName}, your salary disbursement request has been rejected in batch.");
+                    _emailService.SendClientOnboardingStatusEmail(client.Email, subject, body);
                 }
                 else
                 {
@@ -296,28 +275,7 @@ namespace CorporateBankingApplication.Services
             }).ToList();
             return beneficiariesDto;
         }
-        //public bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status)
-        //{
-        //    var beneficiary = _adminRepository.GetBeneficiaryById(id);
-        //    if (beneficiary.Client == null)
-        //    {
-        //        // Client not found
-        //        return false;
-        //    }
-        //    // Update onboarding status based on the status string
-        //    if (status == "APPROVED")
-        //    {
-        //        beneficiary.BeneficiaryStatus = CorporateStatus.APPROVED;
-        //        _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Approved!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been approved after verification of the details and documents submitted by you.");
-        //    }
-        //    else if (status == "REJECTED")
-        //    {
-        //        beneficiary.BeneficiaryStatus = CorporateStatus.REJECTED;
-        //        _emailService.SendClientOnboardingStatusEmail(beneficiary.Client.Email, "Beneficiary Rejected!!", $"Dear {beneficiary.Client.UserName}, Your beneficiary {beneficiary.BeneficiaryName} has been rejected due to discrepancies in the submitted details and documents.");
-        //    }
-        //    _adminRepository.UpdateBeneficiary(beneficiary);
-        //    return true;
-        //}
+       
 
         public bool UpdateOutboundBeneficiaryOnboardingStatus(Guid id, string status, string rejectionReason = "")
         {
@@ -363,7 +321,7 @@ namespace CorporateBankingApplication.Services
             return _adminRepository.GetPendingPaymentsByStatus(status);
         }
 
-        public void UpdatePaymentStatuses(List<Guid> paymentIds, CorporateStatus status)
+        public void UpdatePaymentStatuses(List<Guid> paymentIds, CorporateStatus status, string reason = "")
         {
             foreach (var paymentId in paymentIds)
             {
@@ -377,8 +335,19 @@ namespace CorporateBankingApplication.Services
                     var client = _clientRepository.GetClientById(payment.ClientId);
                     if (client != null)
                     {
-                        var subject = status == CorporateStatus.APPROVED ? "Payment Approved" : "Payment Rejected";
-                        var body = $"Dear {client.UserName}, your payment of {payment.Amount:C} has been {status.ToString().ToLower()}.";
+                        string subject;
+                        string body;
+
+                        if (status == CorporateStatus.APPROVED)
+                        {
+                            subject = "Payment Approved";
+                            body = $"Dear {client.UserName}, your payment of {payment.Amount:C} has been approved.";
+                        }
+                        else
+                        {
+                            subject = "Payment Rejected";
+                            body = $"Dear {client.UserName}, your payment of {payment.Amount:C} has been rejected. Reason: {reason}";
+                        }
                         _emailService.SendClientOnboardingStatusEmail(client.Email, subject, body);
 
                     }
@@ -389,14 +358,14 @@ namespace CorporateBankingApplication.Services
 
         /******************************REPORTS*****************************/
 
-        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements()
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
         {
-            return _adminRepository.GetAllSalaryDisbursements();
+            return _adminRepository.GetAllSalaryDisbursements(companyName, startDate, endDate);
         }
 
-        public List<PaymentDTO> GetPayments()
+        public List<PaymentDTO> GetPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
         {
-            return _adminRepository.GetPayments();
+            return _adminRepository.GetPayments(companyName, startDate, endDate);
         }
 
         public void AddReportInfo(Guid id)
@@ -409,58 +378,9 @@ namespace CorporateBankingApplication.Services
             _adminRepository.AddPaymentReportInfo(id);
         }
 
-        //Analytics 
-        //public AnalyticsDTO GetAnalyticsData()
-        //{
-        //    var analyticsData = new AnalyticsDTO
-        //    {
-        //        ClientsOnboardedToday = GetClientsOnboardedToday(),
-        //        PaymentTransactions = GetCompletedPaymentTransactions(),
-        //        SalaryDisbursements = GetSalaryDisbursements(),
-        //        MostAccessedFeatures = GetMostFrequentlyAccessedFeatures(),
-        //        UserEngagement = GetUserEngagement()
-        //    };
 
-        //    return analyticsData;
-        //}
-
-        //private int GetClientsOnboardedToday()
-        //{
-
-        //}
-
-        //private int GetCompletedPaymentTransactions()
-        //{
-        //    // Replace with actual logic to get count of payment transactions
-        //    return 120;
-        //}
-
-        //private int GetSalaryDisbursements()
-        //{
-        //    // Replace with actual logic to get count of salary disbursements
-        //    return 35;
-        //}
-
-        //private Dictionary<string, int> GetMostFrequentlyAccessedFeatures()
-        //{
-        //    // Replace with actual logic to get features data
-        //    return new Dictionary<string, int>
-        //    {
-        //        { "Dashboard", 150 },
-        //        { "Clients", 80 },
-        //        { "Transactions", 45 }
-        //    };
-        //}
-
-        //private Dictionary<string, int> GetUserEngagement()
-        //{
-        //    // Replace with actual logic to get user engagement data (e.g., time spent on pages)
-        //    return new Dictionary<string, int>
-        //    {
-        //        { "Dashboard", 500 },
-        //        { "Clients", 350 },
-        //        { "Transactions", 200 }
-        //    };
-        //}
     }
-}
+};
+
+
+

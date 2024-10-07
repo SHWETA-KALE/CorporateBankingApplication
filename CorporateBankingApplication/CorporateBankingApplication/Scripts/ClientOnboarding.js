@@ -7,7 +7,7 @@ function loadClientsForVerification() {
         type: "GET",
         success: function (data) {
             $("#clientToBeVerifiedTblBody").empty();
-            
+
             if (data.length === 0) {
                 // If no clients to verify, display message
                 var noClientsMessage = `<tr><td colspan="7" class="text-center">No clients left to be verified</td></tr>`;
@@ -16,10 +16,11 @@ function loadClientsForVerification() {
                 $("#rejectClientBtn").hide()
             } else {
                 $.each(data, function (index, item) {
-                    // Create a list of document links
+
                     var documents = item.DocumentPaths.map(function (docPath) {
-                        var fileName = docPath.split('/').pop(); // Extract file name from path
-                        return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
+                        var fileNameWithExtension = docPath.split('/').pop(); // Extract file name with extension from path
+                        var fileNameWithoutExtension = fileNameWithExtension.split('.').slice(0, -1).join('.'); // Remove the extension
+                        return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileNameWithoutExtension}</a><br>`;
                     }).join('');
 
                     var row = `<tr>
@@ -159,17 +160,17 @@ function updateClientStatus(clientIds, status, reason = '') {
         success: function () {
             setTimeout(function () {
                 hideLoader();
-                alert(`Client(s) ${ status === 'APPROVED' ? 'Approved' : 'Rejected'} successfully`);
-            loadClientsForVerification(); // Reload the list after successful action
-        }, 5000);
-    $('#rejectionReasonModal').modal('hide');
-},
-error: function () {
-    setTimeout(function () {
-        hideLoader();
-        alert(`Failed to ${ status === 'APPROVED' ? 'Approve' : 'Reject'} the Client(s).`);
-}, 5000);
-$('#rejectionReasonModal').modal('hide');
+                alert(`Client(s) ${status === 'APPROVED' ? 'Approved' : 'Rejected'} successfully`);
+                loadClientsForVerification(); // Reload the list after successful action
+            }, 5000);
+            $('#rejectionReasonModal').modal('hide');
+        },
+        error: function () {
+            setTimeout(function () {
+                hideLoader();
+                alert(`Failed to ${status === 'APPROVED' ? 'Approve' : 'Reject'} the Client(s).`);
+            }, 5000);
+            $('#rejectionReasonModal').modal('hide');
         }
     });
 }
