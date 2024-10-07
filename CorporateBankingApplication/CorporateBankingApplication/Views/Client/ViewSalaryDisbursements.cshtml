@@ -1,6 +1,6 @@
-﻿
-@model IEnumerable<CorporateBankingApplication.DTOs.EmployeeSalaryDisbursementDTO>
+﻿@model IEnumerable<CorporateBankingApplication.DTOs.EmployeeSalaryDisbursementDTO>
 @using CorporateBankingApplication.Enum
+
 @{
     ViewBag.Title = "ViewSalaryDisbursements";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,16 +10,26 @@
 @if (clientOnboardingStatus == CorporateStatus.APPROVED)
 {
     <h2 class="text-center my-4 pt-3">View Salary Disbursements</h2>
-
+    using (Html.BeginForm("ViewSalaryDisbursements", "Client", FormMethod.Get, new { @class = "form-inline" }))
+    {
+        <div class="form-row d-flex justify-content-around my-5">
+            <div class="form-group col-md-4">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" value="@Request.QueryString["startDate"]" />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" value="@Request.QueryString["endDate"]" />
+            </div>
+            <button type="submit" class="btn btn-outline-dark mb-2 col-md-2">Filter</button>
+        </div>
+    }
     <table class="table">
         @if (Model != null && Model.Any())
         {
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.SalaryDisbursementId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CompanyName)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.EmployeeFirstName)
@@ -43,9 +53,6 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.SalaryDisbursementId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.EmployeeFirstName)
@@ -73,9 +80,14 @@
 
     if (Model != null && Model.Any())
     {
+
         <div>
-            @Html.ActionLink("Download PDF of Report", "DownloadSalaryDisbursementsPDFReport", "Client", null, new { @class = "btn btn-outline-dark mt-5" })
+            @Html.ActionLink("Download PDF Report", "DownloadSalaryDisbursementsPDFReport", "Client", new { startDate = Request.QueryString["startDate"], endDate = Request.QueryString["endDate"] }, new { @class = "btn btn-outline-dark mt-5" })
         </div>
+        <div>
+            @Html.ActionLink("Download Excel Report", "DownloadSalaryDisbursementsExcelReport", "Client", new { startDate = Request.QueryString["startDate"], endDate = Request.QueryString["endDate"] }, new { @class = "btn btn-outline-dark mt-5" })
+        </div>
+
     }
 
 }

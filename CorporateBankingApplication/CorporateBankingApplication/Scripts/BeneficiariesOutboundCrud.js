@@ -59,7 +59,8 @@ function loadOutboundBeneficiaries(searchTerm = "") {
                 $.each(data, function (index, item) {
                     var documentLinks = item.DocumentUrls.map(function (url) {
                         var fileName = url.split('/').pop();
-                        return `<a href="#" class="document-link" data-url="${url}">${fileName}</a>`;
+                        var fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.'); // Remove the extension
+                        return `<a href="#" class="document-link" data-url="${url}">${fileNameWithoutExtension}</a>`;
                     }).join("<br/> ");
 
                     var row = `<tr>

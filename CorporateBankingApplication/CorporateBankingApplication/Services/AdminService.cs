@@ -389,14 +389,14 @@ namespace CorporateBankingApplication.Services
 
         /******************************REPORTS*****************************/
 
-        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements()
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
         {
-            return _adminRepository.GetAllSalaryDisbursements();
+            return _adminRepository.GetAllSalaryDisbursements(companyName, startDate, endDate);
         }
 
-        public List<PaymentDTO> GetPayments()
+        public List<PaymentDTO> GetPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
         {
-            return _adminRepository.GetPayments();
+            return _adminRepository.GetPayments(companyName,startDate,endDate);
         }
 
         public void AddReportInfo(Guid id)

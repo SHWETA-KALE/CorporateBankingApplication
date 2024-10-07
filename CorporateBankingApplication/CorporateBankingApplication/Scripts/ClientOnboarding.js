@@ -17,10 +17,17 @@ function loadClientsForVerification() {
             } else {
                 $.each(data, function (index, item) {
                     // Create a list of document links
+                    //var documents = item.DocumentPaths.map(function (docPath) {
+                    //    var fileName = docPath.split('/').pop(); // Extract file name from path
+                    //    return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
+                    //}).join('');
+
                     var documents = item.DocumentPaths.map(function (docPath) {
-                        var fileName = docPath.split('/').pop(); // Extract file name from path
-                        return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
+                        var fileNameWithExtension = docPath.split('/').pop(); // Extract file name with extension from path
+                        var fileNameWithoutExtension = fileNameWithExtension.split('.').slice(0, -1).join('.'); // Remove the extension
+                        return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileNameWithoutExtension}</a><br>`;
                     }).join('');
+
 
                     var row = `<tr>
                     <td>

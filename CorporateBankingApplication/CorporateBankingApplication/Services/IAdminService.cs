@@ -54,8 +54,8 @@ namespace CorporateBankingApplication.Services
 
         /*******************REPORTS*******************/
 
-        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements();
-        List<PaymentDTO> GetPayments();
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null);
+        List<PaymentDTO> GetPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null);
         void AddReportInfo(Guid id);
         void AddPaymentReportInfo(Guid id);
     }

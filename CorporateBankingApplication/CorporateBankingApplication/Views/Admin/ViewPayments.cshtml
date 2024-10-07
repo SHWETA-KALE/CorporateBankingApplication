@@ -7,6 +7,25 @@
 
 <h2 class="text-center my-4 pt-3">View Payments</h2>
 
+<!-- Filter Section -->
+<form method="get" action="@Url.Action("ViewPayments")">
+    <div class="form-row d-flex justify-content-around">
+        <div class="form-group col-md-4">
+            <label for="companyName">Enter Client Name</label>
+            <input type="text" class="form-control border " id="companyName" name="companyName" placeholder="Filter by Client Name" value="@ViewBag.FilterCompanyName">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="startDate">Start Date</label>
+            <input type="date" class="form-control border " id="startDate" name="startDate" value="@ViewBag.FilterStartDate">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="endDate">End Date</label>
+            <input type="date" class="form-control border " id="endDate" name="endDate" value="@ViewBag.FilterEndDate">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-outline-dark my-3">Apply Filters</button>
+</form>
+
 <table class="table">
     @if (Model != null && Model.Any())
     {
@@ -15,7 +34,7 @@
                 @Html.DisplayNameFor(model => model.PaymentId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CompanyName)
+                @Html.DisplayNameFor(model => model.ClientName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AccountNumber)
@@ -41,7 +60,7 @@
                     @Html.DisplayFor(modelItem => item.PaymentId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CompanyName)
+                    @Html.DisplayFor(modelItem => item.ClientName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AccountNumber)
@@ -70,7 +89,12 @@
 @if (Model != null && Model.Any())
 {
     <div>
-        @Html.ActionLink("Download PDF of Report", "DownloadPaymentPDFReport", "Admin", null, new { @class = "btn btn-outline-dark mt-5" })
+        @Html.ActionLink("Download PDF of Report", "DownloadPaymentPDFReport", "Admin",new{companyName = ViewBag.FilterCompanyName,
+                       startDate = ViewBag.FilterStartDate,endDate = ViewBag.FilterEndDate},new { @class = "btn btn-outline-dark mt-5" })
+    </div>
+    <div>
+        @Html.ActionLink("Download Excel of Report", "DownloadPaymentExcelReport", "Admin",new{companyName = ViewBag.FilterCompanyName,
+                       startDate = ViewBag.FilterStartDate,endDate = ViewBag.FilterEndDate},new { @class = "btn btn-outline-dark mt-5" })
     </div>
 }
 @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", "Admin", null, new { @class = "btn btn-lg btn-primary mt-5" })

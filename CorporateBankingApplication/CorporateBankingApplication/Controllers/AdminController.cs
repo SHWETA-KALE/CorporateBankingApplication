@@ -3,6 +3,7 @@ using CorporateBankingApplication.DTOs;
 using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Services;
 using iTextSharp.text.pdf;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -446,35 +447,41 @@ namespace CorporateBankingApplication.Controllers
         }
 
         [Route("salaryreport")]
-        public ActionResult ViewSalaryDisbursements()
+        public ActionResult ViewSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
-            var salaryDisbursements = _adminService.GetAllSalaryDisbursements();
+
+            // Store filters in ViewBag for the view
+            ViewBag.FilterCompanyName = companyName;
+            ViewBag.FilterStartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.FilterEndDate = endDate?.ToString("yyyy-MM-dd");
+
+            var salaryDisbursements = _adminService.GetAllSalaryDisbursements(companyName, startDate, endDate);
             return View(salaryDisbursements);
         }
 
-        public ActionResult DownloadSalaryDisbursementsPDFReport()
+        public ActionResult DownloadSalaryDisbursementsPDFReport(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
             Guid adminId = (Guid)Session["UserId"];
-            var list = _adminService.GetAllSalaryDisbursements();
-            // Create a new PDF document
+            var list = _adminService.GetAllSalaryDisbursements(companyName, startDate, endDate); // Get filtered data
+
             using (var memoryStream = new MemoryStream())
             {
                 var doc = new iTextSharp.text.Document();
                 PdfWriter.GetInstance(doc, memoryStream);
                 doc.Open();
 
-                // Create a table for better formatting
-                var table = new PdfPTable(6); // Create a table with 5 columns
+                var table = new PdfPTable(6); // Create a table with 6 columns
                 table.AddCell("ID");
-                table.AddCell("Client Company Name");
+                table.AddCell("Client Name");
                 table.AddCell("Employee Name");
                 table.AddCell("Salary");
                 table.AddCell("Disbursement Date");
@@ -484,46 +491,104 @@ namespace CorporateBankingApplication.Controllers
                 foreach (var emp in list)
                 {
                     table.AddCell(emp.SalaryDisbursementId.ToString());
-                    table.AddCell(emp.CompanyName);
+                    table.AddCell(emp.ClientName);
                     table.AddCell($"{emp.EmployeeFirstName} {emp.EmployeeLastName}");
                     table.AddCell(emp.Salary.ToString("C")); // Format as currency
                     table.AddCell(emp.DisbursementDate.ToShortDateString());
                     table.AddCell(emp.SalaryStatus.ToString());
                 }
 
-                // Add the table to the document
                 doc.Add(table);
-                doc.Close(); // Closing the document finalizes it
+                doc.Close();
 
-                // Prepare the byte array to return
                 byte[] bytes = memoryStream.ToArray();
 
-                //add in report table
+                // Add in report table
                 _adminService.AddReportInfo(adminId);
 
                 return File(bytes, "application/pdf", "SalaryDisbursement.pdf");
             }
         }
 
-         [Route("paymentreport")]
-        public ActionResult ViewPayments()
+        public ActionResult DownloadSalaryDisbursementsExcelReport(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
-            var payments = _adminService.GetPayments();
-            return View(payments);
+
+            Guid adminId = (Guid)Session["UserId"];
+            var list = _adminService.GetAllSalaryDisbursements(companyName, startDate, endDate); // Get filtered data
+
+            using (var package = new ExcelPackage())
+            {
+                // Create a new worksheet
+                var worksheet = package.Workbook.Worksheets.Add("Salary Disbursements");
+
+                // Add headers
+                worksheet.Cells[1, 1].Value = "ID";
+                worksheet.Cells[1, 2].Value = "Client Name";
+                worksheet.Cells[1, 3].Value = "Employee Name";
+                worksheet.Cells[1, 4].Value = "Salary";
+                worksheet.Cells[1, 5].Value = "Disbursement Date";
+                worksheet.Cells[1, 6].Value = "Status";
+
+                // Add data to the worksheet starting from row 2
+                int row = 2;
+                foreach (var emp in list)
+                {
+                    worksheet.Cells[row, 1].Value = emp.SalaryDisbursementId;
+                    worksheet.Cells[row, 2].Value = emp.ClientName;
+                    worksheet.Cells[row, 3].Value = $"{emp.EmployeeFirstName} {emp.EmployeeLastName}";
+                    worksheet.Cells[row, 4].Value = emp.Salary;
+                    worksheet.Cells[row, 4].Style.Numberformat.Format = "$#,##0.00"; // Format as currency
+                    worksheet.Cells[row, 5].Value = emp.DisbursementDate.ToShortDateString();
+                    worksheet.Cells[row, 6].Value = emp.SalaryStatus.ToString();
+                    row++;
+                }
+
+                // Auto-fit the columns
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                // Convert the Excel package to a byte array
+                byte[] bytes = package.GetAsByteArray();
+
+                // Add report info to the database
+                _adminService.AddReportInfo(adminId);
+
+                // Return the file for download
+                return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SalaryDisbursement.xlsx");
+            }
         }
 
-        public ActionResult DownloadPaymentPDFReport()
+
+        [Route("paymentreport")]
+        public ActionResult ViewPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
+            // Store filters in ViewBag for the view
+            ViewBag.FilterCompanyName = companyName;
+            ViewBag.FilterStartDate = startDate?.ToString("yyyy-MM-dd");
+            ViewBag.FilterEndDate = endDate?.ToString("yyyy-MM-dd");
+
+            var payments = _adminService.GetPayments(companyName, startDate, endDate);
+            return View(payments);
+        }
+        public ActionResult DownloadPaymentPDFReport(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
             Guid userId = (Guid)Session["UserId"];
-            var list = _adminService.GetPayments();
+
+            // Pass filters to the GetPayments method
+            var list = _adminService.GetPayments(companyName, startDate, endDate);
 
             // Create a new PDF document
             using (var memoryStream = new MemoryStream())
@@ -533,9 +598,9 @@ namespace CorporateBankingApplication.Controllers
                 doc.Open();
 
                 // Create a table for better formatting
-                var table = new PdfPTable(7); // Create a table with 5 columns
+                var table = new PdfPTable(7); // Create a table with 7 columns
                 table.AddCell("ID");
-                table.AddCell("Client Company Name");
+                table.AddCell("Client Name");
                 table.AddCell("Account Number");
                 table.AddCell("Beneficiary Name");
                 table.AddCell("Amount");
@@ -546,7 +611,7 @@ namespace CorporateBankingApplication.Controllers
                 foreach (var pay in list)
                 {
                     table.AddCell(pay.PaymentId.ToString());
-                    table.AddCell(pay.CompanyName);
+                    table.AddCell(pay.ClientName);
                     table.AddCell(pay.AccountNumber);
                     table.AddCell(pay.BeneficiaryName); // Format as currency
                     table.AddCell(pay.Amount.ToString()); // Format as currency
@@ -561,10 +626,65 @@ namespace CorporateBankingApplication.Controllers
                 // Prepare the byte array to return
                 byte[] bytes = memoryStream.ToArray();
 
-                //add in report table
+                // Add in report table
                 _adminService.AddPaymentReportInfo(userId);
 
                 return File(bytes, "application/pdf", "Payment.pdf");
+            }
+        }
+
+        public ActionResult DownloadPaymentExcelReport(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            Guid userId = (Guid)Session["UserId"];
+
+            // Pass filters to the GetPayments method
+            var list = _adminService.GetPayments(companyName, startDate, endDate);
+
+            using (var package = new ExcelPackage())
+            {
+                // Create a new worksheet in the Excel package
+                var worksheet = package.Workbook.Worksheets.Add("Payments");
+
+                // Add headers to the worksheet
+                worksheet.Cells[1, 1].Value = "ID";
+                worksheet.Cells[1, 2].Value = "Client Name";
+                worksheet.Cells[1, 3].Value = "Account Number";
+                worksheet.Cells[1, 4].Value = "Beneficiary Name";
+                worksheet.Cells[1, 5].Value = "Amount";
+                worksheet.Cells[1, 6].Value = "Payment Request Date";
+                worksheet.Cells[1, 7].Value = "Status";
+
+                // Add data to the worksheet starting from row 2
+                int row = 2;
+                foreach (var pay in list)
+                {
+                    worksheet.Cells[row, 1].Value = pay.PaymentId;
+                    worksheet.Cells[row, 2].Value = pay.ClientName;
+                    worksheet.Cells[row, 3].Value = pay.AccountNumber;
+                    worksheet.Cells[row, 4].Value = pay.BeneficiaryName;
+                    worksheet.Cells[row, 5].Value = pay.Amount;
+                    worksheet.Cells[row, 5].Style.Numberformat.Format = "$#,##0.00"; // Format amount as currency
+                    worksheet.Cells[row, 6].Value = pay.PaymentRequestDate.ToShortDateString();
+                    worksheet.Cells[row, 7].Value = pay.PaymentStatus.ToString();
+                    row++;
+                }
+
+                // Auto-fit the columns for better readability
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                // Convert the Excel package to a byte array
+                byte[] bytes = package.GetAsByteArray();
+
+                // Add report info to the database
+                _adminService.AddPaymentReportInfo(userId);
+
+                // Return the file for download
+                return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Payments.xlsx");
             }
         }
 

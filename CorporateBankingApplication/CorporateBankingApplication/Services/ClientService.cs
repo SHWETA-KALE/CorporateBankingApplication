@@ -17,10 +17,13 @@ namespace CorporateBankingApplication.Services
     public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
+        private readonly CloudinaryService _cloudinaryService;
 
-        public ClientService(IClientRepository clientRepository)
+
+        public ClientService(IClientRepository clientRepository, CloudinaryService cloudinaryService)
         {
             _clientRepository = clientRepository;
+            _cloudinaryService = cloudinaryService;
         }
         public void AddEmployee(EmployeeDTO employeeDto, Client client)
         {
@@ -80,32 +83,71 @@ namespace CorporateBankingApplication.Services
         }
 
         /************************************Re-editing of details on rejection***************************************/
+        //public void EditClientRegistrationDetail(Client client, IList<HttpPostedFileBase> uploadedFiles)
+        //{
+        //    string folderPath = HttpContext.Current.Server.MapPath("~/Content/Documents/ClientRegistration/") + client.UserName;
+        //    if (!Directory.Exists(folderPath))
+        //    {
+        //        Directory.CreateDirectory(folderPath);
+        //    }
+
+        //    // Document update process
+        //    string[] documentTypes = { "Company Id Proof", "Address Proof" };
+        //    for (int i = 0; i < uploadedFiles.Count; i++)
+        //    {
+        //        var file = uploadedFiles[i];
+        //        if (file != null && file.ContentLength > 0)
+        //        {
+        //            string fileName = Path.GetFileName(file.FileName);
+        //            string filePath = Path.Combine(folderPath, fileName);
+        //            file.SaveAs(filePath);
+        //            string relativeFilePath = $"~/Content/Documents/ClientRegistration/{client.UserName}/{fileName}";
+
+        //            // Check if the client already has this document type, if so, update it
+        //            var existingDocument = client.Documents.FirstOrDefault(d => d.DocumentType == documentTypes[i]);
+        //            if (existingDocument != null)
+        //            {
+        //                // Update existing document
+        //                existingDocument.FilePath = relativeFilePath;
+        //                existingDocument.UploadDate = DateTime.Now;
+        //            }
+        //            else
+        //            {
+        //                // Add new document if not present
+        //                var document = new Document
+        //                {
+        //                    DocumentType = documentTypes[i],
+        //                    FilePath = relativeFilePath,
+        //                    UploadDate = DateTime.Now,
+        //                    Client = client
+        //                };
+        //                client.Documents.Add(document);
+        //            }
+        //        }
+        //    }
+
+        //    _clientRepository.UpdateClientRegistrationDetails(client);
+        //}
+
         public void EditClientRegistrationDetail(Client client, IList<HttpPostedFileBase> uploadedFiles)
         {
-            string folderPath = HttpContext.Current.Server.MapPath("~/Content/Documents/ClientRegistration/") + client.UserName;
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            // Document update process
             string[] documentTypes = { "Company Id Proof", "Address Proof" };
+
             for (int i = 0; i < uploadedFiles.Count; i++)
             {
                 var file = uploadedFiles[i];
                 if (file != null && file.ContentLength > 0)
                 {
-                    string fileName = Path.GetFileName(file.FileName);
-                    string filePath = Path.Combine(folderPath, fileName);
-                    file.SaveAs(filePath);
-                    string relativeFilePath = $"~/Content/Documents/ClientRegistration/{client.UserName}/{fileName}";
+                    // Upload file to Cloudinary
+                    string cloudinaryUrl = _cloudinaryService.UploadClientFile(file, client.UserName);
 
                     // Check if the client already has this document type, if so, update it
                     var existingDocument = client.Documents.FirstOrDefault(d => d.DocumentType == documentTypes[i]);
+
                     if (existingDocument != null)
                     {
-                        // Update existing document
-                        existingDocument.FilePath = relativeFilePath;
+                        // Replace existing document with new one
+                        existingDocument.FilePath = cloudinaryUrl;
                         existingDocument.UploadDate = DateTime.Now;
                     }
                     else
@@ -114,7 +156,7 @@ namespace CorporateBankingApplication.Services
                         var document = new Document
                         {
                             DocumentType = documentTypes[i],
-                            FilePath = relativeFilePath,
+                            FilePath = cloudinaryUrl,
                             UploadDate = DateTime.Now,
                             Client = client
                         };
@@ -125,6 +167,7 @@ namespace CorporateBankingApplication.Services
 
             _clientRepository.UpdateClientRegistrationDetails(client);
         }
+
 
         // **************SALARY DISBURSEMNETS*****************
 
@@ -155,9 +198,9 @@ namespace CorporateBankingApplication.Services
                     DisbursementDate = DateTime.Now,
                     IsBatch = isBatch,
                     SalaryStatus = CorporateStatus.PENDING
-                    
+
                 };
-                
+
 
                 _clientRepository.AddSalaryDisbursement(salaryDisbursement);
             }
@@ -187,6 +230,49 @@ namespace CorporateBankingApplication.Services
             _clientRepository.UpdateBeneficiaryStatus(id, isActive);
         }
 
+        //public void AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles)
+        //{
+        //    var beneficiary = new Beneficiary()
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        BeneficiaryName = beneficiaryDTO.BeneficiaryName,
+        //        AccountNumber = beneficiaryDTO.AccountNumber,
+        //        BankIFSC = beneficiaryDTO.BankIFSC,
+        //        BeneficiaryType = BeneficiaryType.OUTBOUND,
+        //        BeneficiaryStatus = CorporateStatus.PENDING,
+        //        IsActive = true,
+        //        Client = client
+        //    };
+        //    string[] documentTypes = { "Beneficiary Id Proof", "Beneficiary Address Proof" };
+        //    string folderPath = HttpContext.Current.Server.MapPath("~/Content/Documents/Beneficiary/") + beneficiary.BeneficiaryName;
+        //    if (!Directory.Exists(folderPath))
+        //    {
+        //        Directory.CreateDirectory(folderPath);
+        //    }
+        //    for (int i = 0; i < uploadedFiles.Count; i++)
+        //    {
+
+        //        var file = uploadedFiles[i];
+        //        if (file != null && file.ContentLength > 0)
+        //        {
+        //            string fileName = Path.GetFileName(file.FileName);
+        //            string filePath = Path.Combine(folderPath, fileName);
+        //            file.SaveAs(filePath);
+        //            // Save relative file path (relative to the Content folder)
+        //            string relativeFilePath = $"~/Content/Documents/Beneficiary/{beneficiary.BeneficiaryName}/{fileName}";
+        //            var document = new Document
+        //            {
+        //                DocumentType = documentTypes[i], // Get document type based on index
+        //                FilePath = relativeFilePath,
+        //                UploadDate = DateTime.Now,
+        //                Beneficiary = beneficiary
+        //            };
+        //            beneficiary.Documents.Add(document);
+        //        }
+        //    }
+        //    _clientRepository.AddNewBeneficiary(beneficiary);
+        //}
+
         public void AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles)
         {
             var beneficiary = new Beneficiary()
@@ -201,26 +287,18 @@ namespace CorporateBankingApplication.Services
                 Client = client
             };
             string[] documentTypes = { "Beneficiary Id Proof", "Beneficiary Address Proof" };
-            string folderPath = HttpContext.Current.Server.MapPath("~/Content/Documents/Beneficiary/") + beneficiary.BeneficiaryName;
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
+
             for (int i = 0; i < uploadedFiles.Count; i++)
             {
 
                 var file = uploadedFiles[i];
                 if (file != null && file.ContentLength > 0)
                 {
-                    string fileName = Path.GetFileName(file.FileName);
-                    string filePath = Path.Combine(folderPath, fileName);
-                    file.SaveAs(filePath);
-                    // Save relative file path (relative to the Content folder)
-                    string relativeFilePath = $"~/Content/Documents/Beneficiary/{beneficiary.BeneficiaryName}/{fileName}";
+                    string cloudinaryUrl = _cloudinaryService.UploadBeneficiaryFile(file, beneficiary.BeneficiaryName);
                     var document = new Document
                     {
                         DocumentType = documentTypes[i], // Get document type based on index
-                        FilePath = relativeFilePath,
+                        FilePath = cloudinaryUrl,
                         UploadDate = DateTime.Now,
                         Beneficiary = beneficiary
                     };
@@ -268,68 +346,127 @@ namespace CorporateBankingApplication.Services
             return _clientRepository.GetBeneficiaryById(id);
         }
 
+        //public void UpdateBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles)
+        //{
+        //    var existingBeneficiary = _clientRepository.GetBeneficiaryById(beneficiaryDTO.Id);
+
+        //    string folderPath = HttpContext.Current.Server.MapPath("~/Content/Documents/Beneficiary/") + existingBeneficiary.BeneficiaryName;
+        //    if (!Directory.Exists(folderPath))
+        //    {
+        //        Directory.CreateDirectory(folderPath);
+        //    }
+
+        //    // Document update process
+        //    string[] documentTypes = { "Beneficiary Id Proof", "Beneficiary Address Proof" };
+        //    for (int i = 0; i < uploadedFiles.Count; i++)
+        //    {
+        //        var file = uploadedFiles[i];
+        //        if (file != null && file.ContentLength > 0)
+        //        {
+        //            string fileName = Path.GetFileName(file.FileName);
+        //            string filePath = Path.Combine(folderPath, fileName);
+        //            file.SaveAs(filePath);
+        //            string relativeFilePath = $"~/Content/Documents/Beneficiary/{existingBeneficiary.BeneficiaryName}/{fileName}";
+
+        //            // Check if the client already has this document type, if so, update it
+        //            var existingDocument = existingBeneficiary.Documents.FirstOrDefault(d => d.DocumentType == documentTypes[i]);
+        //            if (existingDocument != null)
+        //            {
+        //                // Update existing document
+        //                existingDocument.FilePath = relativeFilePath;
+        //                existingDocument.UploadDate = DateTime.Now;
+        //            }
+        //            else
+        //            {
+        //                // Add new document if not present
+        //                var document = new Document
+        //                {
+        //                    DocumentType = documentTypes[i],
+        //                    FilePath = relativeFilePath,
+        //                    UploadDate = DateTime.Now,
+        //                    Beneficiary = existingBeneficiary
+        //                };
+        //                existingBeneficiary.Documents.Add(document);
+        //            }
+        //        }
+        //    }
+
+        //    if (existingBeneficiary != null)
+        //    {
+        //        // Map the fields from the DTO to the existing Employee model
+        //        existingBeneficiary.BeneficiaryName = beneficiaryDTO.BeneficiaryName;
+        //        existingBeneficiary.AccountNumber = beneficiaryDTO.AccountNumber;
+        //        existingBeneficiary.BankIFSC = beneficiaryDTO.BankIFSC;
+        //        existingBeneficiary.Client = client;
+        //        existingBeneficiary.BeneficiaryStatus = CorporateStatus.PENDING;
+        //        //existingBeneficiary.Documents = 
+        //        _clientRepository.UpdateBeneficiary(existingBeneficiary);
+        //    }
+        //}
+
         public void UpdateBeneficiary(BeneficiaryDTO beneficiaryDTO, Client client, IList<HttpPostedFileBase> uploadedFiles)
         {
             var existingBeneficiary = _clientRepository.GetBeneficiaryById(beneficiaryDTO.Id);
 
-            string folderPath = HttpContext.Current.Server.MapPath("~/Content/Documents/Beneficiary/") + existingBeneficiary.BeneficiaryName;
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-
             // Document update process
             string[] documentTypes = { "Beneficiary Id Proof", "Beneficiary Address Proof" };
+
             for (int i = 0; i < uploadedFiles.Count; i++)
             {
                 var file = uploadedFiles[i];
                 if (file != null && file.ContentLength > 0)
                 {
-                    string fileName = Path.GetFileName(file.FileName);
-                    string filePath = Path.Combine(folderPath, fileName);
-                    file.SaveAs(filePath);
-                    string relativeFilePath = $"~/Content/Documents/Beneficiary/{existingBeneficiary.BeneficiaryName}/{fileName}";
+                    // Upload new document to Cloudinary
+                    string newCloudinaryUrl = _cloudinaryService.UploadBeneficiaryFile(file, existingBeneficiary.BeneficiaryName);
 
-                    // Check if the client already has this document type, if so, update it
+                    // Find the existing document of the same type
                     var existingDocument = existingBeneficiary.Documents.FirstOrDefault(d => d.DocumentType == documentTypes[i]);
+
                     if (existingDocument != null)
                     {
-                        // Update existing document
-                        existingDocument.FilePath = relativeFilePath;
+                        // Delete the old document from Cloudinary using its public ID
+                        //string publicId = _cloudinaryService.GetPublicIdFromFilePath(existingDocument.FilePath);
+                        //_cloudinaryService.DeleteDocumentFromCloudinary(publicId);
+
+                        // Update existing document record with new Cloudinary URL
+                        existingDocument.FilePath = newCloudinaryUrl;
                         existingDocument.UploadDate = DateTime.Now;
                     }
                     else
                     {
                         // Add new document if not present
-                        var document = new Document
+                        var newDocument = new Document
                         {
                             DocumentType = documentTypes[i],
-                            FilePath = relativeFilePath,
+                            FilePath = newCloudinaryUrl,
                             UploadDate = DateTime.Now,
                             Beneficiary = existingBeneficiary
                         };
-                        existingBeneficiary.Documents.Add(document);
+                        existingBeneficiary.Documents.Add(newDocument);
                     }
                 }
             }
 
             if (existingBeneficiary != null)
             {
-                // Map the fields from the DTO to the existing Employee model
+                // Update beneficiary details
                 existingBeneficiary.BeneficiaryName = beneficiaryDTO.BeneficiaryName;
                 existingBeneficiary.AccountNumber = beneficiaryDTO.AccountNumber;
                 existingBeneficiary.BankIFSC = beneficiaryDTO.BankIFSC;
                 existingBeneficiary.Client = client;
                 existingBeneficiary.BeneficiaryStatus = CorporateStatus.PENDING;
-                //existingBeneficiary.Documents = 
+
+                // Update beneficiary in repository
                 _clientRepository.UpdateBeneficiary(existingBeneficiary);
             }
         }
 
+
+
         /**************************AddBalance***************************/
         public void AddBalance(Guid id, double amount)
         {
-            
+
             _clientRepository.AddBalance(id, amount);
         }
 
@@ -370,14 +507,16 @@ namespace CorporateBankingApplication.Services
 
         /******************************REPORTS*****************************/
 
-        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid id)
+
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid clientId, DateTime? startDate, DateTime? endDate)
         {
-            return _clientRepository.GetAllSalaryDisbursements(id);
+            return _clientRepository.GetAllSalaryDisbursements(clientId, startDate, endDate);
         }
 
-        public List<PaymentDTO> GetPayments(Guid id)
+
+        public List<PaymentDTO> GetPayments(Guid id, string beneficiaryName, DateTime? startDate, DateTime? endDate)
         {
-            return _clientRepository.GetPayments(id);
+            return _clientRepository.GetPayments(id,beneficiaryName,startDate,endDate);
         }
 
         public void AddReportInfo(Guid id)

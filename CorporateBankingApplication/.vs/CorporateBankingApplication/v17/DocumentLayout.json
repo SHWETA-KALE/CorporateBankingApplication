@@ -1,16 +1,7 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\CAPSTONE\\CorporateBankingApplication\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\roshani.poojari\\Desktop\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -18,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,33 +17,11 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{fbcae063-e2c0-4ab1-a516-996ea3dafb72}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ClientController.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "ViewState": "AQIAAD0EAAAAAAAAAAAAAO4DAAAvAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-05T13:10:41.251Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\AdminController.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Controllers\\AdminController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAVAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-05T13:10:39.711Z",
-              "EditorCaption": ""
             }
           ]
         }

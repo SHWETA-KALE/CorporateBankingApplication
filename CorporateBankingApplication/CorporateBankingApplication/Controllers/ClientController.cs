@@ -47,7 +47,7 @@ namespace CorporateBankingApplication.Controllers
                 throw new InvalidOperationException("Client not found");
             }
             return View(client);
-           
+
 
         }
 
@@ -68,37 +68,6 @@ namespace CorporateBankingApplication.Controllers
             }
             return View();
         }
-
-
-        //public ActionResult GetAllEmployees()
-        //{
-        //    if (Session["UserId"] == null)
-        //    {
-        //        return RedirectToAction("Login", "User");
-        //    }
-
-        //    Guid clientId = (Guid)Session["UserId"];
-        //    var employees = _clientService.GetAllEmployees(clientId);
-        //    if (employees == null || !employees.Any())
-        //    {
-        //        throw new InvalidOperationException("No employees found for this client");
-        //    }
-
-
-        //    var employeeDtos = employees.Select(e => new EmployeeDTO
-        //    {
-        //        Id = e.Id,
-        //        FirstName = e.FirstName,
-        //        LastName = e.LastName,
-        //        Email = e.Email,
-        //        Position = e.Position,
-        //        Phone = e.Phone,
-        //        Salary = e.Salary,
-        //        IsActive = e.IsActive
-        //    }).ToList();
-
-        //    return Json(employeeDtos, JsonRequestBehavior.AllowGet);
-        //}
 
         public ActionResult GetAllEmployees(string firstName, string lastName)
         {
@@ -143,7 +112,7 @@ namespace CorporateBankingApplication.Controllers
 
         public ActionResult Add(EmployeeDTO employeedto)
         {
-            
+
             if (!ModelState.IsValid)
             {
                 // Collect errors into a dictionary to return as JSON
@@ -234,7 +203,7 @@ namespace CorporateBankingApplication.Controllers
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
 
-           
+
             if (client == null)
             {
                 return new HttpStatusCodeResult(400, "Client not found");
@@ -272,7 +241,7 @@ namespace CorporateBankingApplication.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-           
+
 
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
@@ -301,16 +270,15 @@ namespace CorporateBankingApplication.Controllers
         [HttpPost]
         public ActionResult EditClientRegistrationDetails(ClientDTO clientDTO)
         {
-          
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
 
-
             Guid clientId = (Guid)Session["UserId"];
-           // clientDTO.Id = clientId;
-           
+            // clientDTO.Id = clientId;
+            ModelState.Remove("UserName");
+            ModelState.Remove("Password");
             var client = _clientService.GetClientById(clientId);
             client.Email = clientDTO.Email;
             client.CompanyName = clientDTO.CompanyName;
@@ -320,21 +288,55 @@ namespace CorporateBankingApplication.Controllers
             client.IFSC = clientDTO.IFSC;
             client.Balance = clientDTO.Balance;
             client.OnBoardingStatus = CorporateStatus.PENDING;
+
             var uploadedFiles = new List<HttpPostedFileBase>();
 
             var companyIdProof = Request.Files["uploadedFiles1"];
             var addressProof = Request.Files["uploadedFiles2"];
 
-            //for doc validation
+            // Define allowed MIME types
+            var allowedFileTypes = new List<string>
+    {
+        "application/pdf",        // PDF files
+        "application/msword",     // .doc files
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx files
+        "image/jpeg",             // JPEG images
+        "image/png",              // PNG images
+        "image/gif"               // GIF images
+    };
+
+            // Define maximum file size in bytes (e.g., 5MB)
+            var maxFileSize = 5 * 1024 * 1024; // 5 MB
+
+            // Validation for company ID proof
             if (companyIdProof == null || companyIdProof.ContentLength == 0)
             {
                 ModelState.AddModelError("Document1", "Company Id Proof field is required.");
             }
+            else if (!allowedFileTypes.Contains(companyIdProof.ContentType))
+            {
+                ModelState.AddModelError("Document1", "Invalid file type for Company Id Proof. Allowed types are: PDF, DOC, DOCX, JPEG, PNG, GIF.");
+            }
+            else if (companyIdProof.ContentLength > maxFileSize)
+            {
+                ModelState.AddModelError("Document1", "Company Id Proof exceeds the maximum allowed size of 5 MB.");
+            }
 
+            // Validation for address proof
             if (addressProof == null || addressProof.ContentLength == 0)
             {
                 ModelState.AddModelError("Document2", "Address Proof field is required.");
             }
+            else if (!allowedFileTypes.Contains(addressProof.ContentType))
+            {
+                ModelState.AddModelError("Document2", "Invalid file type for Address Proof. Allowed types are: PDF, DOC, DOCX, JPEG, PNG, GIF.");
+            }
+            else if (addressProof.ContentLength > maxFileSize)
+            {
+                ModelState.AddModelError("Document2", "Address Proof exceeds the maximum allowed size of 5 MB.");
+            }
+
+            // If model validation fails, return the view with validation errors
             if (!ModelState.IsValid)
             {
                 // Collect errors into a dictionary to return as JSON
@@ -345,6 +347,7 @@ namespace CorporateBankingApplication.Controllers
                 return View(clientDTO);
             }
 
+            // Add files to the list if they pass the validation
             if (companyIdProof != null && companyIdProof.ContentLength > 0)
             {
                 uploadedFiles.Add(companyIdProof);
@@ -359,6 +362,7 @@ namespace CorporateBankingApplication.Controllers
 
             return RedirectToAction("ClientDashboard");
         }
+
 
         //********************** CSV UPLOAD *********************
         [HttpPost]
@@ -597,9 +601,9 @@ namespace CorporateBankingApplication.Controllers
             _clientService.UpdateBeneficiaryStatus(id, isActive);
             return Json(new { success = true });
         }
-
         //public ActionResult AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO)
         //{
+
         //    if (Session["UserId"] == null)
         //    {
         //        return new HttpStatusCodeResult(401, "Unauthorized");
@@ -615,7 +619,6 @@ namespace CorporateBankingApplication.Controllers
 
         //    var idProof = Request.Files["uploadedDocs1"];
         //    var addressProof = Request.Files["uploadedDocs2"];
-
         //    //for doc validation
         //    if (idProof == null || idProof.ContentLength == 0)
         //    {
@@ -635,7 +638,6 @@ namespace CorporateBankingApplication.Controllers
         //        );
         //        return Json(new { success = false, errors });
         //    }
-
         //    if (idProof != null && idProof.ContentLength > 0)
         //    {
         //        uploadedFiles.Add(idProof);
@@ -651,7 +653,6 @@ namespace CorporateBankingApplication.Controllers
 
         public ActionResult AddNewBeneficiary(BeneficiaryDTO beneficiaryDTO)
         {
-
             if (Session["UserId"] == null)
             {
                 return new HttpStatusCodeResult(401, "Unauthorized");
@@ -663,20 +664,55 @@ namespace CorporateBankingApplication.Controllers
             {
                 return new HttpStatusCodeResult(400, "Client not found");
             }
+
             var uploadedFiles = new List<HttpPostedFileBase>();
 
             var idProof = Request.Files["uploadedDocs1"];
             var addressProof = Request.Files["uploadedDocs2"];
-            //for doc validation
+
+            // Define allowed MIME types
+            var allowedFileTypes = new List<string>
+    {
+        "application/pdf",        // PDF files
+        "application/msword",     // .doc files
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx files
+        "image/jpeg",             // JPEG images
+        "image/png",              // PNG images
+        "image/gif"               // GIF images
+    };
+
+            // Define maximum file size in bytes (e.g., 5MB)
+            var maxFileSize = 5 * 1024 * 1024; // 5 MB
+
+            // Validation for ID proof
             if (idProof == null || idProof.ContentLength == 0)
             {
                 ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
             }
+            else if (!allowedFileTypes.Contains(idProof.ContentType))
+            {
+                ModelState.AddModelError("BeneficiaryIdProof", "Invalid file type for Id Proof. Allowed types are: PDF, DOC, DOCX, JPEG, PNG, GIF.");
+            }
+            else if (idProof.ContentLength > maxFileSize)
+            {
+                ModelState.AddModelError("BeneficiaryIdProof", "Id Proof exceeds the maximum allowed size of 5 MB.");
+            }
 
+            // Validation for address proof
             if (addressProof == null || addressProof.ContentLength == 0)
             {
                 ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
             }
+            else if (!allowedFileTypes.Contains(addressProof.ContentType))
+            {
+                ModelState.AddModelError("BeneficiaryAddressProof", "Invalid file type for Address Proof. Allowed types are: PDF, DOC, DOCX, JPEG, PNG, GIF.");
+            }
+            else if (addressProof.ContentLength > maxFileSize)
+            {
+                ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof exceeds the maximum allowed size of 5 MB.");
+            }
+
+            // If model validation fails, return JSON with errors
             if (!ModelState.IsValid)
             {
                 // Collect errors into a dictionary to return as JSON
@@ -686,6 +722,8 @@ namespace CorporateBankingApplication.Controllers
                 );
                 return Json(new { success = false, errors });
             }
+
+            // Add files to the list if they pass the validation
             if (idProof != null && idProof.ContentLength > 0)
             {
                 uploadedFiles.Add(idProof);
@@ -695,9 +733,11 @@ namespace CorporateBankingApplication.Controllers
             {
                 uploadedFiles.Add(addressProof);
             }
+
             _clientService.AddNewBeneficiary(beneficiaryDTO, client, uploadedFiles);
             return Json(new { success = true });
         }
+
 
         public ActionResult GetBeneficiaryById(Guid id)
         {
@@ -724,6 +764,7 @@ namespace CorporateBankingApplication.Controllers
                 }
             }, JsonRequestBehavior.AllowGet);
         }
+
         //public ActionResult EditBeneficiary(BeneficiaryDTO beneficiaryDTO)
         //{
         //    if (Session["UserId"] == null)
@@ -737,6 +778,7 @@ namespace CorporateBankingApplication.Controllers
         //    {
         //        return new HttpStatusCodeResult(400, "Client not found");
         //    }
+
         //    var existingBeneficiary = _clientService.GetBeneficiaryById(beneficiaryDTO.Id);
         //    var uploadedFiles = new List<HttpPostedFileBase>();
 
@@ -782,6 +824,7 @@ namespace CorporateBankingApplication.Controllers
             {
                 return new HttpStatusCodeResult(401, "Unauthorized");
             }
+
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
 
@@ -796,16 +839,49 @@ namespace CorporateBankingApplication.Controllers
             var idProof = Request.Files["newIdProof"];
             var addressProof = Request.Files["newAddressProof"];
 
-            //for doc validation
+            // Define allowed MIME types
+            var allowedFileTypes = new List<string>
+    {
+        "application/pdf",        // PDF files
+        "application/msword",     // .doc files
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx files
+        "image/jpeg",             // JPEG images
+        "image/png",              // PNG images
+        "image/gif"               // GIF images
+    };
+
+            // Define maximum file size in bytes (e.g., 5MB)
+            var maxFileSize = 5 * 1024 * 1024; // 5 MB
+
+            // Validation for ID proof
             if (idProof == null || idProof.ContentLength == 0)
             {
                 ModelState.AddModelError("BeneficiaryIdProof", "Id Proof field is required.");
             }
+            else if (!allowedFileTypes.Contains(idProof.ContentType))
+            {
+                ModelState.AddModelError("BeneficiaryIdProof", "Invalid file type for Id Proof. Allowed types are: PDF, DOC, DOCX, JPEG, PNG, GIF.");
+            }
+            else if (idProof.ContentLength > maxFileSize)
+            {
+                ModelState.AddModelError("BeneficiaryIdProof", "Id Proof exceeds the maximum allowed size of 5 MB.");
+            }
 
+            // Validation for address proof
             if (addressProof == null || addressProof.ContentLength == 0)
             {
                 ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof field is required.");
             }
+            else if (!allowedFileTypes.Contains(addressProof.ContentType))
+            {
+                ModelState.AddModelError("BeneficiaryAddressProof", "Invalid file type for Address Proof. Allowed types are: PDF, DOC, DOCX, JPEG, PNG, GIF.");
+            }
+            else if (addressProof.ContentLength > maxFileSize)
+            {
+                ModelState.AddModelError("BeneficiaryAddressProof", "Address Proof exceeds the maximum allowed size of 5 MB.");
+            }
+
+            // If model validation fails, return JSON with errors
             if (!ModelState.IsValid)
             {
                 // Collect errors into a dictionary to return as JSON
@@ -816,6 +892,7 @@ namespace CorporateBankingApplication.Controllers
                 return Json(new { success = false, errors });
             }
 
+            // Add files to the list if they pass the validation
             if (idProof != null && idProof.ContentLength > 0)
             {
                 uploadedFiles.Add(idProof);
@@ -825,9 +902,12 @@ namespace CorporateBankingApplication.Controllers
             {
                 uploadedFiles.Add(addressProof);
             }
+
             _clientService.UpdateBeneficiary(beneficiaryDTO, client, uploadedFiles);
             return Json(new { success = true, message = "Beneficiary updated successfully" });
         }
+
+
         /***************************PROFILE*****************************/
 
         [Route("Profile")]
@@ -860,40 +940,82 @@ namespace CorporateBankingApplication.Controllers
             return View(clientDto);
         }
 
+        //public ActionResult ChangePassword(string previousPassword, string newPassword, string confirmNewPassword)
+        //{
+        //    if (Session["UserId"] == null)
+        //    {
+        //        return RedirectToAction("Login", "User");
+        //    }
+        //    Guid clientId = (Guid)Session["UserId"];
+        //    var previousPasswordCheck = _clientService.CheckPassword(clientId, previousPassword);
+        //    if (previousPasswordCheck)
+        //    {
+        //        if (newPassword != null && newPassword == confirmNewPassword)
+        //        {
+        //            _clientService.SaveNewPassword(clientId, newPassword);
+        //            return Json(new { success = true, message = "Password updated successfully." });
+        //        }
+        //    }
+        //    if (newPassword != null && newPassword != confirmNewPassword)
+        //    {
+        //        return Json(new { success = false, message = "Passwords don't match." });
+        //    }
+        //    return Json(new { success = false, message = "Error in updating password" });
+        //}
         public ActionResult ChangePassword(string previousPassword, string newPassword, string confirmNewPassword)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
             Guid clientId = (Guid)Session["UserId"];
             var previousPasswordCheck = _clientService.CheckPassword(clientId, previousPassword);
-            if (previousPasswordCheck)
+
+            // Manual validation checks
+            if (!previousPasswordCheck)
             {
-                if (newPassword != null && newPassword == confirmNewPassword)
-                {
-                    _clientService.SaveNewPassword(clientId, newPassword);
-                    return Json(new { success = true, message = "Password updated successfully." });
-                }
+                return Json(new { success = false, message = "Previous password is incorrect." });
             }
-            if (newPassword != null && newPassword != confirmNewPassword)
+
+            if (string.IsNullOrWhiteSpace(newPassword))
             {
-                return Json(new { success = false, message = "Passwords don't match." });
+                return Json(new { success = false, message = "New password is required." });
             }
-            return Json(new { success = false, message = "Error in updating password" });
+
+            if (newPassword.Length < 8)
+            {
+                return Json(new { success = false, message = "Password must be at least 8 characters long." });
+            }
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(newPassword, @"^(?=.*[a-zA-Z])(?=.*\d).+$"))
+            {
+                return Json(new { success = false, message = "Password must contain at least one letter and one number." });
+            }
+
+            if (newPassword != confirmNewPassword)
+            {
+                return Json(new { success = false, message = "The new password and confirmation password do not match." });
+            }
+
+            // Save the new password
+            _clientService.SaveNewPassword(clientId, newPassword);
+            return Json(new { success = true, message = "Password updated successfully." });
         }
 
 
 
+
+
         /**************************AddBalance***************************/
-       
+
         [HttpPost]
         public ActionResult AddBalance(Guid id, double amount)
         {
             var client = _clientService.GetClientById(id);
             if (client.OnBoardingStatus == CorporateStatus.PENDING || client.OnBoardingStatus == CorporateStatus.REJECTED)
             {
-                return Json(new { success = false, message = "Cannot update balance as you are not approved"});
+                return Json(new { success = false, message = "Cannot update balance as you are not approved" });
             }
             else
             {
@@ -933,8 +1055,8 @@ namespace CorporateBankingApplication.Controllers
 
             return View(model);
         }
-    
-        
+
+
         [HttpGet]
         public ActionResult GetBeneficiaryListForPayment()
         {
@@ -973,89 +1095,144 @@ namespace CorporateBankingApplication.Controllers
         }
 
         [Route("salaryreport")]
-        public ActionResult ViewSalaryDisbursements()
+        public ActionResult ViewSalaryDisbursements(DateTime? startDate, DateTime? endDate)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
             ViewBag.Client = client;
-            var salaryDisbursements = _clientService.GetAllSalaryDisbursements(clientId);
+
+            // Retrieve filtered salary disbursements based on date range
+            var salaryDisbursements = _clientService.GetAllSalaryDisbursements(clientId, startDate, endDate);
             return View(salaryDisbursements);
         }
-        public ActionResult DownloadSalaryDisbursementsPDFReport()
+        public ActionResult DownloadSalaryDisbursementsPDFReport(DateTime? startDate, DateTime? endDate)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
             Guid clientId = (Guid)Session["UserId"];
-            var list = _clientService.GetAllSalaryDisbursements(clientId);
-            // Create a new PDF document
+            var list = _clientService.GetAllSalaryDisbursements(clientId, startDate, endDate);
+
             using (var memoryStream = new MemoryStream())
             {
                 var doc = new iTextSharp.text.Document();
                 PdfWriter.GetInstance(doc, memoryStream);
                 doc.Open();
 
-                // Create a table for better formatting
-                var table = new PdfPTable(6); // Create a table with 5 columns
+                var table = new PdfPTable(5);
                 table.AddCell("ID");
-                table.AddCell("Client Company Name");
                 table.AddCell("Employee Name");
                 table.AddCell("Salary");
                 table.AddCell("Disbursement Date");
                 table.AddCell("Status");
 
-                // Add data to the table
                 foreach (var emp in list)
                 {
                     table.AddCell(emp.SalaryDisbursementId.ToString());
-                    table.AddCell(emp.CompanyName);
                     table.AddCell($"{emp.EmployeeFirstName} {emp.EmployeeLastName}");
-                    table.AddCell(emp.Salary.ToString("C")); // Format as currency
+                    table.AddCell(emp.Salary.ToString("C"));
                     table.AddCell(emp.DisbursementDate.ToShortDateString());
                     table.AddCell(emp.SalaryStatus.ToString());
                 }
 
-                // Add the table to the document
                 doc.Add(table);
-                doc.Close(); // Closing the document finalizes it
+                doc.Close();
 
-                // Prepare the byte array to return
                 byte[] bytes = memoryStream.ToArray();
 
-                //add in report table
+                // Add report info
                 _clientService.AddReportInfo(clientId);
 
                 return File(bytes, "application/pdf", "SalaryDisbursement.pdf");
             }
         }
 
-        [Route("paymentreport")]
-        public ActionResult ViewPayments()
+        public ActionResult DownloadSalaryDisbursementsExcelReport(DateTime? startDate, DateTime? endDate)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
+            Guid clientId = (Guid)Session["UserId"];
+            var list = _clientService.GetAllSalaryDisbursements(clientId, startDate, endDate);
+
+            using (var package = new OfficeOpenXml.ExcelPackage())
+            {
+                // Add a new worksheet to the Excel workbook
+                var worksheet = package.Workbook.Worksheets.Add("Salary Disbursements Report");
+
+                // Add headers to the worksheet
+                worksheet.Cells[1, 1].Value = "ID";
+                worksheet.Cells[1, 2].Value = "Employee Name";
+                worksheet.Cells[1, 3].Value = "Salary";
+                worksheet.Cells[1, 4].Value = "Disbursement Date";
+                worksheet.Cells[1, 5].Value = "Status";
+
+                // Start from row 2 to fill data
+                int row = 2;
+                foreach (var emp in list)
+                {
+                    worksheet.Cells[row, 1].Value = emp.SalaryDisbursementId.ToString();
+                    worksheet.Cells[row, 2].Value = $"{emp.EmployeeFirstName} {emp.EmployeeLastName}";
+                    worksheet.Cells[row, 3].Value = emp.Salary.ToString("C");  // Currency format
+                    worksheet.Cells[row, 4].Value = emp.DisbursementDate.ToShortDateString();
+                    worksheet.Cells[row, 5].Value = emp.SalaryStatus.ToString();
+                    row++;
+                }
+
+                // Auto-fit columns for all cells
+                worksheet.Cells.AutoFitColumns();
+
+                // Save the Excel file to a memory stream
+                using (var memoryStream = new MemoryStream())
+                {
+                    package.SaveAs(memoryStream);
+                    byte[] bytes = memoryStream.ToArray();
+
+                    // Add report info
+                    _clientService.AddReportInfo(clientId);
+
+                    // Return the Excel file as a download
+                    return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SalaryDisbursement.xlsx");
+                }
+            }
+        }
+
+
+        [Route("paymentreport")]
+        public ActionResult ViewPayments(string beneficiaryName, DateTime? startDate, DateTime? endDate)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
             ViewBag.Client = client;
-            var payments = _clientService.GetPayments(clientId);
+
+            var payments = _clientService.GetPayments(clientId, beneficiaryName, startDate, endDate);
             return View(payments);
         }
 
-        public ActionResult DownloadPaymentPDFReport()
+
+        public ActionResult DownloadPaymentPDFReport(string beneficiaryName, DateTime? startDate, DateTime? endDate)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
             Guid userId = (Guid)Session["UserId"];
-            var list = _clientService.GetPayments(userId);
+            var list = _clientService.GetPayments(userId, beneficiaryName, startDate, endDate);
 
             // Create a new PDF document
             using (var memoryStream = new MemoryStream())
@@ -1065,9 +1242,8 @@ namespace CorporateBankingApplication.Controllers
                 doc.Open();
 
                 // Create a table for better formatting
-                var table = new PdfPTable(7); // Create a table with 5 columns
+                var table = new PdfPTable(6);
                 table.AddCell("ID");
-                table.AddCell("Client Company Name");
                 table.AddCell("Account Number");
                 table.AddCell("Beneficiary Name");
                 table.AddCell("Amount");
@@ -1078,26 +1254,78 @@ namespace CorporateBankingApplication.Controllers
                 foreach (var pay in list)
                 {
                     table.AddCell(pay.PaymentId.ToString());
-                    table.AddCell(pay.CompanyName);
                     table.AddCell(pay.AccountNumber);
-                    table.AddCell(pay.BeneficiaryName); // Format as currency
-                    table.AddCell(pay.Amount.ToString()); // Format as currency
+                    table.AddCell(pay.BeneficiaryName);
+                    table.AddCell(pay.Amount.ToString());
                     table.AddCell(pay.PaymentRequestDate.ToShortDateString());
                     table.AddCell(pay.PaymentStatus.ToString());
                 }
 
                 // Add the table to the document
                 doc.Add(table);
-                doc.Close(); // Closing the document finalizes it
+                doc.Close();
 
-                // Prepare the byte array to return
                 byte[] bytes = memoryStream.ToArray();
 
-                //add in report table
+                // Add report info to database
                 _clientService.AddPaymentReportInfo(userId);
 
                 return File(bytes, "application/pdf", "Payment.pdf");
             }
         }
+        public ActionResult DownloadPaymentExcelReport(string beneficiaryName, DateTime? startDate, DateTime? endDate)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            Guid userId = (Guid)Session["UserId"];
+            var list = _clientService.GetPayments(userId, beneficiaryName, startDate, endDate);
+
+            using (var package = new OfficeOpenXml.ExcelPackage())
+            {
+                // Add a new worksheet to the Excel workbook
+                var worksheet = package.Workbook.Worksheets.Add("Payments Report");
+
+                // Add headers to the worksheet
+                worksheet.Cells[1, 1].Value = "ID";
+                worksheet.Cells[1, 2].Value = "Account Number";
+                worksheet.Cells[1, 3].Value = "Beneficiary Name";
+                worksheet.Cells[1, 4].Value = "Amount";
+                worksheet.Cells[1, 5].Value = "Payment Request Date";
+                worksheet.Cells[1, 6].Value = "Status";
+
+                // Start from row 2 to fill data
+                int row = 2;
+                foreach (var pay in list)
+                {
+                    worksheet.Cells[row, 1].Value = pay.PaymentId.ToString();
+                    worksheet.Cells[row, 2].Value = pay.AccountNumber;
+                    worksheet.Cells[row, 3].Value = pay.BeneficiaryName;
+                    worksheet.Cells[row, 4].Value = pay.Amount;
+                    worksheet.Cells[row, 5].Value = pay.PaymentRequestDate.ToShortDateString();
+                    worksheet.Cells[row, 6].Value = pay.PaymentStatus.ToString();
+                    row++;
+                }
+
+                // Auto-fit columns for all cells
+                worksheet.Cells.AutoFitColumns();
+
+                // Save the Excel file to a memory stream
+                using (var memoryStream = new MemoryStream())
+                {
+                    package.SaveAs(memoryStream);
+                    byte[] bytes = memoryStream.ToArray();
+
+                    // Add report info to database
+                    _clientService.AddPaymentReportInfo(userId);
+
+                    // Return the Excel file as a download
+                    return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PaymentReport.xlsx");
+                }
+            }
+        }
+
     }
 }
