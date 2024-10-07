@@ -81,14 +81,7 @@
 }
 <script>
     $("#btnEditBeneficiary").click(() => {
-        //var data = {
-        //    Id: $("#editBeneficiaryId").val(),
-        //    BeneficiaryName: $("#editedBeneficiaryName").val(),
-        //    AccountNumber: $("#editedAccountNumber").val(),
-        //    BankIFSC: $("#editedBankIFSC").val(),
-
-        //};
-        //modifyBeneficiary(data);
+        
         // Create a FormData object to handle file and form data
         var formData = new FormData();
 
@@ -98,9 +91,7 @@
         formData.append("AccountNumber", $("#editedAccountNumber").val());
         formData.append("BankIFSC", $("#editedBankIFSC").val());
 
-        // Add the files to FormData if present
-        //var idProofFile = $("#newIdProof")[0].files[0];
-        //var addressProofFile = $("#newAddressProof")[0].files[0];
+        
 
         var idProofInput = $("#newIdProof");
         if (idProofInput.length > 0 && idProofInput[0].files.length > 0) {

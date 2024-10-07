@@ -1,51 +1,4 @@
-﻿//function loadOutboundBeneficiaries() {
-//    $.ajax({
-//        url: "/Client/GetAllOutboundBeneficiaries",
-//        type: "GET",
-//        success: function (data) {
-//            $("#beneficiaryTblBody").empty()
-//            if (data.length > 0) {
-//                $.each(data, function (index, item) {
-//                    console.log(data)
-//                    var documentLinks = item.DocumentUrls.map(function (url) {
-//                        var fileName = url.split('/').pop(); // Extract file name from URL
-//                        return `<a href="#" class="document-link" data-url="${url}">${fileName}</a>`; // Include data-url       <button onclick="editBeneficiary('${item.Id}')" class="btn btn-outline-dark edit-btn" style="${item.IsActive ? '' : 'display:none;'}">Edit</button>
-//                    }).join("<br/> ");
-
-//                    var row = `<tr>
-//                        <td>${item.BeneficiaryName}</td>
-//                        <td>${item.AccountNumber}</td>
-//                        <td>${item.BankIFSC}</td>
-//                        <td>${item.BeneficiaryStatus}</td>
-//                        <td>${item.BeneficiaryType}</td>
-//                        <td>
-//                            <input type="checkbox" class="is-active-checkbox" data-beneficiaryid="${item.Id}" ${item.IsActive ? "checked" : ""} />
-//                        </td>
-//                        <td>${documentLinks}</td>
-//                        <td class="editbeneficiary-btn-cell">
-//                            <button onclick="editBeneficiary('${item.Id}')" class="btn btn-outline-dark edit-btn" style="${item.IsActive && item.BeneficiaryType !== 'INBOUND' ? '' : 'display:none;'}">Edit</button>
-//                        </td>
-//                    </tr>`;
-
-//                    $("#beneficiaryTblBody").append(row);
-//                });
-
-//                $(".is-active-checkbox").change(function () {
-//                    var beneficiaryId = $(this).data("beneficiaryid");
-//                    var isActive = $(this).is(":checked");
-//                    updateBeneficiaryStatus(beneficiaryId, isActive);
-//                });
-//            } else {
-//                $("#beneficiaryTblBody").append("<tr><td colspan='5'>No outbound beneficiaries found.</td></tr>");
-//            }
-//        },
-//        error: function (err) {
-//            $("#beneficiaryTblBody").empty();
-//            alert("No data available");
-//        }
-//    });
-//}
-
+﻿
 
 // Load outbound beneficiaries with optional searchTerm
 function loadOutboundBeneficiaries(searchTerm = "") {
@@ -57,9 +10,12 @@ function loadOutboundBeneficiaries(searchTerm = "") {
             $("#beneficiaryTblBody").empty();
             if (data.length > 0) {
                 $.each(data, function (index, item) {
+
+
                     var documentLinks = item.DocumentUrls.map(function (url) {
                         var fileName = url.split('/').pop();
-                        return `<a href="#" class="document-link" data-url="${url}">${fileName}</a>`;
+                        var fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.'); // Remove the extension
+                        return `<a href="#" class="document-link" data-url="${url}">${fileNameWithoutExtension}</a>`;
                     }).join("<br/> ");
 
                     var row = `<tr>
@@ -145,59 +101,6 @@ function updateBeneficiaryStatus(beneficiaryId, isActive) {
 
 //add new beneficiary
 
-//add new beneficiary
-
-//function addNewBeneficiary() {
-//    var formData = new FormData();
-
-//    // Append normal input fields
-//    formData.append("BeneficiaryName", $("#newBeneficiaryName").val());
-//    formData.append("AccountNumber", $("#newAccountNumber").val());
-//    formData.append("BankIFSC", $("#newBankIFSC").val());
-
-//    // Append file inputs
-//    var idProofFile = $("#BeneficiaryIdProof")[0].files[0]; // Access file input
-//    var addressProofFile = $("#BeneficiaryAddressProof")[0].files[0]; // Access file input
-
-//    formData.append("uploadedDocs1", idProofFile);
-//    formData.append("uploadedDocs2", addressProofFile);
-//    console.log(formData)
-//    $.ajax({
-//        url: "/Client/AddNewBeneficiary",
-//        type: "POST",
-//        data: formData,
-//        processData: false,  // Prevent jQuery from automatically transforming the data into a query string
-//        contentType: false,  // Prevent jQuery from setting Content-Type header; the browser will set it correctly
-//        success: function (response) {
-//            console.log(response)
-//            console.log(response.errors)
-//            if (response.success === false) {
-//                // Create an array to collect all error messages
-//                let errorMessages = [];
-
-//                // Iterate over each key in the errors object
-//                for (let key in response.errors) {
-//                    if (response.errors.hasOwnProperty(key)) {
-//                        errorMessages.push(`${ key }: ${ response.errors[key].join(", ") }`);
-//                    }
-//                }
-
-//                alert("Errors: " + errorMessages.join("\n"));
-//                console.log(response.errors);
-//                return;
-//            }
-
-//            alert("New Beneficiary added successfully");
-//            loadOutboundBeneficiaries();
-//            $("#addNewBeneficiary").hide();
-//            $("#beneficiaryList").show();
-//        },
-//        error: function (err) {
-//            alert("Error adding new Beneficiary");
-//            console.log(err);
-//        }
-//    });
-//}
 
 function addNewBeneficiary() {
     var formData = new FormData();
@@ -281,42 +184,6 @@ function getBeneficiary(beneficiaryId) {
         }
     });
 }
-//function modifyBeneficiary(formData) {
-//    $.ajax({
-//        url: "/Client/EditBeneficiary",
-//        type: "POST",
-//        data: formData,
-//        contentType: false,  // Prevent jQuery from overriding the content type
-//        processData: false,  // Prevent jQuery from processing the data
-//        success: function (response) {
-//            if (response.success === false) {
-//                // Create an array to collect all error messages
-//                let errorMessages = [];
-
-//                // Iterate over each key in the errors object
-//                for (let key in response.errors) {
-//                    if (response.errors.hasOwnProperty(key)) {
-//                        if (key !== "Id") {
-//                            errorMessages.push(`${ key }: ${ response.errors[key].join(", ") }`);
-//                        }
-//                    }
-//                }
-
-//                alert("Errors: " + errorMessages.join("\n"));
-//                console.log(response.errors);
-//                return;
-//            }
-//            alert("Beneficiary Details Edited Successfully");
-//            loadOutboundBeneficiaries();
-//            $("#beneficiaryList").show();
-//            $("#editBeneficiary").hide();
-
-//        },
-//        error: function (err) {
-//            alert("Error in Editing Beneficiary Details");
-//        }
-//    });
-//}
 
 function modifyBeneficiary(formData) {
     $.ajax({

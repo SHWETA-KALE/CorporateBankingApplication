@@ -69,20 +69,20 @@ namespace CorporateBankingApplication.DTOs
 
 
 
-        [Required]
+        //[Required]
         [Display(Name = "Previous Password")]
         public string PreviousPassword { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long.")]
-        [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one letter and one number.")]
+        //[Required]
+        //[StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long.")]
+        //[RegularExpression(@"^(?=.*[a-zA-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one letter and one number.")]
         [Display(Name = "New Password")]
 
         public string NewPassword { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long.")]
-        [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one letter and one number.")]
+        //[Required]
+        //[StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long.")]
+        //[RegularExpression(@"^(?=.*[a-zA-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one letter and one number.")]
         [Display(Name = "Confirm New Password")]
         public string ConfirmNewPassword { get; set; }
     }

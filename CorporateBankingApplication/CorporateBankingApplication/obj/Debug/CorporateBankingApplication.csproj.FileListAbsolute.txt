@@ -215,3 +215,14 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsof
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.Extensions.Options.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\itext.bouncy-castle-adapter.dll
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\itext.bouncy-castle-adapter.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\CloudinaryDotNet.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\CloudinaryDotNet.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\EPPlus.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\EPPlus.Interfaces.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\EPPlus.System.Drawing.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.IO.RecyclableMemoryStream.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.ComponentModel.Annotations.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Formats.Asn1.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\EPPlus.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.IO.RecyclableMemoryStream.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Formats.Asn1.xml

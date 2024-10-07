@@ -45,9 +45,9 @@ namespace CorporateBankingApplication.Repositories
         void SaveNewPassword(Guid id, string password);
 
         //REPORTS
-        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid id);
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(Guid id, DateTime? startDate, DateTime? endDate);
 
-        List<PaymentDTO> GetPayments(Guid id);
+        List<PaymentDTO> GetPayments(Guid id, string beneficiaryName, DateTime? startDate, DateTime? endDate);
         void AddReportInfo(Guid id);
 
         void AddPaymentReportInfo(Guid id);

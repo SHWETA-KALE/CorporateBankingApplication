@@ -41,17 +41,19 @@ namespace CorporateBankingApplication.Repositories
 
         //payment verification
         IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status);
-
         void UpdatePaymentStatus(Guid paymentId, CorporateStatus status);
 
         Payment GetPaymentById(Guid id);
 
-        //REPORTS
-        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements();
+        void UpdatePayment(Payment payment);
 
-        List<PaymentDTO> GetPayments();
+        //REPORTS
+        List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null);
+        List<PaymentDTO> GetPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null);
         void AddReportInfo(Guid id);
 
         void AddPaymentReportInfo(Guid id);
+
+
     }
 }

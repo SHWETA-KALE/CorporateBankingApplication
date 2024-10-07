@@ -71,26 +71,7 @@ namespace CorporateBankingApplication.Repositories
             return _session.Get<Client>(id);
         }
 
-        //update client onboarding status & add it as a beneficiary
-        //public void UpdateClient(Client client)
-        //{
-        //    using (var transaction = _session.BeginTransaction())
-        //    {
-        //        var beneficiary = new Beneficiary()
-        //        {
-        //            BeneficiaryName = client.UserName,
-        //            AccountNumber = client.AccountNumber,
-        //            BankIFSC = client.IFSC,
-        //            BeneficiaryStatus = client.OnBoardingStatus,
-        //            BeneficiaryType = BeneficiaryType.INBOUND,
-        //            IsActive = client.IsActive
-        //        };
-        //        _session.Save(beneficiary);
-        //        _session.Update(client);
-        //        transaction.Commit();
-        //    }
-        //}
-
+       
         public void UpdateClient(Client client)
         {
             using (var transaction = _session.BeginTransaction())
@@ -239,7 +220,7 @@ namespace CorporateBankingApplication.Repositories
 
         public IEnumerable<PaymentDTO> GetPendingPaymentsByStatus(CorporateStatus status)
         {
-           
+
             return _session.Query<Payment>()
                 .Where(x => x.PaymentStatus == status)
                 .OrderByDescending(x => x.PaymentRequestDate)
@@ -255,6 +236,8 @@ namespace CorporateBankingApplication.Repositories
                 })
                 .ToList();
         }
+
+
 
         public void UpdatePaymentStatus(Guid paymentId, CorporateStatus status)
         {
@@ -295,37 +278,78 @@ namespace CorporateBankingApplication.Repositories
             }
         }
 
-        //REPORTS
-        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements()
-        {
-            return _session.Query<SalaryDisbursement>().OrderBy(s => s.DisbursementDate)
-                           .Select(x => new EmployeeSalaryDisbursementDTO
-                           {
-                               SalaryDisbursementId = x.Id,
-                               CompanyName = x.Employee.Client.CompanyName,
-                               EmployeeFirstName = x.Employee.FirstName,
-                               EmployeeLastName = x.Employee.LastName,
-                               Salary = x.Employee.Salary,
-                               DisbursementDate = x.DisbursementDate,
-                               SalaryStatus = x.SalaryStatus
-                           })
-                           .ToList();
-        }
-        public List<PaymentDTO> GetPayments()
-        {
 
-            return _session.Query<Payment>().OrderBy(p => p.PaymentRequestDate)
-                           .Select(x => new PaymentDTO
-                           {
-                               PaymentId = x.Id,
-                               CompanyName = _session.Get<Client>(x.ClientId).CompanyName,
-                               AccountNumber = _session.Get<Client>(x.ClientId).UserName,
-                               BeneficiaryName = x.Beneficiary.BeneficiaryName,
-                               Amount = x.Amount,
-                               PaymentRequestDate = x.PaymentRequestDate,
-                               PaymentStatus = x.PaymentStatus
-                           })
-                           .ToList();
+        //REPORTS
+        public List<EmployeeSalaryDisbursementDTO> GetAllSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            var query = _session.Query<SalaryDisbursement>().AsQueryable();
+
+            // Apply filters if any
+            if (!string.IsNullOrWhiteSpace(companyName))
+            {
+                // Filter by company name
+                query = query.Where(s => s.Employee.Client.UserName.Contains(companyName));
+            }
+
+            if (startDate.HasValue)
+            {
+                // Include records from the start date
+                query = query.Where(s => s.DisbursementDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                // Include records up to and including the end date
+                query = query.Where(s => s.DisbursementDate < endDate.Value.AddDays(1));
+            }
+
+            return query.OrderBy(s => s.DisbursementDate)
+                         .Select(x => new EmployeeSalaryDisbursementDTO
+                         {
+                             SalaryDisbursementId = x.Id,
+                             ClientName = x.Employee.Client.UserName,
+                             EmployeeFirstName = x.Employee.FirstName,
+                             EmployeeLastName = x.Employee.LastName,
+                             Salary = x.Employee.Salary,
+                             DisbursementDate = x.DisbursementDate,
+                             SalaryStatus = x.SalaryStatus
+                         })
+                         .ToList();
+        }
+        public List<PaymentDTO> GetPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            // Start the query on the Payment table
+            var query = _session.Query<Payment>().AsQueryable();
+
+            // Join with Client to filter by company name
+            if (!string.IsNullOrWhiteSpace(companyName))
+            {
+                query = query.Where(p => _session.Query<Client>().Where(c => c.UserName.Contains(companyName)).Select(c => c.Id).Contains(p.ClientId));
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(p => p.PaymentRequestDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(p => p.PaymentRequestDate < endDate.Value.AddDays(1)); // Include the end date
+            }
+
+            // Now project to DTO
+            return query.OrderBy(p => p.PaymentRequestDate)
+                        .Select(x => new PaymentDTO
+                        {
+                            PaymentId = x.Id,
+                            ClientName = _session.Query<Client>().Where(c => c.Id == x.ClientId).Select(c => c.UserName).FirstOrDefault(),
+                            AccountNumber = _session.Query<Client>().Where(c => c.Id == x.ClientId).Select(c => c.AccountNumber).FirstOrDefault(),
+                            BeneficiaryName = x.Beneficiary.BeneficiaryName,
+                            Amount = x.Amount,
+                            PaymentRequestDate = x.PaymentRequestDate,
+                            PaymentStatus = x.PaymentStatus
+                        })
+                        .ToList();
         }
         public void AddReportInfo(Guid id)
         {
@@ -362,16 +386,5 @@ namespace CorporateBankingApplication.Repositories
             }
         }
 
-        //Analytics
-
-        //public int GetClientsOnboardedToday()
-        //{
-        //    using (var txn = _session.BeginTransaction())
-        //    {
-        //        var today = DateTime.Today;
-        //        var count = _session.Query<Client>().Where(c => c.)
-        //    }
-
-        //}
     }
 }

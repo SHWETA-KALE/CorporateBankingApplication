@@ -139,25 +139,6 @@
     </div>
 </div>
 
-@*<script>
-    $("#addBalanceBtn").click(function () {
-        $("#addNewBalance").toggle();
-    });
-    // Add click event to open modal and display document
-    $(".open-document").click(function (e) {
-        e.preventDefault();
-        var filePath = $(this).data('filepath');
-
-        // Load the document in the iframe
-        $('#documentFrame').attr('src', filePath);
-
-        // Show the modal
-        $('#documentModal').modal('show');
-    });
-    $('.close').on('click', function () {
-        $('#documentModal').modal('hide');
-    });
-</script>*@
 
 <script>
     $("#addBalanceBtn").click(function () {
@@ -185,6 +166,18 @@
         var previousPassword = $("#previousPassword").val();
         var newPassword = $("#newPassword").val();
         var confirmNewPassword = $("#confirmNewPassword").val();
+
+        // Perform client-side validation
+        if (!previousPassword || !newPassword || !confirmNewPassword) {
+            alert("Please fill in all required fields.");
+            return; // Exit the function if validation fails
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            alert("New password and confirmation do not match.");
+            return; // Exit the function if passwords do not match
+        }
+
         $.ajax({
             url: "/Client/ChangePassword",
             type: "POST",
@@ -193,9 +186,13 @@
                 newPassword: newPassword,
                 confirmNewPassword: confirmNewPassword
             },
-            success: function () {
-                alert("Password changed successfully!");
-                $("#editPassword").hide();
+            success: function (response) {
+                if (response.success) {
+                    alert("Password changed successfully!");
+                    $("#editPassword").hide();
+                } else {
+                    alert(response.message);
+                }
             },
             error: function () {
                 alert("Error changing password.");

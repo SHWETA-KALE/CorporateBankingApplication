@@ -18,6 +18,13 @@ function loadBeneficiaryForVerification() {
                         return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
                     }).join('');
 
+                    //var documents = (item.DocumentUrls && Array.isArray(item.DocumentUrls) && item.DocumentUrls.length > 0)
+                    //    ? item.DocumentUrls.map(function (docPath) {
+                    //        var fileName = docPath.split('/').pop(); // Extract file name from path
+                    //        return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
+                    //    }).join('')
+                    //    : 'No documents available'; // Fallback if DocumentUrls is empty or undefinedc
+
                     var row = `<tr>
                         <td>
                             <input type="checkbox" class="is-OutboundSelected-checkbox" data-outboundid="${item.Id}" ${item.OutboundSelect ? "checked" : ""} />

@@ -27,7 +27,7 @@
 
             </tr>
         </thead>
-        <tbody>
+        <tbody id="salaryApprovalBody">
             @if (Model != null && Model.Any())
             {
                 foreach (var disbursement in Model)
@@ -61,12 +61,41 @@
     }
     <br />
     @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary my-5" })
+
+    <!-- Pagination Controls -->
+    <div id="paginationControls" class="d-flex justify-content-between mt-4">
+        <button id="prevPage" class="btn btn-outline-dark" disabled>Previous</button>
+        <span id="pageInfo">Page 1</span>
+        <button id="nextPage" class="btn btn-outline-dark">Next</button>
+    </div>
 </div>
 <div class="loader-overlay" style="display:none;" id="loader">
     <div class="spinner-border text-primary" role="status">
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+
+<!-- Rejection Reason Modal -->
+<div class="modal fade" id="rejectionReasonModal" tabindex="-1" role="dialog" aria-labelledby="rejectionReasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary" style="display: flex; justify-content: space-between; align-items: center;">
+                <h5 class="modal-title" id="rejectionReasonModalLabel">Rejection Reason</h5>
+                <button type="button" class="closeRejectionPopup border-0 bg-transparent text-light btn-lg" data-dismiss="modal" aria-label="Close" style="font-size: 2rem; line-height: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea id="rejectionReason" class="form-control" rows="4" placeholder="Please provide the reason for rejection"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary closeRejectionPopup" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitRejectionReason">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <style>
     /* Full-screen overlay to cover the whole page */
@@ -92,6 +121,42 @@
 
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script>
+
+        var currentPage = 1; // Start on the first page
+var rowsPerPage = 5; // Set number of rows per page
+var totalRows = @Model.Count(); // Total number of rows in the table
+        var totalPages = Math.ceil(totalRows / rowsPerPage); // Total number of pages
+
+        // Function to update the table for the current page
+        function updateTable() {
+            var startRow = (currentPage - 1) * rowsPerPage;
+            var endRow = startRow + rowsPerPage;
+
+            $('#salaryApprovalBody tr').hide();
+            $('#salaryApprovalBody tr').slice(startRow, endRow).show();
+
+            //updating pagination btns 
+            $('#pageInfo').text("Page " + currentPage + " of " + totalPages);
+            $('#prevPage').prop('disabled', currentPage === 1);
+            $('#nextPage').prop('disabled', currentPage === totalPages);
+        }
+
+        updateTable();
+
+        //pagination btn event handlers
+        $('#prevPage').click(function () {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTable();
+            }
+        });
+
+        $('#nextPage').click(function () {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateTable();
+            }
+        });
 
         function showLoader() {
             $("#loader").show();
@@ -156,7 +221,7 @@
             });
         });
 
-      
+
         //Reject salary Disbursement
         $('#rejectSelected').click(function () {
             var selectedIds = getSelectedDisbursements();
@@ -164,11 +229,30 @@
                 alert("Please select at least one salary disbursement.");
                 return;
             }
+
+            //showing the rejection reason modal
+            $('#rejectionReasonModal').modal('show');
+        });
+
+        $('#submitRejectionReason').click(function () {
+            var selectedIds = getSelectedDisbursements();
+            var rejectionReason = $('#rejectionReason').val();
+
+            if (!rejectionReason) {
+                alert("Please provide a reason for rejection.");
+                return;
+            }
+
             showLoader();
+
+
             $.ajax({
                 type: "POST",
-                 url: '@Url.Action("RejectDisbursements", "Admin")',
-                data: { disbursementIds: selectedIds },
+                url: '@Url.Action("RejectDisbursements", "Admin")',
+                data: {
+                    disbursementIds: selectedIds,
+                    reason: rejectionReason
+                },
                 traditional: true,
                 success: function (response) {
                     if (response.success) {
@@ -182,7 +266,8 @@
                     alert("An error occurred while rejecting the disbursements: " + error);
                 }
             });
-        })
+            $('#rejectionReasonModal').modal('hide');
+        });
 
 
 

@@ -13,12 +13,12 @@ namespace CorporateBankingApplication.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-
-        public UserService(IUserRepository userRepository)
+        private readonly CloudinaryService _cloudinaryService;
+        public UserService(IUserRepository userRepository, CloudinaryService cloudinaryService)
         {
             _userRepository = userRepository;
+            _cloudinaryService = cloudinaryService;
         }
-
         public string IsLogging(UserDTO userDto)
         {
             //converted dto to model
@@ -63,26 +63,18 @@ namespace CorporateBankingApplication.Services
             };
 
             string[] documentTypes = { "Company Id Proof", "Address Proof" };
-            string folderPath = HttpContext.Current.Server.MapPath("~/Content/Documents/ClientRegistration/") + client.UserName;
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
+
             for (int i = 0; i < uploadedFiles.Count; i++)
             {
 
                 var file = uploadedFiles[i];
                 if (file != null && file.ContentLength > 0)
                 {
-                    string fileName = Path.GetFileName(file.FileName);
-                    string filePath = Path.Combine(folderPath, fileName);
-                    file.SaveAs(filePath);
-                    // Save relative file path (relative to the Content folder)
-                    string relativeFilePath = $"~/Content/Documents/ClientRegistration/{client.UserName}/{fileName}";
+                    string cloudinaryUrl = _cloudinaryService.UploadClientFile(file, client.UserName);
                     var document = new Document
                     {
                         DocumentType = documentTypes[i], // Get document type based on index
-                        FilePath = relativeFilePath,
+                        FilePath = cloudinaryUrl,
                         UploadDate = DateTime.Now,
                         Client = client
                     };

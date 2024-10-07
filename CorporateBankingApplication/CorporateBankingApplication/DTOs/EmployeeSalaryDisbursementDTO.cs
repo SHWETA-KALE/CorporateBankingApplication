@@ -22,5 +22,7 @@ namespace CorporateBankingApplication.DTOs
         public DateTime DisbursementDate { get; set; } // From SalaryDisbursement
 
         public CorporateStatus SalaryStatus { get; set; }
+
+        public string ClientName { get; set; }
     }
 }

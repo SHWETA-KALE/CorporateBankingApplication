@@ -16,7 +16,6 @@ namespace CorporateBankingApplication.Services
 
         void CreateNewClient(ClientDTO clientDto, IList<HttpPostedFileBase> uploadedFiles);
 
-        //string DetermineDocumentType(string fileName);
 
 
 
