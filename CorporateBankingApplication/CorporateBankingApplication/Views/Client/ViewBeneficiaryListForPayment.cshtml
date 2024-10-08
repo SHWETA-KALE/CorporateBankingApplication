@@ -112,6 +112,10 @@
                                     success: function (result) {
                                         if (result.success) {
                                             alert(result.message);
+
+                                            // Clear the form fields
+                                            $('#Beneficiary_Id').val('');
+                                            $('input[name="Amount"]').val('');
                                         } else {
                                             alert(result.message);
                                         }
@@ -133,4 +137,3 @@
 
 
 
-@*payment controller pe authorization baki hai*@

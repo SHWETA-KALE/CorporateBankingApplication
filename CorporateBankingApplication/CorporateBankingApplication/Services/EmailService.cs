@@ -81,8 +81,8 @@ namespace CorporateBankingApplication.Services
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = 587,
-                //Credentials = new NetworkCredential("it.a.47.shweta.kale@gmail.com", "IIpr sdnt Inxk xdto"),
-                Credentials = new NetworkCredential("it.b.32.roshani.poojari@gmail.com", "zobr qnbb fqlz lezb"),
+                Credentials = new NetworkCredential("it.a.47.shweta.kale@gmail.com", "bbgj pjgj mynn srxo"),
+               // Credentials = new NetworkCredential("it.b.32.roshani.poojari@gmail.com", "zobr qnbb fqlz lezb"),
                 EnableSsl = true
             };
             smtpClient.Send(mailMessage);

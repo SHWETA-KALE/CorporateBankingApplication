@@ -16,6 +16,7 @@ namespace CorporateBankingApplication
 			var container = new UnityContainer();
 
             container.RegisterType<ISession>(new InjectionFactory(c => NHibernateHelper.CreateSession()));
+
             container.RegisterType<IUserService, UserService>();
             container.RegisterType<IUserRepository, UserRepository>();
 

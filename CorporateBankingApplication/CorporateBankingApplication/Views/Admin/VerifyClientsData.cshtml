@@ -31,6 +31,11 @@
         <button onclick="approveClient()" id="approveClientBtn" class="btn btn-outline-dark mx-3">Approve</button>
         <button onclick="rejectClient()" id="rejectClientBtn" class="btn btn-outline-dark">Reject</button>
     </div>
+    <div class="pagination-container d-flex justify-content-center">
+        <ul class="pagination" id="paginationLinks">
+            <!-- Pagination links will be dynamically generated -->
+        </ul>
+    </div>
     @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", null, new { @class = "btn btn-lg btn-primary" })
 </div>
 

@@ -1,25 +1,85 @@
 ﻿// Global variable to store selected client IDs
 var selectedIds = [];
 
-function loadClientsForVerification() {
+//function loadClientsForVerification() {
+//    $.ajax({
+//        url: "/Admin/GetClientsForVerification",
+//        type: "GET",
+//        success: function (data) {
+//            $("#clientToBeVerifiedTblBody").empty();
+
+//            if (data.length === 0) {
+//                // If no clients to verify, display message
+//                var noClientsMessage = `<tr><td colspan="7" class="text-center">No clients left to be verified</td></tr>`;
+//                $("#clientToBeVerifiedTblBody").append(noClientsMessage);
+//                $("#approveClientBtn").hide()
+//                $("#rejectClientBtn").hide()
+//            } else {
+//                $.each(data, function (index, item) {
+
+//                    var documents = item.DocumentPaths.map(function (docPath) {
+//                        var fileNameWithExtension = docPath.split('/').pop(); // Extract file name with extension from path
+//                        var fileNameWithoutExtension = fileNameWithExtension.split('.').slice(0, -1).join('.'); // Remove the extension
+//                        return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileNameWithoutExtension}</a><br>`;
+//                    }).join('');
+
+//                    var row = `<tr>
+//                    <td>
+//                        <input type="checkbox" class="is-ClientSelected-checkbox" data-clientid="${item.Id}" ${item.ClientSelect ? "checked" : ""} />
+//                    </td>
+//                        <td>${item.UserName}</td>
+//                        <td>${item.Email}</td>
+//                        <td>${item.CompanyName}</td>
+//                        <td>${item.ContactInformation}</td>
+//                        <td>${item.Location}</td>
+//                        <td>${documents}</td>
+//                    </tr>`;
+//                    $("#clientToBeVerifiedTblBody").append(row);
+//                });
+
+//                // Initialize checkbox change events
+//                initializeCheckboxEvents();
+
+//                // Add click event to open modal and display document
+//                $(".open-document").click(function (e) {
+//                    e.preventDefault();
+//                    var filePath = $(this).data('filepath');
+
+//                    // Load the document in the iframe
+//                    $('#documentFrame').attr('src', filePath);
+
+//                    // Show the modal
+//                    $('#documentModal').modal('show');
+//                });
+//            }
+//        },
+//        error: function (err) {
+//            $("#clientToBeVerifiedTblBody").empty();
+//            var errorMessage = `<tr><td colspan="7" class="text-center">No clients waiting to be verified</td></tr>`;
+//            $("#clientToBeVerifiedTblBody").append(errorMessage);
+//            alert("Error occurred while loading clients for verification.");
+//        }
+//    });
+//}
+
+function loadClientsForVerification(page = 1) {
     $.ajax({
-        url: "/Admin/GetClientsForVerification",
+        url: `/Admin/GetClientsForVerification?page=${page}`,
         type: "GET",
-        success: function (data) {
+        success: function (response) {
+            const data = response.Data;
             $("#clientToBeVerifiedTblBody").empty();
 
             if (data.length === 0) {
-                // If no clients to verify, display message
                 var noClientsMessage = `<tr><td colspan="7" class="text-center">No clients left to be verified</td></tr>`;
                 $("#clientToBeVerifiedTblBody").append(noClientsMessage);
                 $("#approveClientBtn").hide()
                 $("#rejectClientBtn").hide()
             } else {
                 $.each(data, function (index, item) {
-
                     var documents = item.DocumentPaths.map(function (docPath) {
-                        var fileNameWithExtension = docPath.split('/').pop(); // Extract file name with extension from path
-                        var fileNameWithoutExtension = fileNameWithExtension.split('.').slice(0, -1).join('.'); // Remove the extension
+                        var fileNameWithExtension = docPath.split('/').pop();
+                        var fileNameWithoutExtension = fileNameWithExtension.split('.').slice(0, -1).join('.');
                         return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileNameWithoutExtension}</a><br>`;
                     }).join('');
 
@@ -27,12 +87,12 @@ function loadClientsForVerification() {
                     <td>
                         <input type="checkbox" class="is-ClientSelected-checkbox" data-clientid="${item.Id}" ${item.ClientSelect ? "checked" : ""} />
                     </td>
-                        <td>${item.UserName}</td>
-                        <td>${item.Email}</td>
-                        <td>${item.CompanyName}</td>
-                        <td>${item.ContactInformation}</td>
-                        <td>${item.Location}</td>
-                        <td>${documents}</td>
+                    <td>${item.UserName}</td>
+                    <td>${item.Email}</td>
+                    <td>${item.CompanyName}</td>
+                    <td>${item.ContactInformation}</td>
+                    <td>${item.Location}</td>
+                    <td>${documents}</td>
                     </tr>`;
                     $("#clientToBeVerifiedTblBody").append(row);
                 });
@@ -44,23 +104,33 @@ function loadClientsForVerification() {
                 $(".open-document").click(function (e) {
                     e.preventDefault();
                     var filePath = $(this).data('filepath');
-
-                    // Load the document in the iframe
                     $('#documentFrame').attr('src', filePath);
-
-                    // Show the modal
                     $('#documentModal').modal('show');
                 });
+
+                // Render pagination links
+                renderPaginationLinks(response.TotalPages, response.CurrentPage);
             }
         },
-        error: function (err) {
+        error: function () {
             $("#clientToBeVerifiedTblBody").empty();
-            var errorMessage = `<tr><td colspan="7" class="text-center">No clients waiting to be verified</td></tr>`;
+            var errorMessage = `<tr><td colspan="7" class="text-center">Error occurred while loading clients for verification</td></tr>`;
             $("#clientToBeVerifiedTblBody").append(errorMessage);
-            alert("Error occurred while loading clients for verification.");
         }
     });
 }
+
+function renderPaginationLinks(totalPages, currentPage) {
+    const paginationContainer = $("#paginationLinks");
+    paginationContainer.empty();
+
+    for (let page = 1; page <= totalPages; page++) {
+        const activeClass = page === currentPage ? 'active' : '';
+        const pageLink = `<li class="page-item ${activeClass}"><a class="page-link" href="javascript:void(0)" onclick="loadClientsForVerification(${page})">${page}</a></li>`;
+        paginationContainer.append(pageLink);
+    }
+}
+
 
 function initializeCheckboxEvents() {
     // Reset the selected IDs array
