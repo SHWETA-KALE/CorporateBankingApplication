@@ -30,53 +30,25 @@
     @if (Model != null && Model.Any())
     {
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClientName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BeneficiaryName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentRequestDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentStatus)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.PaymentId)</th>
+            <th>@Html.DisplayNameFor(model => model.ClientName)</th>
+            <th>@Html.DisplayNameFor(model => model.AccountNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.BeneficiaryName)</th>
+            <th>@Html.DisplayNameFor(model => model.Amount)</th>
+            <th>@Html.DisplayNameFor(model => model.PaymentRequestDate)</th>
+            <th>@Html.DisplayNameFor(model => model.PaymentStatus)</th>
         </tr>
 
         foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaymentId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClientName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AccountNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BeneficiaryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaymentRequestDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaymentStatus)
-                </td>
+                <td>@Html.DisplayFor(modelItem => item.PaymentId)</td>
+                <td>@Html.DisplayFor(modelItem => item.ClientName)</td>
+                <td>@Html.DisplayFor(modelItem => item.AccountNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.BeneficiaryName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                <td>@Html.DisplayFor(modelItem => item.PaymentRequestDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.PaymentStatus)</td>
             </tr>
         }
     }
@@ -86,17 +58,36 @@
     }
 </table>
 
+<!-- Pagination Controls -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("ViewPayments", new { page = ViewBag.CurrentPage - 1, companyName = ViewBag.FilterCompanyName, startDate = ViewBag.FilterStartDate, endDate = ViewBag.FilterEndDate })">Previous</a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("ViewPayments", new { page = i, companyName = ViewBag.FilterCompanyName, startDate = ViewBag.FilterStartDate, endDate = ViewBag.FilterEndDate })">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("ViewPayments", new { page = ViewBag.CurrentPage + 1, companyName = ViewBag.FilterCompanyName, startDate = ViewBag.FilterStartDate, endDate = ViewBag.FilterEndDate })">Next</a>
+            </li>
+        </ul>
+    </nav>
+}
+
 @if (Model != null && Model.Any())
 {
     <div>
-        @Html.ActionLink("Download PDF Report", "DownloadPaymentPDFReport", "Admin",new{companyName = ViewBag.FilterCompanyName,
-                       startDate = ViewBag.FilterStartDate,endDate = ViewBag.FilterEndDate},new { @class = "btn btn-outline-dark mt-5" })
+        @Html.ActionLink("Download PDF Report", "DownloadPaymentPDFReport", "Admin", new { companyName = ViewBag.FilterCompanyName, startDate = ViewBag.FilterStartDate, endDate = ViewBag.FilterEndDate }, new { @class = "btn btn-outline-dark mt-5" })
     </div>
     <div>
-        @Html.ActionLink("Download Excel Report", "DownloadPaymentExcelReport", "Admin",new{companyName = ViewBag.FilterCompanyName,
-                       startDate = ViewBag.FilterStartDate,endDate = ViewBag.FilterEndDate},new { @class = "btn btn-outline-dark mt-5" })
+        @Html.ActionLink("Download Excel Report", "DownloadPaymentExcelReport", "Admin", new { companyName = ViewBag.FilterCompanyName, startDate = ViewBag.FilterStartDate, endDate = ViewBag.FilterEndDate }, new { @class = "btn btn-outline-dark mt-5" })
     </div>
 }
 @Html.ActionLink("Go Back To Dashboard", "AdminDashboard", "Admin", null, new { @class = "btn btn-lg btn-primary mt-5" })
-
-

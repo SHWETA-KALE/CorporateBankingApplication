@@ -226,3 +226,7 @@ D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.F
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\EPPlus.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\Microsoft.IO.RecyclableMemoryStream.xml
 D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\System.Formats.Asn1.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\PagedList.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\PagedList.Mvc.dll
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\PagedList.xml
+D:\CAPSTONE\CorporateBankingApplication\CorporateBankingApplication\bin\PagedList.Mvc.xml

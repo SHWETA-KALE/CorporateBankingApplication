@@ -1,58 +1,51 @@
 ﻿var selectedIds = [];
-function loadBeneficiaryForVerification() {
+function loadBeneficiaryForVerification(page = 1) {
     $.ajax({
-        url: "/Admin/GetOutboundBeneficiaryForVerification",
+        url: `/Admin/GetOutboundBeneficiaryForVerification?page=${page}`,
         type: "GET",
         success: function (data) {
             $("#beneficiaryToBeVerifiedTblBody").empty();
-            if (data.length === 0) {
+
+            if (data.Data.length === 0) {
                 var noBeneficiariesMessage = `<tr><td colspan="7" class="text-center">No beneficiaries left to be verified</td></tr>`;
                 $("#beneficiaryToBeVerifiedTblBody").append(noBeneficiariesMessage);
-                $("#approveOutboundBtn").hide()
-                $("#rejectOutboundBtn").hide()
+                $("#approveOutboundBtn").hide();
+                $("#rejectOutboundBtn").hide();
             } else {
-                $.each(data, function (index, item) {
-                    // Create a list of document links
+                $.each(data.Data, function (index, item) {
                     var documents = item.DocumentUrls.map(function (docPath) {
-                        var fileName = docPath.split('/').pop(); // Extract file name from path
+                        var fileName = docPath.split('/').pop();
                         return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
                     }).join('');
 
-                    //var documents = (item.DocumentUrls && Array.isArray(item.DocumentUrls) && item.DocumentUrls.length > 0)
-                    //    ? item.DocumentUrls.map(function (docPath) {
-                    //        var fileName = docPath.split('/').pop(); // Extract file name from path
-                    //        return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
-                    //    }).join('')
-                    //    : 'No documents available'; // Fallback if DocumentUrls is empty or undefinedc
-
                     var row = `<tr>
-                        <td>
-                            <input type="checkbox" class="is-OutboundSelected-checkbox" data-outboundid="${item.Id}" ${item.OutboundSelect ? "checked" : ""} />
-                        </td>
-                        <td>${item.ClientName}</td>
-                        <td>${item.BeneficiaryName}</td>
-                        <td>${item.AccountNumber}</td>
-                        <td>${item.BankIFSC}</td>
-                        <td>${item.BeneficiaryType}</td>
-                        <td>${documents}</td>
-                    </tr>`;
+                <td><input type="checkbox" class="is-OutboundSelected-checkbox" data-outboundid="${item.Id}" ${item.OutboundSelect ? "checked" : ""} /></td>
+                <td>${item.ClientName}</td>
+                <td>${item.BeneficiaryName}</td>
+                <td>${item.AccountNumber}</td>
+                <td>${item.BankIFSC}</td>
+                <td>${item.BeneficiaryType}</td>
+                <td>${documents}</td>
+            </tr>`;
+
                     $("#beneficiaryToBeVerifiedTblBody").append(row);
                 });
-                // Initialize checkbox change events
+
                 initializeCheckboxEvents();
-                // Add click event to open modal and display document
+
+                // Attach click events for document links
                 $(".open-document").click(function (e) {
                     e.preventDefault();
                     var filePath = $(this).data('filepath');
-
-                    // Load the document in the iframe
                     $('#documentFrame').attr('src', filePath);
-
-                    // Show the modal
                     $('#documentModal').modal('show');
                 });
+
+                // Render pagination links after updating the table
+                renderPaginationLinks(data.TotalPages, data.CurrentPage);
             }
         },
+
         error: function (err) {
             $("#beneficiaryToBeVerifiedTblBody").empty();
             var errorMessage = `<tr><td colspan="7" class="text-center">No beneficiaries waiting to be verified</td></tr>`;
@@ -62,7 +55,16 @@ function loadBeneficiaryForVerification() {
     });
 }
 
+function renderPaginationLinks(totalPages, currentPage) {
+    const paginationContainer = $("#paginationLinks");
+    paginationContainer.empty();
 
+    for (let page = 1; page <= totalPages; page++) {
+        const activeClass = page === currentPage ? 'active' : '';
+        const pageLink = `<li class="page-item ${activeClass}"><a class="page-link" href="javascript:void(0)" onclick="loadBeneficiaryForVerification(${page})">${page}</a></li>`;
+        paginationContainer.append(pageLink);
+    }
+}
 function initializeCheckboxEvents() {
     // Reset the selected IDs array
     selectedIds = [];

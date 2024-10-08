@@ -4,6 +4,7 @@ using CorporateBankingApplication.Enum;
 using CorporateBankingApplication.Services;
 using iTextSharp.text.pdf;
 using OfficeOpenXml;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -138,15 +139,29 @@ namespace CorporateBankingApplication.Controllers
         {
             return View();
         }
-        public ActionResult GetClientsForVerification()
+        public ActionResult GetClientsForVerification(int? page)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
             var urlHelper = new UrlHelper(Request.RequestContext); // Create UrlHelper here
-            var clientDtos = _adminService.GetClientsForVerification(urlHelper);
-            return Json(clientDtos, JsonRequestBehavior.AllowGet);
+            var clients = _adminService.GetClientsForVerification(urlHelper);
+
+            // Page number and size
+            int pageSize = 2;
+            int pageNumber = (page ?? 1);
+
+            // Convert list to paged list
+            var pagedClients = clients.ToPagedList(pageNumber, pageSize);
+
+            return Json(new
+            {
+                Data = pagedClients,
+                TotalPages = pagedClients.PageCount,
+                CurrentPage = pagedClients.PageNumber
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult UpdateClientOnboardingStatus(List<Guid> id, string status, string rejectionReason = "")
@@ -278,15 +293,26 @@ namespace CorporateBankingApplication.Controllers
         {
             return View();
         }
-        public ActionResult GetOutboundBeneficiaryForVerification()
+        public ActionResult GetOutboundBeneficiaryForVerification(int? page)
         {
             if (Session["UserId"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
+
             var urlHelper = new UrlHelper(Request.RequestContext); // Create UrlHelper here
             var beneficiaryDtos = _adminService.GetBeneficiariesForVerification(urlHelper);
-            return Json(beneficiaryDtos, JsonRequestBehavior.AllowGet);
+
+            int pageSize = 2; // Number of beneficiaries to display per page
+            int pageNumber = (page ?? 1); // Default to the first page if no page number is provided
+
+            var paginatedBeneficiaries = beneficiaryDtos.ToPagedList(pageNumber, pageSize);
+            return Json(new
+            {
+                Data = paginatedBeneficiaries,
+                TotalPages = paginatedBeneficiaries.PageCount,
+                CurrentPage = paginatedBeneficiaries.PageNumber
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult UpdateOutboundBeneficiaryOnboardingStatus(List<Guid> id, string status, string rejectionReason = "")
@@ -387,8 +413,25 @@ namespace CorporateBankingApplication.Controllers
             return View();
         }
 
+        //[Route("salaryreport")]
+        //public ActionResult ViewSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
+        //{
+        //    if (Session["UserId"] == null)
+        //    {
+        //        return RedirectToAction("Login", "User");
+        //    }
+
+        //    // Store filters in ViewBag for the view
+        //    ViewBag.FilterCompanyName = companyName;
+        //    ViewBag.FilterStartDate = startDate?.ToString("yyyy-MM-dd");
+        //    ViewBag.FilterEndDate = endDate?.ToString("yyyy-MM-dd");
+
+        //    var salaryDisbursements = _adminService.GetAllSalaryDisbursements(companyName, startDate, endDate);
+        //    return View(salaryDisbursements);
+        //}
+
         [Route("salaryreport")]
-        public ActionResult ViewSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
+        public ActionResult ViewSalaryDisbursements(string companyName = null, DateTime? startDate = null, DateTime? endDate = null, int page = 1)
         {
             if (Session["UserId"] == null)
             {
@@ -400,8 +443,20 @@ namespace CorporateBankingApplication.Controllers
             ViewBag.FilterStartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.FilterEndDate = endDate?.ToString("yyyy-MM-dd");
 
+            int pageSize = 5; // Number of records per page
             var salaryDisbursements = _adminService.GetAllSalaryDisbursements(companyName, startDate, endDate);
-            return View(salaryDisbursements);
+
+            // Pagination logic
+            var pagedDisbursements = salaryDisbursements
+                .Skip((page - 1) * pageSize) // Skip records for previous pages
+                .Take(pageSize) // Take the next 'pageSize' records
+                .ToList();
+
+            // Pass total pages count to the view for pagination controls
+            ViewBag.TotalPages = Math.Ceiling((double)salaryDisbursements.Count() / pageSize);
+            ViewBag.CurrentPage = page;
+
+            return View(pagedDisbursements);
         }
 
         public ActionResult DownloadSalaryDisbursementsPDFReport(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
@@ -503,9 +558,8 @@ namespace CorporateBankingApplication.Controllers
             }
         }
 
-
         [Route("paymentreport")]
-        public ActionResult ViewPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null)
+        public ActionResult ViewPayments(string companyName = null, DateTime? startDate = null, DateTime? endDate = null, int page = 1)
         {
             if (Session["UserId"] == null)
             {
@@ -517,8 +571,19 @@ namespace CorporateBankingApplication.Controllers
             ViewBag.FilterStartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.FilterEndDate = endDate?.ToString("yyyy-MM-dd");
 
+            int pageSize = 1;
+            // Fetch paginated payments
             var payments = _adminService.GetPayments(companyName, startDate, endDate);
-            return View(payments);
+
+            // Apply pagination
+            var pagedPayments = payments
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize).ToList();
+
+            // Get total count for pagination
+            ViewBag.TotalPages = (int)Math.Ceiling((double)payments.Count() / pageSize);
+            ViewBag.CurrentPage = page;
+            return View(pagedPayments);
         }
 
 
