@@ -61,7 +61,7 @@ namespace CorporateBankingApplication.Controllers
             Guid clientId = (Guid)Session["UserId"];
             var client = _clientService.GetClientById(clientId);
             //for checking onboarding status
-            ViewBag.Client = client;
+            ViewBag.Client = client; //passing client from controller to view
             if (client == null)
             {
                 throw new InvalidOperationException("Client not found");
@@ -117,7 +117,7 @@ namespace CorporateBankingApplication.Controllers
             {
                 // Collect errors into a dictionary to return as JSON
                 var errors = ModelState.ToDictionary(
-                    kvp => kvp.Key,
+                    kvp => kvp.Key, //KEY VALUE PAIR
                     kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
                 );
                 return Json(new { success = false, errors });
@@ -424,7 +424,7 @@ namespace CorporateBankingApplication.Controllers
 
 
 
-        //***************************SALARY DISBURSEMENT***************************
+        //*************************** SALARY DISBURSEMENT ***************************
         [HttpPost]
         public ActionResult DisburseSalary(List<Guid> employeeIds, bool isBatch, double amount)
         {

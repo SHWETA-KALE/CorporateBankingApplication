@@ -4,6 +4,7 @@
     ViewBag.Title = "View Beneficiary List for Payment";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var clientOnboardingStatus = ViewBag.Client?.OnBoardingStatus;
+    ViewBag.ClientBalance = ViewBag.Client?.Balance ?? 0; // Assign 0 if the balance is null
 }
 
 <div class="container mt-5 pt-5">
@@ -64,22 +65,28 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     $(document).ready(function () {
+        var clientBalance = parseFloat('@ViewBag.ClientBalance');
         $('#payNow').click(function (e) {
             e.preventDefault();
-           
+
             var beneficiaryId = $('#Beneficiary_Id').val();
             var amount = $('input[name="Amount"]').val();
 
             // Check if the user has selected a beneficiary
             if (beneficiaryId === "" || beneficiaryId === null) {
                 alert("Please select a beneficiary before proceeding.");
-                return; 
+                return;
             }
 
             // Check if the amount is provided and greater than 0
             if (amount === "" || parseFloat(amount) <= 0) {
                 alert("Please enter a valid amount greater than zero.");
-                return; 
+                return;
+            }
+
+            if (amount > clientBalance) {
+                alert("Insufficient Balance!! Visit your profile to update your balance.");
+                return;
             }
             // AJAX request to initiate payment
             $.ajax({
@@ -112,6 +119,8 @@
                                     success: function (result) {
                                         if (result.success) {
                                             alert(result.message);
+                                            $('#Beneficiary_Id').val('');
+                                            $('input[name="Amount"]').val('');
                                         } else {
                                             alert(result.message);
                                         }
@@ -133,4 +142,3 @@
 
 
 
-@*payment controller pe authorization baki hai*@

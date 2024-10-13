@@ -3,24 +3,40 @@
   "WorkspaceRootPath": "D:\\CAPSTONE\\CorporateBankingApplication\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\global.asax.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\global.asax.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\webroleprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\webroleprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\scripts\\beneficiariesinboundlist.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\scripts\\beneficiariesinboundlist.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\repositories\\clientrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\repositories\\clientrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\services\\clientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\services\\clientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|D:\\CAPSTONE\\CorporateBankingApplication\\corporatebankingapplication\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\scripts\\beneficiaryverification.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\scripts\\beneficiaryverification.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|d:\\capstone\\corporatebankingapplication\\corporatebankingapplication\\views\\admin\\verifyoutboundbeneficiarydata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{462B4D03-BF62-43A8-B15D-29498A5A701C}|CorporateBankingApplication\\CorporateBankingApplication.csproj|solutionrelative:corporatebankingapplication\\views\\admin\\verifyoutboundbeneficiarydata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,67 +58,113 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AdminRepository.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Repositories\\AdminRepository.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Repositories\\AdminRepository.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Repositories\\AdminRepository.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Repositories\\AdminRepository.cs",
-              "ViewState": "AQIAALwAAAAAAAAAAADwvwAAAAAAAAAA",
+              "DocumentIndex": 0,
+              "Title": "Global.asax.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Global.asax.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Global.asax.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Global.asax.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\Global.asax.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-07T07:34:16.294Z",
+              "WhenOpened": "2024-10-11T04:48:36.894Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AdminService.cs",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\AdminService.cs",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Services\\AdminService.cs",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\AdminService.cs",
-              "RelativeToolTip": "CorporateBankingApplication\\Services\\AdminService.cs",
-              "ViewState": "AQIAAAEBAAAAAAAAAADwvwAAAAAAAAAA",
+              "DocumentIndex": 1,
+              "Title": "WebRoleProvider.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\WebRoleProvider.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\WebRoleProvider.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\WebRoleProvider.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\WebRoleProvider.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-07T07:33:29.213Z",
+              "WhenOpened": "2024-10-11T04:48:25.245Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "BeneficiaryVerification.js",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Scripts\\BeneficiaryVerification.js",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Scripts\\BeneficiaryVerification.js",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Scripts\\BeneficiaryVerification.js",
-              "RelativeToolTip": "CorporateBankingApplication\\Scripts\\BeneficiaryVerification.js",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAwwBgAAAAlAAAA",
+              "Title": "BeneficiariesInboundList.js",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Scripts\\BeneficiariesInboundList.js",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Scripts\\BeneficiariesInboundList.js",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Scripts\\BeneficiariesInboundList.js",
+              "RelativeToolTip": "CorporateBankingApplication\\Scripts\\BeneficiariesInboundList.js",
+              "ViewState": "AQIAAEsAAAAAAAAAAAAmwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2024-10-07T07:21:23.795Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-11T00:20:29.231Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AdminService.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\AdminService.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Services\\AdminService.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\AdminService.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\Services\\AdminService.cs",
+              "ViewState": "AQIAAHoAAAAAAAAAAAAuwF4BAABEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T23:56:20.761Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AdminRepository.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Repositories\\AdminRepository.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Repositories\\AdminRepository.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Repositories\\AdminRepository.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\Repositories\\AdminRepository.cs",
+              "ViewState": "AQIAAFkAAAAAAAAAAAAAwA8BAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T23:56:19.166Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\AdminController.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\Controllers\\AdminController.cs",
+              "ViewState": "AQIAANEAAAAAAAAAAADwv9oAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T23:56:15.45Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "VerifyOutboundBeneficiaryData.cshtml",
-              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Admin\\VerifyOutboundBeneficiaryData.cshtml",
-              "RelativeDocumentMoniker": "CorporateBankingApplication\\Views\\Admin\\VerifyOutboundBeneficiaryData.cshtml",
-              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Views\\Admin\\VerifyOutboundBeneficiaryData.cshtml",
-              "RelativeToolTip": "CorporateBankingApplication\\Views\\Admin\\VerifyOutboundBeneficiaryData.cshtml",
-              "ViewState": "AQIAABsAAAAAAAAAAAAAAEgAAAAKAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-07T07:16:05.071Z",
-              "EditorCaption": ""
+              "Title": "ClientRepository.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Repositories\\ClientRepository.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Repositories\\ClientRepository.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Repositories\\ClientRepository.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\Repositories\\ClientRepository.cs",
+              "ViewState": "AQIAAC4BAAAAAAAAAAAmwCsAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T23:31:13.266Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
+              "Title": "ClientService.cs",
+              "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\ClientService.cs",
+              "RelativeDocumentMoniker": "CorporateBankingApplication\\Services\\ClientService.cs",
+              "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Services\\ClientService.cs",
+              "RelativeToolTip": "CorporateBankingApplication\\Services\\ClientService.cs",
+              "ViewState": "AQIAAJ0AAAAAAAAAAAAYwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-10T23:31:19.497Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "ClientController.cs",
               "DocumentMoniker": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
               "RelativeDocumentMoniker": "CorporateBankingApplication\\Controllers\\ClientController.cs",
               "ToolTip": "D:\\CAPSTONE\\CorporateBankingApplication\\CorporateBankingApplication\\Controllers\\ClientController.cs",
               "RelativeToolTip": "CorporateBankingApplication\\Controllers\\ClientController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAH4EAAAAAAAAAAAAAJYEAAA/AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-07T07:09:02.538Z",
+              "WhenOpened": "2024-10-10T23:31:08.896Z",
               "EditorCaption": ""
             }
           ]

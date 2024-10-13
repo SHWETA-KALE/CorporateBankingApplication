@@ -28,16 +28,18 @@ namespace CorporateBankingApplication.DTOs
         [Display(Name = "Type")]
 
         public string BeneficiaryType { get; set; }
+
+        [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
+
+        [Display(Name = "Status")]
         public string BeneficiaryStatus { get; set; }
 
         
-        [Display(Name = "Beneficiary Id Proof")]
+        [Display(Name = "Id Proof")]
         public HttpPostedFileBase BeneficiaryIdProof { get; set; }
-        
-
        
-        [Display(Name = "Beneficiary Address Proof")]
+        [Display(Name = "Address Proof")]
         public HttpPostedFileBase BeneficiaryAddressProof { get; set; }
 
         public List<string> DocumentUrls { get; set; }

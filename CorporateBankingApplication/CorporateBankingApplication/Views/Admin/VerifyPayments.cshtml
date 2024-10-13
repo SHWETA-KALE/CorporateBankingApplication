@@ -37,7 +37,7 @@
                         <td>
                             <input type="checkbox" class="payment-checkbox" value="@payment.PaymentId" />
                         </td>
-                        <td>@payment.Username</td>
+                        <td>@payment.ClientName</td>
                         <td>@payment.CompanyName</td>
                         <td>@payment.AccountNumber</td>
                         <td>@payment.BeneficiaryType</td>
@@ -57,8 +57,8 @@
 
     @if (Model != null && Model.Any())
     {
-        <button id="approveSelectedPayments" class="btn btn-outline-dark">Approve Selected</button>
-        <button id="rejectSelectedPayments" class="btn btn-outline-dark">Reject Selected</button>
+        <button id="approveSelectedPayments" class="btn btn-outline-dark">Approve</button>
+        <button id="rejectSelectedPayments" class="btn btn-outline-dark">Reject</button>
     }
 
     <br />

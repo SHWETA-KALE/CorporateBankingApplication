@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var clientOnboardingStatus = ViewBag.Client?.OnBoardingStatus;
+    var clientOnboardingStatus = ViewBag.Client?.OnBoardingStatus;  //? => null conditional operator it checks the obj is null before accessing the obj
 }
 <div class="container pt-5" id="employeeList">
     @if (clientOnboardingStatus == CorporateStatus.APPROVED)

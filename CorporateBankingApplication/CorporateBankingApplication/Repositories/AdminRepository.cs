@@ -227,6 +227,7 @@ namespace CorporateBankingApplication.Repositories
                 .Select(x => new PaymentDTO
                 {
                     PaymentId = x.Id,
+                    ClientName = x.Beneficiary.Client.UserName,
                     CompanyName = x.Beneficiary.BeneficiaryName,
                     AccountNumber = x.Beneficiary.AccountNumber,
                     // BeneficiaryType = x.Beneficiary.BeneficiaryType.ToString().ToUpper(),
@@ -242,8 +243,6 @@ namespace CorporateBankingApplication.Repositories
         public void UpdatePaymentStatus(Guid paymentId, CorporateStatus status)
         {
             var payment = _session.Get<Payment>(paymentId);
-
-
 
             if (payment != null)
             {

@@ -190,7 +190,7 @@ namespace CorporateBankingApplication.Services
         //generating payslip 
         public byte[] GeneratePayslipPdf(Employee employee, SalaryDisbursement salaryDisbursement)
         {
-            using (var stream = new MemoryStream())
+            using (var stream = new MemoryStream()) //FOR GENERATING PAYSLIP I HAVE USED ITEXT7
             {
                 using (var writer = new PdfWriter(stream))
                 {

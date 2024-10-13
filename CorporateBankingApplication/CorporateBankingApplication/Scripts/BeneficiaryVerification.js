@@ -13,10 +13,16 @@ function loadBeneficiaryForVerification() {
             } else {
                 $.each(data, function (index, item) {
                     // Create a list of document links
+                    //var documents = item.DocumentUrls.map(function (docPath) {
+                    //    var fileName = docPath.split('/').pop(); // Extract file name from path
+                    //    return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
+                    //}).join('');
+
                     var documents = item.DocumentUrls.map(function (docPath) {
-                        var fileName = docPath.split('/').pop(); // Extract file name from path
+                        var fileName = docPath.split('/').pop().split('.').slice(0, -1).join('.');
                         return `<a href="#" class="open-document" data-filepath="${docPath}" target="_blank">${fileName}</a><br>`;
                     }).join('');
+
 
                     //var documents = (item.DocumentUrls && Array.isArray(item.DocumentUrls) && item.DocumentUrls.length > 0)
                     //    ? item.DocumentUrls.map(function (docPath) {

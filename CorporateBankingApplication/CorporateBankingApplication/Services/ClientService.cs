@@ -154,7 +154,6 @@ namespace CorporateBankingApplication.Services
 
                 };
 
-
                 _clientRepository.AddSalaryDisbursement(salaryDisbursement);
             }
 

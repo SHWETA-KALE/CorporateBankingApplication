@@ -196,7 +196,7 @@ namespace CorporateBankingApplication.Controllers
         //[AllowAnonymous]
         public ActionResult Logout()
         {
-            FormsAuthentication.SignOut();
+            FormsAuthentication.SignOut();  //cookie
             Session.Clear();
             return RedirectToAction("Index");
         }

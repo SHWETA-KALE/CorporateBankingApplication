@@ -54,6 +54,7 @@ namespace CorporateBankingApplication.DTOs
         [Required]
         public CorporateStatus OnboardingStatus { get; set; }
 
+        [Display(Name = "Status")]
         public string BeneficiaryStatus { get; set; }
 
 

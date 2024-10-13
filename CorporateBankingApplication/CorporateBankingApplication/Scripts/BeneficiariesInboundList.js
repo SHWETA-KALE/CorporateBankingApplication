@@ -79,7 +79,8 @@ $('#addInboundSelected').click(function () {
         success: function (response) {
             if (response.success) {
                 alert(response.message);
-                window.location.href = `/Client/ViewAllOutboundBeneficiaries`;
+                //window.location.href = `/Client/ViewAllOutboundBeneficiaries`;
+                window.location.href = `/client/listofbeneficiaries`;
             } else {
                 alert(response.message);
             }

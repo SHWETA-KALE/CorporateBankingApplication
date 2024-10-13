@@ -33,7 +33,7 @@
             return; // Exit the function if the amount is invalid
         }
         $.ajax({
-            url: "/Client/AddBalance",
+            url: "/client/profile",
             type: "POST",
             data: { id: clientId, amount: amount },
             success: function (response) {
